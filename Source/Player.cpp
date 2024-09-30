@@ -116,27 +116,35 @@ void Player::Update(float elapsedTime)
     {
     case State::Idle:
         UpdateIdleState(elapsedTime);
+        UpdateTransform();
         break;
     case State::Move:
         UpdateMoveState(elapsedTime);
+        UpdateTransform();
         break;
     case State::Jump:
         UpdateJumpState(elapsedTime);
+        UpdateTransform();
         break;
     case State::Land:
         UpdateLandState(elapsedTime);
+        UpdateTransform();
         break;
     case State::Attack:
         UpdateAttackState(elapsedTime);
+        UpdateTransform();
         break;
     case State::Damage:
         UpdateDamageState(elapsedTime);
+        UpdateTransform();
         break;
     case State::Death:
         UpdateDeathState(elapsedTime);
+        UpdateTransform();
         break;
     case State::Revive:
         UpdateReviveState(elapsedTime);
+        UpdateTransform();
         break;
     }
 
@@ -156,9 +164,7 @@ void Player::Update(float elapsedTime)
     //弾丸と敵の衝突処理
     CollisionProjectilesVsEnemies();
 
-    //オブジェクト行列を更新
-    UpdateTransform();
-
+   
     //モデルアニメーション更新処理
     model->UpdateAnimetion(elapsedTime);
 
@@ -737,7 +743,7 @@ void Player::UpdateJumpState(float elapsedTime)
     if (InputJump())
     {
         model->PlayAnimation(Anim_Jump_Flip, false);
-    };
+    }
     //アニメーション終了
     if (!model->IsPlayAnimation())
     {
@@ -758,8 +764,10 @@ void Player::TransitionLandState()
 //着地ステート更新処理
 void Player::UpdateLandState(float elapsedTime)
 {
+    //着地アニメーション終了
     if (!model->IsPlayAnimation())
     {
+        //待機ステートへ
         TransitionIdleState();
     }
 }
@@ -921,17 +929,16 @@ void Player::OnLanding()
 {
     jumpCount = 0;
 
-    //下方向の速力が一定以上なら着地ステートへ
-    if (velocity.y < gravity *5.0f)
-    {
-        state = State::Land;
-        //TransitionLandState();
-    }
+    
     //ダメージ、死亡ステート時は着地した時にステート遷移しないようにする
     if (state != State::Damage && state != State::Death)
     {
+    //下方向の速力が一定以上なら着地ステートへ
+        if (velocity.y < gravity * 5.0f)
+        {
+           TransitionLandState();
+        }
         //着地ステートへ遷移
-        TransitionLandState();
     }
 }
 
@@ -948,3 +955,4 @@ void Player::OnDead()
     //死亡ステートへ遷移
     TransitionDeathState();
 }
+    

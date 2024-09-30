@@ -200,7 +200,7 @@ Model::Node* Model::FindNode(const char* name)
 	//全てのノードを総当たりで名前比較する
 	for (Node& node : nodes)
 	{
-		if (::strcmp(node.name, name))
+		if (::strcmp(node.name, name)==0)
 		{
 			return &node;
 		}

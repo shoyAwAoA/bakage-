@@ -234,37 +234,13 @@ void Character::UpdateVerticalVelocity(float elapsedFrame)
 //垂直移動更新処理
 void Character::UpdateVerticalMove(float elapsedTime)
 {
-    ////移動処理
-    //position.y += velocity.y * elapsedTime;
-
-
-    ////地面判定
-    //if (position.y < 0.0f)
-    //{
-
-    //    position.y = 0.0f;
-    //    velocity.y = 0.0f;
-
-    //    //着地した
-    //    if (!isGround)
-    //    {
-    //        OnLanding();
-    //    }
-    //    else
-    //    {
-    //        isGround = true;
-    //    }
-    //}
-    //else
-    //{
-    //    isGround = false;
-    //}
-
     //垂直方向の移動量
     float my = velocity.y * elapsedTime;
 
     //キャラクターのY軸方向となる法線ベクトル
     DirectX::XMFLOAT3 normal = { 0,1,0 };
+
+    slopeRate = 0.0f;
 
     //落下中
     if (my < 0.0f)
@@ -279,19 +255,18 @@ void Character::UpdateVerticalMove(float elapsedTime)
         // if (Stage::Instance().RayCast(start, end, hit))
         if (StageManager::Instance().RayCast(start, end, hit))
         {
-            //法線ベクトル取得
-            normal = hit.normal;
-
             //地面接地している
-           // position.y = hit.position.y;
             position = hit.position;
-
-            //回転
-            angle.y += hit.rotation.y;
 
             //傾斜率の計算
             float normalLengthXZ = sqrtf(hit.normal.x * hit.normal.x + hit.normal.z * hit.normal.z);
             slopeRate = 1.0f - (hit.normal.y / (normalLengthXZ + hit.normal.y));
+            
+            //法線ベクトル取得
+            normal = hit.normal;
+
+            //回転
+            angle.y += hit.rotation.y;
 
             //着地した
             if (!isGround)
@@ -363,7 +338,7 @@ void Character::UpdateHorizontalVelocity(float elapsedFrame)
         if (length <= maxMoveSpeed)
         {
             //移動ベクトルがゼロベクトルでないなら加速する
-            float moveVecLength = (moveVecX * moveVecX + moveVecZ * moveVecZ);
+            float moveVecLength = sqrtf(moveVecX * moveVecX + moveVecZ * moveVecZ);
             if (moveVecLength > 0.0f)
             {
                 //加速力
