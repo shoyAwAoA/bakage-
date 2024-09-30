@@ -180,6 +180,38 @@ void Player::DrawDebugGUI()
     ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(ImVec2(300, 300), ImGuiCond_FirstUseEver);
 
+    std::string str = "";
+
+    switch (state)
+    {
+    case Player::State::Idle:
+        str = "Idle";
+        break;
+    case Player::State::Move:
+        str = "Move";
+        break;
+    case Player::State::Jump:
+        str = "Jump";
+        break;
+    case Player::State::Land:
+        str = "Land";
+        break;
+    case Player::State::Attack:
+        str = "Attack";
+        break;
+    case Player::State::Damage:
+        str = "Damage";
+        break;
+    case Player::State::Death:
+        str = "Death";
+        break;
+    case Player::State::Revive:
+        str = "Revive";
+        break;
+    default:
+        break;
+    }
+
     if (ImGui::Begin("Player", nullptr, ImGuiTreeNodeFlags_None))
     {
         //トランスフォーム
@@ -199,7 +231,7 @@ void Player::DrawDebugGUI()
             //スケール
             ImGui::InputFloat3("Scale", &scale.x);
 
-
+            ImGui::Text(u8"State %s", str.c_str());
             
         }
 
@@ -889,12 +921,12 @@ void Player::OnLanding()
 {
     jumpCount = 0;
 
-    ////下方向の速力が一定以上なら着地ステートへ
-    //if (velocity.y < gravity * 5.0f)
-    //{
-    //    //state = State::Land;
-    //    TransitionLandState();
-    //}
+    //下方向の速力が一定以上なら着地ステートへ
+    if (velocity.y < gravity *5.0f)
+    {
+        state = State::Land;
+        //TransitionLandState();
+    }
     //ダメージ、死亡ステート時は着地した時にステート遷移しないようにする
     if (state != State::Damage && state != State::Death)
     {
