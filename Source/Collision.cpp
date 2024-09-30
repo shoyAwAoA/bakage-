@@ -99,31 +99,24 @@ bool Collision::IntersectSphereVsCylinder(
     float cylinderHeight,
     DirectX::XMFLOAT3& outCylinderPosition)
 {
+    if (spherePosition.y + sphereRadius < cylinderPosition.y) { return false; }
+    if (spherePosition.y - sphereRadius > (cylinderPosition.y + cylinderHeight)) { return false; }
 
+    float vx = cylinderPosition.x - spherePosition.x;
+    float vz = cylinderPosition.z - spherePosition.z;
+    float range = (sphereRadius + cylinderRadius);
+    float distXZ = sqrtf(vx * vx + vz * vz);//A‚ÆB‚Ì‹——£
 
-    //’eŠÛ‚Ì‘«Œ³‚ª“G‚Ì‚‚³‚æ‚è‚à‘å‚«‚¢ê‡“–‚½‚Á‚Ä‚¢‚È‚¢B
-    if (spherePosition.y>cylinderPosition.y+cylinderHeight)
+    if (distXZ > range)//Ú‚µ‚Ä‚¢‚È‚¢
     {
         return false;
     }
+    vx /= distXZ;
+    vz /= distXZ;
 
-    if (spherePosition.y<cylinderPosition.y)
-    {
-        return false;
-    }
-
-    float position_x = cylinderPosition.x - spherePosition.x;
-    float position_z = cylinderPosition.z - spherePosition.z;
-    float length = (position_x * position_x) + (position_z * position_z);
-
-
-
-    float range = (sphereRadius + cylinderRadius) * (sphereRadius + cylinderRadius);
-
-    if (range <= length)
-    {
-        return false;
-    }
+    outCylinderPosition.x = spherePosition.x + (vx * range);
+    outCylinderPosition.y = spherePosition.y;
+    outCylinderPosition.z = spherePosition.z + (vz * range);
 
     return true;
 }

@@ -279,7 +279,8 @@ void Player::DrawDebugPrimitive()
             leftHandBone->worldTransform._42,
             leftHandBone->worldTransform._43),
             leftHandRadius,
-            DirectX::XMFLOAT4(1, 0, 0, 1));
+            DirectX::XMFLOAT4(1, 0, 0, 1)
+        );
     }
 
 }
