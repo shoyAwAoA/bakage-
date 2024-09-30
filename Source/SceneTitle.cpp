@@ -38,7 +38,7 @@ void SceneTitle::Update(float elapsedTime)
     //    | GamePad::BTN_Y
     //    ;
     //何かボタンを押したらローディングシーンをはさんでゲームシーンへ切り替え
-    if (gamePad.GetButtonDown() & GamePad::BTN_Y)//Vキー
+    if (gamePad.GetButtonDown() & GamePad::BTN_A)//Zキー
     {
         SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame));
     }
@@ -46,7 +46,7 @@ void SceneTitle::Update(float elapsedTime)
     {
         SceneManager::Instance().ChangeScene(new SceneGame2);
     }
-    if (gamePad.GetButtonDown() & GamePad::BTN_A)//Zキー
+    if (gamePad.GetButtonDown() & GamePad::BTN_Y)//Vキー
     {
         SceneManager::Instance().ChangeScene(new SceneGame3);
     }

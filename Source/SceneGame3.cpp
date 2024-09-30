@@ -22,7 +22,7 @@ void SceneGame3::Update(float elapsedTime)
 {
     Render();
     GamePad& gamePad = Input::Instance().GetGamePad();
-    if (gamePad.GetButtonDown() & GamePad::BTN_A)
+    if (gamePad.GetButtonDown() & GamePad::BTN_Y)
     {
         SceneManager::Instance().ChangeScene(new SceneTitle);
     }
