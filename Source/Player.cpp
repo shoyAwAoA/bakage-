@@ -11,10 +11,13 @@
 
 static Player* instance = nullptr;
 
+bool hissatu_flag = false;
+
 Player& Player::Instance()
 {
     // TODO: return ステートメントをここに挿入します
     return *instance;
+    hissatu_flag = false;
 }
 
 
@@ -564,6 +567,7 @@ void Player::InputProjectile()
     //直進弾丸発射
     if (gamePad.GetButtonDown() & GamePad::BTN_Q)
     {
+        hissatu_flag = true;
         //前方向
         DirectX::XMFLOAT3 dir;
         //dir.x = sinf(angle.y) * cosf(angle.x);

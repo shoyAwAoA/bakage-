@@ -10,6 +10,8 @@
 #include"StageMain.h"
 #include"StageMoveFloor.h"
 
+extern bool hissatu_flag;
+
 // 初期化
 void SceneGame::Initialize()
 {
@@ -92,6 +94,12 @@ void SceneGame::Finalize()
 	{
 		delete guage;
 		guage = nullptr;
+	}
+
+	if (hissatu != nullptr)
+	{
+		delete hissatu;
+		hissatu = nullptr;
 	}
 
 
@@ -212,7 +220,17 @@ void SceneGame::Render()
 
 	// 2Dスプライト描画
 	{
+		float screenWidth = static_cast<float>(graphics.GetScreenWidth());
+		float screenHeight = static_cast<float>(graphics.GetScreenHeight());
+		float textureWidth = static_cast<float>(hissatu->GetTextureWidth());
+		float textureHeight = static_cast<float>(hissatu->GetTextureHeight());
 		RenderEnemyGauge(dc, rc.view, rc.projection);
+		if (hissatu_flag)
+		{
+			hissatu->Render(dc, 0, 0, 200, 100, 0, 0, textureWidth, textureHeight, 0, 1, 1, 1, 1);
+
+		}
+		
 	}
 
 	// 2DデバッグGUI描画
@@ -240,7 +258,7 @@ void SceneGame::RenderEnemyGauge(
 
 	//全ての敵の頭上にHPゲージを表示
 	EnemyManager& enemyManager = EnemyManager::Instance();
-	int enemyCount = enemyManager.GetEnemyCount();c
+	int enemyCount = enemyManager.GetEnemyCount();
 
 	for (int i = 0; i < enemyCount; ++i)
 	{
