@@ -48,5 +48,5 @@ private:
 	Sprite* hissatu=nullptr;
 	
 	float spriteMoveX = 1280;
-
+	float miaSpeed = 1.0f;
 };

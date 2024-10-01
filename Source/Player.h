@@ -31,7 +31,6 @@ public:
 
     void SetSpecialAttack(const bool& specialAttack) { this->specialAttack = specialAttack; }
 
-
     //ƒWƒƒƒ“ƒv“ü—Íˆ—
     //void InputJump();
     bool InputJump();

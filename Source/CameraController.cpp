@@ -1,6 +1,7 @@
 ﻿#include"CameraController.h"
 #include"Camera.h"
 #include"Input/Input.h"
+#include"Player.h"
 
 void CameraController::Update(float elapsedTime)
 {
@@ -38,12 +39,24 @@ void CameraController::Update(float elapsedTime)
 
     //注意点から後ろベクトル方向に一定距離離れたカメラ視点を求める
     DirectX::XMFLOAT3 eye;
+    Player& player = Player::Instance();
+
+    target.x = player.GetPosition().x+front.x*range;
+    target.y = player.GetPosition().y+front.y*range;
+    target.z = player.GetPosition().z+front.z*range;
+
 
     eye.x = target.x - front.x * range;
     eye.y = target.y - front.y * range;
     eye.z = target.z - front.z * range;
 
+    target.x = eye.x+front.x*range;
+    target.y = eye.y+front.y*range;
+    target.z = eye.z+front.z*range;
+
+    eye.y = player.GetPosition().y + player.GetHeight();
+
         //カメラの視点と注視点を設定
-   Camera::Instance().SetLookAt(eye, target, DirectX::XMFLOAT3(0, 1, 0));
+    Camera::Instance().SetLookAt(eye, target, DirectX::XMFLOAT3(0, 1, 0));
 
 }

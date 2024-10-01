@@ -12,13 +12,11 @@
 
 static Player* instance = nullptr;
 
-bool hissatu_flag = false;
 
 Player& Player::Instance()
 {
     // TODO: return ステートメントをここに挿入します
     return *instance;
-    hissatu_flag = false;
 }
 
 

@@ -10,7 +10,6 @@
 #include"StageMain.h"
 #include"StageMoveFloor.h"
 
-extern bool hissatu_flag;
 
 // ‰Šú‰»
 void SceneGame::Initialize()
