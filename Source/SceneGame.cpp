@@ -240,7 +240,7 @@ void SceneGame::RenderEnemyGauge(
 
 	//全ての敵の頭上にHPゲージを表示
 	EnemyManager& enemyManager = EnemyManager::Instance();
-	int enemyCount = enemyManager.GetEnemyCount();
+	int enemyCount = enemyManager.GetEnemyCount();c
 
 	for (int i = 0; i < enemyCount; ++i)
 	{

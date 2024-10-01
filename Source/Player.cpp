@@ -33,6 +33,7 @@ Player::Player()
     //ヒットエフェクト読み込み
     hitEffect = new Effect("Data/Effect/Hit.efk");
 
+
     //待機ステートへ遷移
     TransitionIdleState();
 }
@@ -44,6 +45,7 @@ Player::~Player()
         model = nullptr;
 
     }
+
     
     delete hitEffect;
 }
@@ -578,6 +580,8 @@ void Player::InputProjectile()
         ProjectileStraight * projectile = new ProjectileStraight(&projectileManager);
         projectile->Launch(dir, pos);
         //projectileManager.Register(projectile);
+
+
     }
 
     if (gamePad.GetButtonDown() & GamePad::BTN_Y)
