@@ -468,8 +468,6 @@ bool Player::InputMove(float elapsedTime)
 
 bool Player::InputAttack()
 {
-   
-
      Mouse& mouse = Input::Instance().GetMouse();
         if (mouse.GetButtonDown() & Mouse::BTN_LEFT )
     {
@@ -561,7 +559,7 @@ void Player::InputProjectile()
     GamePad& gamePad = Input::Instance().GetGamePad();
 
     //直進弾丸発射
-    if (gamePad.GetButtonDown() & GamePad::BTN_X)
+    if (gamePad.GetButtonDown() & GamePad::BTN_Q)
     {
         //前方向
         DirectX::XMFLOAT3 dir;

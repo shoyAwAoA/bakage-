@@ -192,6 +192,9 @@
     <ClInclude Include="Source\SceneGame3.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="Source\keyboarb.h">
+      <Filter>Source\Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui\imgui.cpp">
