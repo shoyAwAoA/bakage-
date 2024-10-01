@@ -9,6 +9,7 @@
 #include"ProjectileHoming.h"
 
 
+
 static Player* instance = nullptr;
 
 bool hissatu_flag = false;
@@ -55,63 +56,6 @@ Player::~Player()
 //更新処理
 void Player::Update(float elapsedTime)
 {
-    //Bボタン押下でワンショットアニメーション再生
-    //GamePad& gamePad = Input::Instance().GetGamePad();
-    //if (gamePad.GetButtonDown() & GamePad::BTN_B)
-    //{
-    //    model->PlayAnimation(Anim_Running, true);
-    //}
-    //ワンショットアニメーション再生が終わったらループアニメーション再生
-    //if (!model->IsPlayAnimation())
-    //{
-    //    model->PlayAnimation(1, true);
-    //}
-
-
-
-    ////進行ベクトル取得
-    //DirectX::XMFLOAT3 moveVec = GetMoveVec();
-
-    ////移動処理
-    //float moveSpeed = this->moveSpeed * elapsedTime;
-    //position.x += moveVec.x * moveSpeed;
-    //position.z += moveVec.z * moveSpeed;
-
-    //InputMove(elapsedTime);
-
-    ////入力情報を取得
-    //GamePad& gamePad = Input::Instance().GetGamePad();
-    //float ax = gamePad.GetAxisLX();
-     //float ay = gamePad.GetAxisLY();
-
-    ////移動操作
-    //float moveSpeed = 5.0f * elapsedTime;
-    //{
-    //    //左スティックの入力情報をもとにXZへの移動処理
-    //    position.x += ax*moveSpeed;
-    //    position.z += ay*moveSpeed;
-
-    //}
-
-    ////回転操作
-    //float rotateSpeed = DirectX::XMConvertToRadians(360) * elapsedTime;
-    //if (gamePad.GetButton() & GamePad::BTN_A)
-    //{
-    //    //X軸回転操作
-    //    angle.z += rotateSpeed;
-    //}
-    //if (gamePad.GetButton() & GamePad::BTN_B)
-    //{
-    //    //Y軸回転操作
-    //    angle.y += rotateSpeed;
-    //}
-    //if (gamePad.GetButton() & GamePad::BTN_X)
-    //{
-    //    //Z軸回転操作
-    //    angle.x += rotateSpeed;
-    //}
-     
-
     //ジャンプ入力処理
     //InputJump();
 
@@ -175,6 +119,12 @@ void Player::Update(float elapsedTime)
 
     //モデル行列更新
     model->UpdateTransform(transform);
+    InputProjectile();
+
+    if (specialAttack)
+    {
+        specialTime--;
+    }
 }
 //描画処理
 void Player::Render(ID3D11DeviceContext* dc, Shader* sharder)
@@ -567,7 +517,14 @@ void Player::InputProjectile()
     //直進弾丸発射
     if (gamePad.GetButtonDown() & GamePad::BTN_Q)
     {
-        hissatu_flag = true;
+        if (specialTime >= specialTimeMax)
+        {
+            specialAttack = true;
+        }
+        else 
+        {
+        }
+    }
         //前方向
         DirectX::XMFLOAT3 dir;
         //dir.x = sinf(angle.y) * cosf(angle.x);
@@ -582,12 +539,13 @@ void Player::InputProjectile()
         pos.y = this->position.y + this->height * 0.5f;
         pos.z = this->position.z;
         //発射
-        ProjectileStraight * projectile = new ProjectileStraight(&projectileManager);
-        projectile->Launch(dir, pos);
-        //projectileManager.Register(projectile);
-
-
-    }
+        
+            if (specialTime<=0&&specialAttack)
+            {
+                ProjectileStraight * projectile = new ProjectileStraight(&projectileManager);
+                projectile->Launch(dir, pos);
+                specialAttack = false;
+            }
 
     if (gamePad.GetButtonDown() & GamePad::BTN_Y)
     {

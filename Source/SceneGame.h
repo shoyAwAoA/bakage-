@@ -47,4 +47,6 @@ private:
 	Sprite* guage = nullptr;
 	Sprite* hissatu=nullptr;
 	
+	float spriteMoveX = 1280;
+
 };

@@ -24,6 +24,7 @@ void SceneGame::Initialize()
 	stageMoveFloor->SetGoalPoint(DirectX::XMFLOAT3(10, 2, 3));
 	stageMoveFloor->SetTorque(DirectX::XMFLOAT3(0, 1.0f, 0));
 	stageManager.Register(stageMoveFloor);
+	spriteMoveX = 1280;
 
 	player = new Player();
 
@@ -118,24 +119,29 @@ void SceneGame::Finalize()
 // 更新処理
 void SceneGame::Update(float elapsedTime)
 {
+	if (!player->GetSpecialAttack())
+	{
+		//ステージ更新処理
+		//stage->Update(elapsedTime);
+		StageManager::Instance().Update(elapsedTime);
+
+		//エネミー更新処理
+		EnemyManager::Instance().Update(elapsedTime);
+
+		//エフェクト更新処理
+		EffectManager::Instance().Update(elapsedTime);
+	}
+
+	if (player->GetSpecialAttack())
+	{
+		spriteMoveX -= 7.0f;
+	}
 	//カメラコントローラー更新処理
 	DirectX::XMFLOAT3 target = player->GetPosition();
 	target.y += 0.5f;
 	cameraController->SetTarget(target);
 	cameraController->Update(elapsedTime);
-
-
-	//ステージ更新処理
-	//stage->Update(elapsedTime);
-	StageManager::Instance().Update(elapsedTime);
-
 	player->Update(elapsedTime);
-
-	//エネミー更新処理
-	EnemyManager::Instance().Update(elapsedTime);
-
-	//エフェクト更新処理
-	EffectManager::Instance().Update(elapsedTime);
 }
 
 // 描画処理
@@ -225,18 +231,22 @@ void SceneGame::Render()
 		float textureWidth = static_cast<float>(hissatu->GetTextureWidth());
 		float textureHeight = static_cast<float>(hissatu->GetTextureHeight());
 		RenderEnemyGauge(dc, rc.view, rc.projection);
-		if (hissatu_flag)
+
+		if (player->GetSpecialAttack())
 		{
-			hissatu->Render(dc, 0, 0, 200, 100, 0, 0, textureWidth, textureHeight, 0, 1, 1, 1, 1);
+			hissatu->Render(dc, spriteMoveX, 0, 200, 100, 0, 0, textureWidth, textureHeight, 0, 1, 1, 1, 1);
+		}
+		else
+		{
 
 		}
-		
 	}
 
 	// 2DデバッグGUI描画
 	{
 		//プレイヤーデバッグ描画
 		player->DrawDebugGUI();
+		
 	}
 }
 
