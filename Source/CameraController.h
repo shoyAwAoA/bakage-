@@ -26,4 +26,9 @@ private:
     float                maxAngleX = DirectX::XMConvertToRadians(45);
     float                minAngleX = DirectX::XMConvertToRadians(-45);
 
+    float               sensitivity=0.01f;
+    float               maxPitch=1;
+    float               maxYaw = 1;
+    DirectX::XMFLOAT2 oldMouse{ 0,0 };
+
 };
