@@ -2,6 +2,8 @@
 #include"Input/Input.h"
 #include "SceneTitle.h"
 #include"SceneGame.h"
+#include"SceneGame2.h"
+#include"SceneGame3.h"
 #include"SceneManager.h"
 #include"SceneLoading.h"
 
@@ -29,16 +31,24 @@ void SceneTitle::Update(float elapsedTime)
     GamePad& gamePad = Input::Instance().GetGamePad();
 
     //何かボタンを押したらゲームシーンへ切り替え
-    const GamePadButton anyButton =
-        GamePad::BTN_A
-        | GamePad::BTN_B
-        | GamePad::BTN_X
-        | GamePad::BTN_Y
-        ;
+    //const GamePadButton anyButton =
+    //    GamePad::BTN_A
+    //    | GamePad::BTN_B
+    //    | GamePad::BTN_X
+    //    | GamePad::BTN_Y
+    //    ;
     //何かボタンを押したらローディングシーンをはさんでゲームシーンへ切り替え
-    if (gamePad.GetButtonDown() & anyButton)
+    if (gamePad.GetButtonDown() & GamePad::BTN_A)//Zキー
     {
         SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame));
+    }
+    if (gamePad.GetButtonDown() & GamePad::BTN_X)//Cキー
+    {
+        SceneManager::Instance().ChangeScene(new SceneGame2);
+    }
+    if (gamePad.GetButtonDown() & GamePad::BTN_Y)//Vキー
+    {
+        SceneManager::Instance().ChangeScene(new SceneGame3);
     }
 }
 

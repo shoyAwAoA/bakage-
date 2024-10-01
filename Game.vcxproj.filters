@@ -186,6 +186,12 @@
     <ClInclude Include="Source\ResourceManager.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="Source\SceneGame2.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneGame3.h">
+      <Filter>Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui\imgui.cpp">
@@ -321,6 +327,12 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\ResourceManager.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SceneGame2.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SceneGame3.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
