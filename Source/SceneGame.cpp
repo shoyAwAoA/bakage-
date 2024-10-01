@@ -27,6 +27,7 @@ void SceneGame::Initialize()
 
 	//ゲージスプライト
 	guage = new Sprite();
+	hissatu = new Sprite("Data/Sprite/riza.png");
 
 	//カメラ初期設定
 	Graphics& graphics = Graphics::Instance();
@@ -92,6 +93,8 @@ void SceneGame::Finalize()
 		delete guage;
 		guage = nullptr;
 	}
+
+
 
 	//エネミー終了化
 	EnemyManager::Instance().Clear();
@@ -237,7 +240,7 @@ void SceneGame::RenderEnemyGauge(
 
 	//全ての敵の頭上にHPゲージを表示
 	EnemyManager& enemyManager = EnemyManager::Instance();
-	int enemyCount = enemyManager.GetEnemyCount();
+	int enemyCount = enemyManager.GetEnemyCount();c
 
 	for (int i = 0; i < enemyCount; ++i)
 	{

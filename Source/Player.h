@@ -5,7 +5,7 @@
 #include"Character.h"
 #include"ProjectileManager.h"
 #include"Effect.h"
-
+#include"Graphics/Sprite.h"
 class Player :public Character
 {
 public:
@@ -164,4 +164,5 @@ private:
     State              state = State::Idle;
     float  leftHandRadius = 0.5f;
     bool attackCollisionFlag = false;
+
 };

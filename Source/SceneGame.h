@@ -45,5 +45,6 @@ private:
 	Player* player = nullptr;
 	CameraController* cameraController = nullptr;
 	Sprite* guage = nullptr;
+	Sprite* hissatu=nullptr;
 	
 };

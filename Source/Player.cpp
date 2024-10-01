@@ -33,6 +33,7 @@ Player::Player()
     //ヒットエフェクト読み込み
     hitEffect = new Effect("Data/Effect/Hit.efk");
 
+
     //待機ステートへ遷移
     TransitionIdleState();
 }
@@ -44,6 +45,7 @@ Player::~Player()
         model = nullptr;
 
     }
+
     
     delete hitEffect;
 }
@@ -469,8 +471,6 @@ bool Player::InputMove(float elapsedTime)
 
 bool Player::InputAttack()
 {
-   
-
      Mouse& mouse = Input::Instance().GetMouse();
         if (mouse.GetButtonDown() & Mouse::BTN_LEFT )
     {
@@ -562,7 +562,7 @@ void Player::InputProjectile()
     GamePad& gamePad = Input::Instance().GetGamePad();
 
     //直進弾丸発射
-    if (gamePad.GetButtonDown() & GamePad::BTN_X)
+    if (gamePad.GetButtonDown() & GamePad::BTN_Q)
     {
         //前方向
         DirectX::XMFLOAT3 dir;
@@ -581,6 +581,8 @@ void Player::InputProjectile()
         ProjectileStraight * projectile = new ProjectileStraight(&projectileManager);
         projectile->Launch(dir, pos);
         //projectileManager.Register(projectile);
+
+
     }
 
     if (gamePad.GetButtonDown() & GamePad::BTN_Y)
