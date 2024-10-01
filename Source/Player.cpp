@@ -886,7 +886,7 @@ void Player::CollisionNodeVsEnemies(const char* nodeName, float nodeRadius)
         DirectX::XMFLOAT3 outPosition;
         if (Collision::IntersectSphereVsCylinder(
             position,
-            radius,
+            nodeRadius,
             enemy->GetPosition(),
             enemy->GetRadius(),
             enemy->GetHeight(),
