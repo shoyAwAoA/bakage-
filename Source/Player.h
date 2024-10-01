@@ -27,7 +27,9 @@ public:
     //デバッグプリミティブ描画
     void DrawDebugPrimitive();
 
+    const bool& GetSpecialAttack()const { return specialAttack; }
 
+    void SetSpecialAttack(const bool& specialAttack) { this->specialAttack = specialAttack; }
 
 
     //ジャンプ入力処理
@@ -164,5 +166,7 @@ private:
     State              state = State::Idle;
     float  leftHandRadius = 0.6f;
     bool attackCollisionFlag = false;
-
+    bool specialAttack = false; //必殺技
+    float           specialTime = 200.0f;
+    float           specialTimeMax = 200.0f;
 };
