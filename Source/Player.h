@@ -31,6 +31,10 @@ public:
 
     void SetSpecialAttack(const bool& specialAttack) { this->specialAttack = specialAttack; }
 
+    const bool& GetKirikoUp()const { return kirikoUp; }
+
+    bool SetKirikoUp(const bool& kirikoUp) { this->kirikoUp; }
+
     //ƒWƒƒƒ“ƒv“ü—Íˆ—
     //void InputJump();
     bool InputJump();
@@ -168,4 +172,5 @@ private:
     bool specialAttack = false; //•KE‹Z
     float           specialTime = 200.0f;
     float           specialTimeMax = 200.0f;
+    bool            kirikoUp = false;
 };

@@ -7,6 +7,7 @@
 #include"Collision.h"
 #include"ProjectileStraight.h"
 #include"ProjectileHoming.h"
+#include"CameraController.h"
 
 
 
@@ -54,6 +55,7 @@ Player::~Player()
 //更新処理
 void Player::Update(float elapsedTime)
 {
+
     //ジャンプ入力処理
     //InputJump();
 
@@ -122,6 +124,19 @@ void Player::Update(float elapsedTime)
     if (specialAttack)
     {
         specialTime--;
+    }
+
+    CameraController& cameraController = CameraController::Instance();
+    if (cameraController.GetKirikoCameraCompreat() == false)
+    {
+        if (position.x >= 5 && position.x <= 10 && position.z >= 5 && position.z <= 10)
+        {
+            kirikoUp = true;
+        }
+    }
+    else if (cameraController.GetKirikoCameraCompreat()==true)
+    {
+        kirikoUp = false;
     }
 }
 //描画処理
@@ -645,6 +660,7 @@ void Player::TransitionMoveState()
 //移動ステート更新処理
 void Player::UpdateMoveState(float elapsedTime)
 {
+   
     //移動入力処理
     if (!InputMove(elapsedTime))
     {

@@ -3,25 +3,44 @@
 #include"Input/Input.h"
 #include"Player.h"
 
+static CameraController* instance = nullptr;
+
+CameraController& CameraController::Instance()
+{
+    return *instance;
+}
+
 void CameraController::Update(float elapsedTime)
 {
+    instance = this;
+
     Mouse& mouse = Input::Instance().GetMouse();
 
-    float ax = mouse.GetPositionX();
-    float ay = mouse.GetPositionY();
+    Player& player = Player::Instance();
 
-    float oldAx = mouse.GetOldPositionX();
-    float oldAy = mouse.GetOldPositionY();
+    if (!player.GetKirikoUp())
+    {
+        float ax = mouse.GetPositionX();
+        float ay = mouse.GetPositionY();
 
-    float dx = ax - oldAx;
-    float dy = ay - oldAy;
+        float oldAx = mouse.GetOldPositionX();
+        float oldAy = mouse.GetOldPositionY();
+
+        float dx = ax - oldAx;
+        float dy = ay - oldAy;
+
+    //マウスの入力値に合わせてX軸とY軸を回転
+        angle.y += dx*sensitivity;//これがX
+        angle.x += dy*sensitivity;//これがY
+    }
+
+    else
+    {
+
+
+    }
     //カメラの回転速度
     float speed = rollSpeed * elapsedTime;
-
-    //スティックの入力値に合わせてX軸とY軸を回転
-    
-    angle.y += dx*sensitivity;//これがX
-    angle.x += dy*sensitivity;//これがY
 
     //X軸のカメラ回転を制限
     if (angle.y > DirectX::XM_PI)
@@ -39,24 +58,55 @@ void CameraController::Update(float elapsedTime)
 
     //注意点から後ろベクトル方向に一定距離離れたカメラ視点を求める
     DirectX::XMFLOAT3 eye;
-    Player& player = Player::Instance();
+    if (player.GetKirikoUp()&&!kirikoCameraCompreat)
+    {
+        target.x = player.GetPosition().x + front.x * range;
+        target.y = player.GetPosition().y + front.y * range;
+        target.z = player.GetPosition().z + front.z * range;
 
-    target.x = player.GetPosition().x+front.x*range;
-    target.y = player.GetPosition().y+front.y*range;
-    target.z = player.GetPosition().z+front.z*range;
+        eye.x = target.x - front.x * range;
+        eye.y = target.y - front.y * range;
+        eye.z = target.z - front.z * range;
 
+        target.x = eye.x + front.x * range;
+        target.y = eye.y + front.y * range;
+        target.z = eye.z + front.z * range;
 
-    eye.x = target.x - front.x * range;
-    eye.y = target.y - front.y * range;
-    eye.z = target.z - front.z * range;
-
-    target.x = eye.x+front.x*range;
-    target.y = eye.y+front.y*range;
-    target.z = eye.z+front.z*range;
-
-    eye.y = player.GetPosition().y + player.GetHeight();
-
+        if (!cameraReset&&!kirikoCameraCompreat)
+        {
+            angle.y = 0;
+            angle.x = 0;
+            cameraReset = true;
+        }
+        if (cameraReset)
+        {
+            angle.x -= sensitivity2;
+            if (angle.x < DirectX::XMConvertToRadians(-60))
+            {
+                kirikoCameraCompreat = true;
+                cameraReset = true;
+            }
+        }
+        eye.y = player.GetPosition().y + (player.GetHeight() * 0.7f);
+        eye.z = player.GetPosition().z;
+        
         //カメラの視点と注視点を設定
-    Camera::Instance().SetLookAt(eye, target, DirectX::XMFLOAT3(0, 1, 0));
+        Camera::Instance().SetLookAt(eye, target, DirectX::XMFLOAT3(0, 1, 0));
+    }
+    else 
+    {
+        if (!cameraReset2&&kirikoCameraCompreat)
+        {
+            angle.y = 0;
+            angle.x = 0;
+            cameraReset2 = true;
+        }
+        eye.x = target.x - front.x * range;
+        eye.y = target.y - front.y * range;
+        eye.z = target.z - front.z * range;
 
+        // カメラに視点を注視点を設定
+        Camera::Instance().SetLookAt(eye, target, DirectX::XMFLOAT3(0, 1, 0));
+
+    }
 }

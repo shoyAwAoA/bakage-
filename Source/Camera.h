@@ -54,4 +54,6 @@ private:
     DirectX::XMFLOAT3 front;
     DirectX::XMFLOAT3 right;
 
+
+
 };

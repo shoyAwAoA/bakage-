@@ -63,13 +63,13 @@ void SceneGame::Initialize()
 	//	enemyManager.Register(slime);
 	//}
 
-	for (int i = 0; i < 2; i++)
+	/*for (int i = 0; i < 2; i++)
 	{
 		EnemySlime* slime = new EnemySlime();
 		slime->SetPosition(DirectX::XMFLOAT3(i * 2.0f, 0, 5));
 		slime->SetTerritory(slime->GetPosition(), 10.0f);
 		enemyManager.Register(slime);
-	}
+	}*/
 #endif
 }
 
@@ -140,7 +140,12 @@ void SceneGame::Update(float elapsedTime)
 	target.y += 0.5f;
 	cameraController->SetTarget(target);
 	cameraController->Update(elapsedTime);
-	player->Update(elapsedTime);
+	
+	if (!player->GetKirikoUp()|| cameraController->GetKirikoCameraCompreat())
+	{
+		player->Update(elapsedTime);
+	}
+
 }
 
 // 描画処理
@@ -195,7 +200,11 @@ void SceneGame::Render()
 		//ステージ描画
 		//stage->Render(dc, shader);
 		StageManager::Instance().Render(dc, shader);
-		player->Render(dc, shader);
+		
+		if (!player->GetKirikoUp() || cameraController->GetKirikoCameraCompreat())
+		{
+			player->Render(dc, shader);
+		}
 
 		//エネミー描画
 		EnemyManager::Instance().Render(dc, shader);
