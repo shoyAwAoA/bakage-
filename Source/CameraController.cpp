@@ -4,36 +4,25 @@
 
 void CameraController::Update(float elapsedTime)
 {
-    GamePad& gamePad = Input::Instance().GetGamePad();
-    float ax = gamePad.GetAxisRX();
-    float ay = gamePad.GetAxisRY();
+    Mouse& mouse = Input::Instance().GetMouse();
+
+    float ax = mouse.GetPositionX();
+    float ay = mouse.GetPositionY();
+
+    float oldAx = mouse.GetOldPositionX();
+    float oldAy = mouse.GetOldPositionY();
+
+    float dx = ax - oldAx;
+    float dy = ay - oldAy;
     //カメラの回転速度
     float speed = rollSpeed * elapsedTime;
 
     //スティックの入力値に合わせてX軸とY軸を回転
-    angle.y += ax * speed;
-    angle.x += ay * speed;
+    
+    angle.y += dx*sensitivity;//これがX
+    angle.x += dy*sensitivity;//これがY
 
     //X軸のカメラ回転を制限
-
-
-    while (angle.x > maxAngleX)
-    {
-        angle.x = maxAngleX;
-    }
-    while(angle.x <minAngleX)
-    {
-        angle.x = minAngleX;
-    }
-
-
-
-
-    //Y軸の回転値を-3.14〜3.14に収まるようにする
-    if (angle.y < -DirectX::XM_PI)
-    {
-        angle.y += DirectX::XM_2PI;
-    }
     if (angle.y > DirectX::XM_PI)
     {
         angle.y -= DirectX::XM_2PI;

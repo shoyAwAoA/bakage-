@@ -65,26 +65,31 @@ bool Character::ApplyDamage(int damage, float invincibleTime)
     //死亡している場合は健康状態を変更しない
     if (health <= 0)return false;
 
+    // 無敵時間中はダメージを与えない
+    if (invincibleTimer > 0.0f) return false;
 
-    if (invincibleTimer > 0.0f)return false;
+    //ダメージが０の場合は健康状態を変更する必要がない
+    if (damage <= 0)return false;
 
-    invincibleTimer = invincibleTime;
+    //死亡している場合は健康状態を変更しない
+    if (health <= 0)return false;
 
     //ダメージ処理
-
-    health -= damage;
+    health-=damage;
 
     //死亡通知
     if (health <= 0)
     {
         OnDead();//死亡した場合に呼ばれる
     }
-    //ダメージ通知
+    // ダメージ通知
     else
     {
         OnDamaged();//ダメージを受けた時に呼ばれる
     }
+
     //健康状態が変更した場合はtrueを返す
+
     return true;
 }
 //衝撃を与える
@@ -186,26 +191,6 @@ void Character::UpdateVelocity(float elapsedTime)
     //水平移動更新処理
     UpdateHorizontalMove(elapsedTime);
 
-    ////重力処理
-    //velocity.y += gravity * elapsedFrame;
-
-    ////移動処理
-    //position.y += velocity.y * elapsedTime;
-
-    ////地面設定
-    //if (position.y < 0.0f)
-    //{
-    //    position.y = 0;
-    //    velocity.y = 0;
-
-    //    //着地した
-    //    isGround = true;
-    //    OnLanding();
-    //}
-    //else
-    //{
-    //    isGround = false;
-    //}
 }
 
 void Character::UpdateInvincibleTimer(float elapsedTime)

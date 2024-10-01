@@ -449,28 +449,7 @@ DirectX::XMFLOAT3 Player::GetMoveVec() const
 
     return vec;
 
-
 }
-
-
-////移動入力処理
-//void Player::InputMove(float elapsedTime)
-//{
-//    //進行ベクトル取得
-//    DirectX::XMFLOAT3 moveVec = GetMoveVec();
-//
-//    //移動処理
-//    //Move(elapsedTime, moveVec.x, moveVec.z, moveSpeed);
-//
-//    Move(moveVec.x, moveVec.z, moveSpeed);
-//
-//    //旋回処理
-//    Turn(elapsedTime, moveVec.x, moveVec.z, turnSpeed);
-//}
-
-
-
-
 
 bool Player::InputMove(float elapsedTime)
 {
