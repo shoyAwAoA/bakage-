@@ -10,7 +10,10 @@
 #include"StageMain.h"
 #include"StageMoveFloor.h"
 
+//ƒOƒ[ƒoƒ‹•Ï”
 bool speak_flag = false;
+
+
 
 // ‰Šú‰»
 void SceneGame::Initialize()
