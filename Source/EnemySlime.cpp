@@ -223,6 +223,7 @@ void EnemySlime::CollisionNodeVsPlayer(const char* nodeName, float nodeRadius)
 //徘徊ステートへ遷移
 void EnemySlime::TransitionWanderState()
 {
+    speak_flag = false;
     state = State::Wander;
 
     //目標地点設定
@@ -262,6 +263,8 @@ void EnemySlime::UpdateWanderState(float elapsedTime)
 void EnemySlime::TransitionIdleState()
 {
     state = State::Idle;
+
+    speak_flag = false;
 
     //タイマーをランダム設定
     stateTimer = Mathf::RandomRange(3.0f, 5.0f);
