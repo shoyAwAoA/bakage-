@@ -155,6 +155,7 @@ void SceneGame::Update(float elapsedTime)
 		player->Update(elapsedTime);
 	}
 
+
 }
 
 // •`‰æˆ—

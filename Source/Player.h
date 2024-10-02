@@ -167,7 +167,7 @@ private:
     int jumpLimit = 2;
     Effect* hitEffect = nullptr;
     State              state = State::Idle;
-    float  leftHandRadius = 0.5f;
+    float  leftHandRadius = 0.7f;
     bool attackCollisionFlag = false;
     bool specialAttack = false; //•KŽE‹Z
     float           specialTime = 200.0f;

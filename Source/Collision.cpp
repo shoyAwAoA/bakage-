@@ -93,34 +93,30 @@ bool Collision::IntersectCylinderVsCylinder(
 
 // 球と円柱の交差判定
 bool Collision::IntersectSphereVsCylinder(
-    const DirectX::XMFLOAT3& spherePosition,
-    float sphereRadius,
-    const DirectX::XMFLOAT3& cylinderPosition,
-    float cylinderRadius,
-    float cylinderHeight,
-    DirectX::XMFLOAT3& outCylinderPosition)
+	const DirectX::XMFLOAT3& spherePosition,
+	float sphereRadius,
+	const DirectX::XMFLOAT3& cylinderPosition,
+	float cylinderRadius,
+	float cylinderHeight,
+	DirectX::XMFLOAT3& outCylinderPosition)
 {
-    // 高さチェック
-    if (spherePosition.y + sphereRadius < cylinderPosition.y) return false;
-    if (spherePosition.y - sphereRadius > cylinderPosition.y + cylinderHeight) return false;
+	// 高さチェック
+	if (spherePosition.y + sphereRadius < cylinderPosition.y) return false;
+	if (spherePosition.y - sphereRadius > cylinderPosition.y + cylinderHeight) return false;
 
-    // XZ平面での範囲チェック
-    float vx = cylinderPosition.x - spherePosition.x;
-    float vz = cylinderPosition.z - spherePosition.z;
-    float range = sphereRadius + cylinderRadius;
-    float distXZ = sqrtf(vx * vx + vz * vz);
-    if (distXZ > range) return false;
+	// XZ平面での範囲チェック
+	float vx = cylinderPosition.x - spherePosition.x;
+	float vz = cylinderPosition.z - spherePosition.z;
+	float range = sphereRadius + cylinderRadius;
+	float distXZ = sqrtf(vx * vx + vz * vz);
+	if (distXZ > range) return false;
 
-    // 球が円柱を押し出す
-    vx /= distXZ;
-    vz /= distXZ;
-    outCylinderPosition.x = spherePosition.x + (vx * range);
-    outCylinderPosition.y = cylinderPosition.y;
-    outCylinderPosition.z = spherePosition.z + (vz * range);
+	// 球が円柱を押し出す
+	outCylinderPosition.y = cylinderPosition.y;
+	outCylinderPosition.z = spherePosition.z + (vz * range);
 
-    return true;
+	return true;
 }
-
 // レイとモデルの交差判定
 bool Collision::IntersectRayVsModel(
 	const DirectX::XMFLOAT3& start,
