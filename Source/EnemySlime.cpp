@@ -3,6 +3,18 @@
 #include"Mathf.h"
 #include"Player.h"
 #include"Collision.h"
+#include"SceneGame.h"
+
+extern bool speak_flag;
+
+static EnemySlime* instance = nullptr;
+
+
+EnemySlime& EnemySlime::Instance()
+{
+    // TODO: return ステートメントをここに挿入します
+    return *instance;
+}
 
 //コンストラクタ
 EnemySlime::EnemySlime()
@@ -308,6 +320,7 @@ bool EnemySlime::SearchPlayer()
 //追跡ステートへ遷移
 void EnemySlime::TransitionPursuitState()
 {
+    
     state = State::Pursuit;
 
     //数秒間追跡するタイマーをランダム設定
@@ -325,10 +338,14 @@ void EnemySlime::UpdatePursuitState(float elapsedTime)
     //目標地点へ移動
     MoveToTarget(elapsedTime, 1.0f);
 
+    speak_flag = true;
+
     //タイマー処理
     stateTimer -= elapsedTime;
     if (stateTimer < 0.0f)
     {
+        speak_flag = false;
+      
         //待機ステートへ遷移
         TransitionIdleState();
     }

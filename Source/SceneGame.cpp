@@ -10,6 +10,7 @@
 #include"StageMain.h"
 #include"StageMoveFloor.h"
 
+bool speak_flag = false;
 
 // 初期化
 void SceneGame::Initialize()
@@ -30,6 +31,7 @@ void SceneGame::Initialize()
 	//ゲージスプライト
 	guage = new Sprite();
 	hissatu = new Sprite("Data/Sprite/riza.png");
+	speak = new Sprite("Data/Sprite/riza.png");
 
 	//カメラ初期設定
 	Graphics& graphics = Graphics::Instance();
@@ -63,13 +65,13 @@ void SceneGame::Initialize()
 	//	enemyManager.Register(slime);
 	//}
 
-	/*for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 1; i++)
 	{
 		EnemySlime* slime = new EnemySlime();
 		slime->SetPosition(DirectX::XMFLOAT3(i * 2.0f, 0, 5));
 		slime->SetTerritory(slime->GetPosition(), 10.0f);
 		enemyManager.Register(slime);
-	}*/
+	}
 #endif
 }
 
@@ -101,7 +103,11 @@ void SceneGame::Finalize()
 		delete hissatu;
 		hissatu = nullptr;
 	}
-
+	if (speak != nullptr)
+	{
+		delete speak;
+		speak = nullptr;
+	}
 
 
 	//エネミー終了化
@@ -282,21 +288,68 @@ void SceneGame::RenderEnemyGauge(
 	{
 		Enemy* enemy = enemyManager.GetEnemy(i);
 
-
 		
+
+		DirectX::XMFLOAT3 worldPosition = enemy->GetPosition();
+		worldPosition.y += enemy->GetHeight();
+
+		DirectX::XMVECTOR WorldPosition = DirectX::XMLoadFloat3(&worldPosition);
+		
+		DirectX::XMVECTOR ScreenPosition = DirectX::XMVector3Project(
+			WorldPosition,
+			viewport.TopLeftX,
+			viewport.TopLeftY,
+			viewport.Width,
+			viewport.Height,
+			viewport.MinDepth,
+			viewport.MaxDepth,
+			Projection,
+			View,
+			World
+		);
+
+		//スクリーン座標
+		DirectX::XMFLOAT2 screenPosition;
+		DirectX::XMStoreFloat2(&screenPosition, ScreenPosition);
+
+		const float speakWidth = 50.0f;
+		const float speakHeight = 20.0f;
+
+		if (speak_flag)
+		{
+			speak->Render(dc,
+				screenPosition.x,
+				screenPosition.y + 20,
+				speakWidth,
+				speakHeight,
+				0, 0,
+				static_cast<float>(speak->GetTextureWidth()),
+				static_cast<float>(speak->GetTextureHeight()),
+				0.0f,
+				1.0f, 1.0f, 1.0f, 1.0f
+			);
+		}
+		else
+		{
+
+		}
+	
 	}
 
-	//エネミー配置処理
-	Mouse& mouse = Input::Instance().GetMouse();
-	if (mouse.GetButtonDown() & Mouse::BTN_LEFT)
-	{
-		//マウスカーソル座標を取得
-		DirectX::XMFLOAT3 screenPosition;
-		screenPosition.x = static_cast<float>(mouse.GetPositionX());
-		screenPosition.y = static_cast<float>(mouse.GetPositionY());
+	
+	
 
+	////エネミー配置処理
+	//Mouse& mouse = Input::Instance().GetMouse();
+	//if (mouse.GetButtonDown() & Mouse::BTN_LEFT)
+	//{
+	//	//マウスカーソル座標を取得
+	//	DirectX::XMFLOAT3 screenPosition;
+	//	screenPosition.x = static_cast<float>(mouse.GetPositionX());
+	//	screenPosition.y = static_cast<float>(mouse.GetPositionY());
 
+	//
 
-	}
+	//}
 
 }

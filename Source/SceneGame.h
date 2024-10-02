@@ -32,19 +32,23 @@ public:
 	void Render()override;
 
 
-private:
-	//エネミーHPゲージ描画
 	void RenderEnemyGauge(
 		ID3D11DeviceContext* dc,
 		const DirectX::XMFLOAT4X4& view,
 		const DirectX::XMFLOAT4X4& projection
 	);
+private:
+	//エネミーHPゲージ描画
+
+public:
+
+	Sprite* guage = nullptr;
+	Sprite* speak = nullptr;
 
 private:
 	//Stage* stage = nullptr;
 	Player* player = nullptr;
 	CameraController* cameraController = nullptr;
-	Sprite* guage = nullptr;
 	Sprite* hissatu=nullptr;
 	
 	float spriteMoveX = 1280;

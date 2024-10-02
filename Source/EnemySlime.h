@@ -11,6 +11,9 @@ public:
     EnemySlime();
     ~EnemySlime()override;
 
+    //インスタンス取得
+    static EnemySlime& Instance();
+
     //更新処理
     void Update(float elapsedTime)override;
 
@@ -23,6 +26,7 @@ public:
     //縄張り設定
     void SetTerritory(const DirectX::XMFLOAT3& origin, float range);
 
+   
 
 protected:
     //死亡した時に呼ばれる
@@ -135,4 +139,5 @@ private:
     float             stateTimer = 0.0f;
     float             searchRange = 5.0f;
     float             attackRange = 1.5f;
+
 };
