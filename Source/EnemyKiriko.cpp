@@ -168,10 +168,8 @@ void EnemyKiriko::OnDead()
     {
         Special = true;
     }
-
     //死亡ステートへ遷移
     TransitionDeathState();
-
 }
 
 //ダメージを受けたときに呼ばれる
@@ -196,7 +194,6 @@ void EnemyKiriko::SetRandomTargetPosition()
     targetPosition.x = territoryOrigin.x + radius * cos(angle);
     targetPosition.y = territoryOrigin.y;
     targetPosition.z = territoryOrigin.z + radius * sinf(angle);
-
 }
 
 //目標地点へ移動

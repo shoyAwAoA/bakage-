@@ -424,15 +424,9 @@ void Player::CollisionProjectilesVsEnemies()
                     DirectX::XMFLOAT3 e = enemy->GetPosition();
                     e.y += enemy->GetHeight() * 0.5f;
                     hitEffect->Play(e);
-
-
                 }
-
-
-                
                     //弾丸破棄
-                    projectile->Destroy();
-                
+                    projectile->Destroy(); 
             }
         }
     }
@@ -483,7 +477,6 @@ DirectX::XMFLOAT3 Player::GetMoveVec() const
             //単位ベクトル化
             cameraRightX /= cameraRightLength;
             cameraRightZ /= cameraRightLength;
-
         }
 
     //カメラ前方向ベクトルをXZ単位ベクトルに変換
@@ -495,7 +488,6 @@ DirectX::XMFLOAT3 Player::GetMoveVec() const
             //単位ベクトル化
             cameraFrontX /= cameraFrontLength;
             cameraFrontZ /= cameraFrontLength;
-            
         }
 
     //スティックの水平入力値をカメラ右方向に反映し、
@@ -508,7 +500,6 @@ DirectX::XMFLOAT3 Player::GetMoveVec() const
     vec.y = 0.0f;
 
     return vec;
-
 }
 
 bool Player::InputMove(float elapsedTime)
@@ -718,7 +709,6 @@ void Player::UpdateIdleState(float elapsedTime)
         TransitionSpecialAttackState();
     }
 
-
     //弾丸入力処理
 //    InputSpecialAttack();
 }
@@ -726,7 +716,6 @@ void Player::UpdateIdleState(float elapsedTime)
 //待機ステート更新処理
 void Player::TransitionMoveState()
 {
-
     state = State::Move;
 
     //走りアニメーション再生
@@ -762,21 +751,13 @@ void Player::UpdateMoveState(float elapsedTime)
     {
         TransitionKickState();
     }
-   /* if (InputSpecialAttack())
-    {
-        TransitionSpecialAttackState();
-    }*/
+
     if (specialTime <= 0 && specialAttack)
     {
         TransitionSpecialAttackState();
     }
-    ////ジャンプ入力処理
-    //InputJump();
-
     //弾丸入力処理
     InputSpecialAttack();
-
-
 }
 
 //ジャンプステートへ遷移
@@ -839,9 +820,6 @@ void Player::UpdateAttackState(float elapsedTime)
     {
         TransitionIdleState();
     }
-
-    ////左手ノードとエネミーの衝突処理
-    //CollisionNodeVsEnemies("mixamorig:LeftHand", leftHandRadius);
 
     //任意のアニメーション再生区間でのみ衝突判定処理をする
     float animationTime = model->GetCurrentAnimationSeconds();
@@ -928,16 +906,12 @@ void Player::TransitionAvoidanceState()
 void Player::UpdateAvoidanceState(float elapsedTime)
 {
     InputMove(elapsedTime);
-   
 
     if (!model->IsPlayAnimation())
     {
-        /*velocity.x = 5.0f;
-        velocity.y = 5.0f;*/
         avoidanceCollisionFlag = false;
         TransitionMoveState();
     }
-    //float animationTime = model->GetCurrentAnimationSeconds();
     avoidanceCollisionFlag = true;
 }
 
@@ -964,9 +938,7 @@ void Player::UpdateKickState(float elapsedTime)
         //蹴りノードとエネミーの衝突処理
         CollisionNodeVsEnemies("mixamorig:LeftToe_End", kickRadius);
         //CollisionNodeVsEnemies("mixamorig:LeftHand", kickRadius);
-
     }
-    
 }
 
 //必殺技ステートへ遷移
@@ -974,7 +946,6 @@ void Player::TransitionSpecialAttackState()
 {
     state = State::SpecialAttack;
 
-//    model->PlayAnimation(Anim_SpecialAttack, false);
     model->PlayAnimation(Anim_Attack, false);
 }
 
@@ -1033,7 +1004,6 @@ void Player::CollisionNodeVsEnemies(const char* nodeName, float nodeRadius)
             enemy->GetHeight(),
             outPosition))
         {
-            
             //ダメージを与える
             if (enemy->ApplyDamage(1, 1.5f))
             {
@@ -1063,7 +1033,6 @@ void Player::CollisionNodeVsEnemies(const char* nodeName, float nodeRadius)
             }
             //ヒットエフェクト再生
             {
-               
                 DirectX::XMFLOAT3 e = enemy->GetPosition();
                 e.y += enemy->GetHeight() * 0.5f;
                 hitEffect->Play(e);
@@ -1076,7 +1045,6 @@ void Player::CollisionNodeVsEnemies(const char* nodeName, float nodeRadius)
 void Player::OnLanding()
 {
     jumpCount = 0;
-
     
     //ダメージ、死亡ステート時は着地した時にステート遷移しないようにする
     if (state != State::Damage && state != State::Death)
