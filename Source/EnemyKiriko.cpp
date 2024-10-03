@@ -1,23 +1,25 @@
-#include "EnemySlime.h"
+#include "EnemyKiriko.h"
 #include"Graphics/Graphics.h"
 #include"Mathf.h"
 #include"Player.h"
 #include"Collision.h"
 #include"SceneGame.h"
 
+//グローバル
 extern bool speak_flag;
+extern bool Special;
 
-static EnemySlime* instance = nullptr;
+static EnemyKiriko* instance = nullptr;
 
 
-EnemySlime& EnemySlime::Instance()
+EnemyKiriko& EnemyKiriko::Instance()
 {
     // TODO: return ステートメントをここに挿入します
     return *instance;
 }
 
 //コンストラクタ
-EnemySlime::EnemySlime()
+EnemyKiriko::EnemyKiriko()
 {
     model = new Model("Data/Model/Slime/Slime.mdl");
 
@@ -33,13 +35,13 @@ EnemySlime::EnemySlime()
 }
 
 //デストラクタ
-EnemySlime::~EnemySlime()
+EnemyKiriko::~EnemyKiriko()
 {
     delete model;
 }
 
 //更新処理
-void EnemySlime::Update(float elapsedTime)
+void EnemyKiriko::Update(float elapsedTime)
 {
     //ステート毎の更新処理
     switch (state)
@@ -66,10 +68,15 @@ void EnemySlime::Update(float elapsedTime)
         UpdateDeathState(elapsedTime);
         break;
     }
+    Player& player = Player::Instance();
 
 
-    //速力処理更新
-    UpdateVelocity(elapsedTime);
+    if (!player.GetSpecialAttack())
+    {
+        //速力処理更新
+        UpdateVelocity(elapsedTime);
+    }
+
 
     //無敵時間更新
     UpdateInvincibleTimer(elapsedTime);
@@ -86,7 +93,7 @@ void EnemySlime::Update(float elapsedTime)
 
 }
 //描画処理
-void EnemySlime::Render(ID3D11DeviceContext* dc, Shader* shader)
+void EnemyKiriko::Render(ID3D11DeviceContext* dc, Shader* shader)
 {
     shader->Draw(dc, model);
 
@@ -94,7 +101,7 @@ void EnemySlime::Render(ID3D11DeviceContext* dc, Shader* shader)
 }
 
 //デバッグプリミティブ描画
-void EnemySlime::DrawDebugPrimitive()
+void EnemyKiriko::DrawDebugPrimitive()
 {
     //基底クラスのデバッグプリミティブ描画
     Enemy::DrawDebugPrimitive();
@@ -145,17 +152,22 @@ void EnemySlime::DrawDebugPrimitive()
 
 }
 //縄張り設定
-void EnemySlime::SetTerritory(const DirectX::XMFLOAT3& origin, float range)
+void EnemyKiriko::SetTerritory(const DirectX::XMFLOAT3& origin, float range)
 {
     territoryOrigin = origin;
     territoryRange = range;
 }
 
 //死亡した時に呼ばれる
-void EnemySlime::OnDead()
+void EnemyKiriko::OnDead()
 {
     ////自身を破棄
     //Destroy();
+    Player& player = Player::Instance();
+    if (player.GetspecialAttack())
+    {
+        Special = true;
+    }
 
     //死亡ステートへ遷移
     TransitionDeathState();
@@ -163,14 +175,19 @@ void EnemySlime::OnDead()
 }
 
 //ダメージを受けたときに呼ばれる
-void EnemySlime::OnDamaged()
+void EnemyKiriko::OnDamaged()
 {
     //ダメージステートへ遷移
+    Player& player = Player::Instance();
+    if (player.GetspecialAttack())
+    {
+        Special = true;
+    }
     TransitionDamageState();
 }
 
 //ターゲット位置をランダム設定
-void EnemySlime::SetRandomTargetPosition()
+void EnemyKiriko::SetRandomTargetPosition()
 {
     float angle = Mathf::RandomRange(0.0f, turnSpeed);
 
@@ -183,7 +200,7 @@ void EnemySlime::SetRandomTargetPosition()
 }
 
 //目標地点へ移動
-void EnemySlime::MoveToTarget(float elapsedTime, float speedRate)
+void EnemyKiriko::MoveToTarget(float elapsedTime, float speedRate)
 {
     //ターゲット方向への進行ベクトルを算出
     float vx = targetPosition.x - position.x;
@@ -197,7 +214,7 @@ void EnemySlime::MoveToTarget(float elapsedTime, float speedRate)
 }
 
 //ノードとプレイヤーの衝突処理
-void EnemySlime::CollisionNodeVsPlayer(const char* nodeName, float nodeRadius)
+void EnemyKiriko::CollisionNodeVsPlayer(const char* nodeName, float nodeRadius)
 {
     //ノードの位置と当たり判定を行う
     Model::Node* node = model->FindNode(nodeName);
@@ -257,7 +274,7 @@ void EnemySlime::CollisionNodeVsPlayer(const char* nodeName, float nodeRadius)
 }
 
 //徘徊ステートへ遷移
-void EnemySlime::TransitionWanderState()
+void EnemyKiriko::TransitionWanderState()
 {
     speak_flag = false;
     state = State::Wander;
@@ -269,7 +286,7 @@ void EnemySlime::TransitionWanderState()
     model->PlayAnimation(Anim_WalkFWD, true);
 }
 //徘徊ステート更新処理
-void EnemySlime::UpdateWanderState(float elapsedTime)
+void EnemyKiriko::UpdateWanderState(float elapsedTime)
 {
     //目標地点までXZ平面での距離判定
     float vx = targetPosition.x - position.x;
@@ -296,7 +313,7 @@ void EnemySlime::UpdateWanderState(float elapsedTime)
 
 }
 //待機ステートへ遷移
-void EnemySlime::TransitionIdleState()
+void EnemyKiriko::TransitionIdleState()
 {
     state = State::Idle;
 
@@ -310,7 +327,7 @@ void EnemySlime::TransitionIdleState()
 }
 
 //待機ステート更新処理
-void EnemySlime::UpdateIdleState(float elapsedTime)
+void EnemyKiriko::UpdateIdleState(float elapsedTime)
 {
     //タイマー処理
     stateTimer -= elapsedTime;
@@ -329,7 +346,7 @@ void EnemySlime::UpdateIdleState(float elapsedTime)
 
 }
 //プレイヤー索敵
-bool EnemySlime::SearchPlayer()
+bool EnemyKiriko::SearchPlayer()
 {
     //プレイヤーとの高低差を考慮して3Dでの距離判定をする
     const  DirectX::XMFLOAT3& playerPosition = Player::Instance().GetPosition();
@@ -357,7 +374,7 @@ bool EnemySlime::SearchPlayer()
     return false;
 }
 //追跡ステートへ遷移
-void EnemySlime::TransitionPursuitState()
+void EnemyKiriko::TransitionPursuitState()
 {
     
     state = State::Pursuit;
@@ -369,7 +386,7 @@ void EnemySlime::TransitionPursuitState()
     model->PlayAnimation(Anim_RunFWD, true);
 }
 //追跡ステート更新処理
-void EnemySlime::UpdatePursuitState(float elapsedTime)
+void EnemyKiriko::UpdatePursuitState(float elapsedTime)
 {
     //目標地点をプレイヤー位置に設定
     targetPosition = Player::Instance().GetPosition();
@@ -403,7 +420,7 @@ void EnemySlime::UpdatePursuitState(float elapsedTime)
 }
 
 //攻撃ステートへ遷移
-void EnemySlime::TransitionAttackState()
+void EnemyKiriko::TransitionAttackState()
 {
     state = State::Attack;
 
@@ -412,7 +429,7 @@ void EnemySlime::TransitionAttackState()
 }
 
 //攻撃ステート更新処理
-void EnemySlime::UpdateAttackState(float elapsedTime)
+void EnemyKiriko::UpdateAttackState(float elapsedTime)
 {
     //任意のアニメーション再生区間でのみ衝突処理をする
     float animationTime = model->GetCurrentAnimationSeconds();
@@ -429,7 +446,7 @@ void EnemySlime::UpdateAttackState(float elapsedTime)
 }
 
 //戦闘待機ステートへ遷移
-void EnemySlime::TransitionIdleBattleState()
+void EnemyKiriko::TransitionIdleBattleState()
 {
     state = State::IdleBattle;
 
@@ -441,7 +458,7 @@ void EnemySlime::TransitionIdleBattleState()
 }
 
 //戦闘待機ステート更新処理
-void EnemySlime::UpdateIdleBattleState(float elapsedTime)
+void EnemyKiriko::UpdateIdleBattleState(float elapsedTime)
 {
     //目標地点をプレイヤー位置に設定
     targetPosition = Player::Instance().GetPosition();
@@ -470,7 +487,7 @@ void EnemySlime::UpdateIdleBattleState(float elapsedTime)
     MoveToTarget(elapsedTime, 0.0f);
 }
 //ダメージステートへ遷移
-void EnemySlime::TransitionDamageState()
+void EnemyKiriko::TransitionDamageState()
 {
     state = State::Damage;
 
@@ -479,7 +496,7 @@ void EnemySlime::TransitionDamageState()
 }
 
 //ダメージステート更新処理
-void EnemySlime::UpdateDamageState(float elapsedTime)
+void EnemyKiriko::UpdateDamageState(float elapsedTime)
 {
     //ダメージアニメーションが終わったら戦闘待機ステートへ遷移
     if (!model->IsPlayAnimation())
@@ -489,7 +506,7 @@ void EnemySlime::UpdateDamageState(float elapsedTime)
 }
 
 //死亡ステートへ遷移
-void EnemySlime::TransitionDeathState()
+void EnemyKiriko::TransitionDeathState()
 {
     state = State::Death;
 
@@ -498,7 +515,7 @@ void EnemySlime::TransitionDeathState()
 }
 
 //死亡ステート更新処理
-void EnemySlime::UpdateDeathState(float elapsedTime)
+void EnemyKiriko::UpdateDeathState(float elapsedTime)
 {
     //ダメージアニメーションが終わったら自分を破棄
     if (!model->IsPlayAnimation())

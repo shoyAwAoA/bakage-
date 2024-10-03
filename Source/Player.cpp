@@ -112,7 +112,14 @@ void Player::Update(float elapsedTime)
         break;
     }
 
-    HitCheck();
+    if (specialAttackCollisionFlag)
+    {
+        //ノードの名前を打つ
+        CollisionNodeVsEnemies("mixamorig:LeftHand", leftHandRadius);
+    }
+    InputSpecial();
+
+//    HitCheck();
     //速力処理更新
     UpdateVelocity(elapsedTime);
 
@@ -122,14 +129,14 @@ void Player::Update(float elapsedTime)
     //弾丸更新処理
     projectileManager.Update(elapsedTime);
 
-    //プレイヤーと敵との衝突処理
     if (!avoidanceCollisionFlag)
     {
         CollisionPlayerVsEnemies();
     }
+    CollisionProjectilesVsEnemies();
+    //プレイヤーと敵との衝突処理
 
     //弾丸と敵の衝突処理
-    CollisionProjectilesVsEnemies();
 
    
     //モデルアニメーション更新処理
@@ -137,7 +144,6 @@ void Player::Update(float elapsedTime)
 
     //モデル行列更新
     model->UpdateTransform(transform);
-    InputSpecial();
 
     if (specialAttack)
     {
@@ -384,6 +390,7 @@ void Player::CollisionProjectilesVsEnemies()
                 //ダメージを与える
                 if (enemy->ApplyDamage(1, 0.5f))
                 {
+                    Special = true;
                     //吹き飛ばす
                     DirectX::XMFLOAT3 impulse;
                     float tuyo = 10.0f;
@@ -974,9 +981,6 @@ void Player::TransitionSpecialAttackState()
 //必殺技ステートの更新処理
 void Player::UpdateSpecialAttackState(float elapsedTime)
 {
-
-  
-
     float animationTime = model->GetCurrentAnimationSeconds();
     specialAttackCollisionFlag = animationTime >= 0.2f && animationTime <= 0.4f;
     if (specialAttackCollisionFlag)
@@ -991,7 +995,7 @@ void Player::UpdateSpecialAttackState(float elapsedTime)
         {
             TransitionIdleState();
         }
-        else if (!Special)
+        else if(!Special)
         {
             health--;
             TransitionDeathState();

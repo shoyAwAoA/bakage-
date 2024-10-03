@@ -5,14 +5,14 @@
 
 
 //スライム
-class EnemySlime :public Enemy
+class EnemyKiriko :public Enemy
 {
 public:
-    EnemySlime();
-    ~EnemySlime()override;
+    EnemyKiriko();
+    ~EnemyKiriko()override;
 
     //インスタンス取得
-    static EnemySlime& Instance();
+    static EnemyKiriko& Instance();
 
     //更新処理
     void Update(float elapsedTime)override;

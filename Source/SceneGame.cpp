@@ -4,7 +4,7 @@
 #include"Player.h"
 #include"Camera.h"
 #include"EnemyManager.h"
-#include"EnemySlime.h"
+#include"EnemyKiriko.h"
 #include"EffectManager.h"
 #include"StageManager.h"
 #include"StageMain.h"
@@ -56,24 +56,24 @@ void SceneGame::Initialize()
 	//エネミー初期化
 	EnemyManager& enemyManager = EnemyManager::Instance();
 #if 0
-	EnemySlime* slime = new EnemySlime();
-	slime->SetPosition(DirectX::XMFLOAT3(0, 0, 5));
-	enemyManager.Register(slime);
+	EnemyKiriko* Kiriko = new EnemyKiriko();
+	Kiriko->SetPosition(DirectX::XMFLOAT3(0, 0, 5));
+	enemyManager.Register(Kiriko);
 #else
 
 	//for (int i = 0; i < 50; ++i)
 	//{
-	//	EnemySlime* slime = new EnemySlime();
-	//	slime->SetPosition(DirectX::XMFLOAT3(i * 2.0f, 0, 5));
-	//	enemyManager.Register(slime);
+	//	EnemyKiriko* Kiriko = new EnemyKiriko();
+	//	Kiriko->SetPosition(DirectX::XMFLOAT3(i * 2.0f, 0, 5));
+	//	enemyManager.Register(Kiriko);
 	//}
 
 	for (int i = 0; i < 1; i++)
 	{
-		EnemySlime* slime = new EnemySlime();
-		slime->SetPosition(DirectX::XMFLOAT3(i * 2.0f, 0, 5));
-		slime->SetTerritory(slime->GetPosition(), 10.0f);
-		enemyManager.Register(slime);
+		EnemyKiriko* Kiriko = new EnemyKiriko();
+		Kiriko->SetPosition(DirectX::XMFLOAT3(i * 2.0f, 0, 5));
+		Kiriko->SetTerritory(Kiriko->GetPosition(), 10.0f);
+		enemyManager.Register(Kiriko);
 	}
 #endif
 }
@@ -127,18 +127,12 @@ void SceneGame::Finalize()
 // 更新処理
 void SceneGame::Update(float elapsedTime)
 {
-	if (!player->GetSpecialAttack())
-	{
-		//ステージ更新処理
-		//stage->Update(elapsedTime);
-		StageManager::Instance().Update(elapsedTime);
-
-		//エネミー更新処理
 		EnemyManager::Instance().Update(elapsedTime);
-
+		//ステージ更新処理
+		StageManager::Instance().Update(elapsedTime);
+	
 		//エフェクト更新処理
 		EffectManager::Instance().Update(elapsedTime);
-	}
 
 	if (player->GetSpecialAttack())
 	{

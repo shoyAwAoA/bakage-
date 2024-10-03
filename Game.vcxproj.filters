@@ -135,7 +135,7 @@
     <ClInclude Include="Source\EnemyManager.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="Source\EnemySlime.h">
+    <ClInclude Include="Source\EnemyKiriko.h">
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="Source\Collision.h">
@@ -284,7 +284,7 @@
     <ClCompile Include="Source\EnemyManager.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Source\EnemySlime.cpp">
+    <ClCompile Include="Source\EnemyKiriko.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\Enemy.cpp">
