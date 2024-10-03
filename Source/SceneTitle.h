@@ -24,4 +24,6 @@ public:
 
 private:
     Sprite* sprite = nullptr;
+    float mousePositionX = 0.0f;
+    float mousePositionY = 0.0f;
 };

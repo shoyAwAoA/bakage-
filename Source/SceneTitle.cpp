@@ -10,6 +10,7 @@
 //初期化
 void SceneTitle::Initialize()
 {
+    
     //スプライト初期化
     sprite = new Sprite("Data/Sprite/Title.png");
 }
@@ -30,25 +31,29 @@ void SceneTitle::Update(float elapsedTime)
 {
     GamePad& gamePad = Input::Instance().GetGamePad();
 
-    //何かボタンを押したらゲームシーンへ切り替え
-    //const GamePadButton anyButton =
-    //    GamePad::BTN_A
-    //    | GamePad::BTN_B
-    //    | GamePad::BTN_X
-    //    | GamePad::BTN_Y
-    //    ;
+    Mouse& mouse = Input::Instance().GetMouse();
+
+    mousePositionX = mouse.GetPositionX();
+    mousePositionY = mouse.GetPositionY();
+
     //何かボタンを押したらローディングシーンをはさんでゲームシーンへ切り替え
-    if (gamePad.GetButtonDown() & GamePad::BTN_A)//Zキー
+    if (mouse.GetButtonDown() & Mouse::BTN_LEFT)
     {
-        SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame));
-    }
-    if (gamePad.GetButtonDown() & GamePad::BTN_X)//Cキー
-    {
-        SceneManager::Instance().ChangeScene(new SceneGame2);
-    }
-    if (gamePad.GetButtonDown() & GamePad::BTN_Y)//Vキー
-    {
-        SceneManager::Instance().ChangeScene(new SceneGame3);
+        //キリコ
+        if (0 <= mousePositionX && 426 > mousePositionX)
+        {
+            SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame));
+        }
+        //ヒポポタマス
+        else if (426 <= mousePositionX && 852 > mousePositionX)
+        {
+            SceneManager::Instance().ChangeScene(new SceneGame2);        
+        }
+        //シルバーバック先輩
+        else
+        {
+            SceneManager::Instance().ChangeScene(new SceneGame3);
+        }
     }
 }
 
