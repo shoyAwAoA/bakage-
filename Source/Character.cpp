@@ -1,6 +1,7 @@
 ﻿#include "Character.h"
 #include"StageManager.h"
 #include <Mathf.h>
+#include"Player.h"
 //#include"Stage.h"
 //行列更新処理
 void Character::UpdateTransform()
@@ -29,33 +30,6 @@ void Character::UpdateTransform()
 
 }
 
-////ダメージを与える
-//bool Character::ApplyDamage(int damage)
-//{
-//    //ダメージが０の場合は健康状態を変更する必要がない
-//    if (damage <= 0)return false;
-//
-//    //死亡している場合は健康状態を変更しない
-//    if (health<=0)return false;
-//
-//    //ダメージ処理
-//    health--;
-//
-//    //死亡通知
-//    if (health <= 0)
-//    {
-//        OnDead();
-//    }
-//    //ダメージ通知
-//    else
-//    {
-//        OnDamaged();
-//    }
-//
-//    //健康状態が変更した場合はtrueを返す
-//
-//    return true;
-//}
 
 bool Character::ApplyDamage(int damage, float invincibleTime)
 {
@@ -115,12 +89,13 @@ void Character::AddImpulse(const DirectX::XMFLOAT3& impulse)
 //移動処理
 void Character::Move(float vx, float vz, float speed)
 {
+    Player& player = Player::Instance();
     //移動方向ベクトルを設定
-    moveVecX = vx;
-    moveVecZ = vz;
-
+    
+        moveVecX = vx;
+        moveVecZ = vz;
     //最大速度設定
-    maxMoveSpeed = speed;
+        maxMoveSpeed = speed;
 }
 
 void Character::Turn(float elapsedTime, float vx, float vz, float speed)
@@ -176,8 +151,19 @@ void Character::Jump(float speed)
 //速力処理更新
 void Character::UpdateVelocity(float elapsedTime)
 {
+    Player& player = Player::Instance();
     //経過フレーム
     float elapsedFrame = 60.0f * elapsedTime;
+
+    if (player.GetAvoidanceCollisionFlag())
+    {
+        player.maxMoveSpeed = 10.0f;
+    }
+    else if (player.GetAvoidanceCollisionFlag())
+    {
+        player.maxMoveSpeed = 5.0f;
+        
+    }
 
     //垂直速力更新処理
     UpdateVerticalVelocity(elapsedFrame);
@@ -280,6 +266,7 @@ void Character::UpdateVerticalMove(float elapsedTime)
 //水平速力更新処理
 void Character::UpdateHorizontalVelocity(float elapsedFrame)
 {
+    Player& player = Player::Instance();
     //XZ平面の速力を減速する
     float length= sqrtf(velocity.x * velocity.x + velocity.z * velocity.z);
         if (length > 0.0f)
@@ -321,7 +308,7 @@ void Character::UpdateHorizontalVelocity(float elapsedFrame)
 
                 //空中にいるときは加速力を減らす
                 if (!isGround)acceleration *= airControl;
-
+                if (player.GetAvoidanceCollisionFlag())acceleration *= avoidance;
                 //移動ベクトルによる加速処理
                 velocity.x += moveVecX * acceleration;
                 velocity.z += moveVecZ * acceleration;
@@ -333,7 +320,7 @@ void Character::UpdateHorizontalVelocity(float elapsedFrame)
                     float vx = velocity.x / length;
                     float vz = velocity.z / length;
 
-
+                    
                     velocity.x = vx*maxMoveSpeed;
                     velocity.z = vz*maxMoveSpeed;
                 }
@@ -353,9 +340,7 @@ void Character::UpdateHorizontalVelocity(float elapsedFrame)
 //水平移動更新処理
 void Character::UpdateHorizontalMove(float elapsedTime)
 {
-    ////移動処理
-    //position.x += velocity.x * elapsedTime;
-    //position.z += velocity.z * elapsedTime;
+    Player& player = Player::Instance();
 
     //水平移動量計算
     float velocityLengthXZ = sqrtf(velocity.x * velocity.x + velocity.z * velocity.z);
@@ -408,8 +393,10 @@ void Character::UpdateHorizontalMove(float elapsedTime)
         else
         {
             //移動
-            position.x += mx;
-            position.z += mz;
+           
+                position.x += mx;
+                position.z += mz;
+            
         }
     }
 }

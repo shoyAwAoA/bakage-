@@ -35,11 +35,15 @@ public:
 
     bool SetKirikoUp(const bool& kirikoUp) { this->kirikoUp; }
 
-    //ジャンプ入力処理
     //void InputJump();
     bool InputJump();
 
+    //回避入力処理
+    bool Inputavoidance();
 
+    const bool& GetAvoidanceCollisionFlag()const { return avoidanceCollisionFlag; }
+
+    bool SetAvoidanceCollisionFlag(const bool& avoidanceCollisionFlag) { this->avoidanceCollisionFlag; }
 
 private:
     //スティック入力値から移動ベクトルを取得
@@ -114,6 +118,11 @@ private:
     //復活ステート更新処理
     void UpdateReviveState(float elapsedTime);
 
+    //回避ステートへ遷移
+    void TransitionAvoidanceState();
+
+    //回避ステート更新処理
+    void UpdateAvoidanceState(float elapsedTime);
 
 protected:
     //着地したときに呼ばれる
@@ -141,6 +150,7 @@ private:
         Anim_Revive,
         Anim_Running,
         Anim_Walking,
+        Anim_Avoidance,
     };
 
     //ステート
@@ -154,7 +164,7 @@ private:
         Damage,
         Death,
         Revive,
-
+        Avoidance,
     };
 
 private:
@@ -173,4 +183,6 @@ private:
     float           specialTime = 200.0f;
     float           specialTimeMax = 200.0f;
     bool            kirikoUp = false;
+    bool avoidanceCollisionFlag = false;
+    float avoidanceRadius = 0.7f;
 };

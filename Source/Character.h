@@ -117,6 +117,7 @@ protected:
     float moveVecX = 0.0f;
     float moveVecZ = 0.0f;
     float airControl = 0.3f;
+    float avoidance = 1.25f;
     float stepOffset = 1.0f;
     float slopeRate = 1.0f;
 };

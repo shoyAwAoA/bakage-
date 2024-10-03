@@ -184,39 +184,44 @@ void EnemySlime::CollisionNodeVsPlayer(const char* nodeName, float nodeRadius)
             nodePosition, nodeRadius, DirectX::XMFLOAT4(0, 0, 1, 1)
         );
 
+        
         //プレイヤーと当たり判定
         Player& player = Player::Instance();
         DirectX::XMFLOAT3 outPosition;
-        if (Collision::IntersectSphereVsCylinder(
-            nodePosition,
-            nodeRadius,
-            player.GetPosition(),
-            player.GetRadius(),
-            player.GetHeight(),
-            outPosition))
+        if (!player.GetAvoidanceCollisionFlag())
         {
-            //ダメージを与える
-            if (player.ApplyDamage(1, 0.5f))
+            if (Collision::IntersectSphereVsCylinder(
+                nodePosition,
+                nodeRadius,
+                player.GetPosition(),
+                player.GetRadius(),
+                player.GetHeight(),
+                outPosition))
             {
-                //敵を吹っ飛ばすベクトルを算出
-                DirectX::XMFLOAT3 vec;
-                vec.x = outPosition.x - nodePosition.x;
-                vec.z = outPosition.z - nodePosition.z;
-                float length = sqrtf(vec.x * vec.x + vec.z * vec.z);
-                vec.x /= length;
-                vec.z /= length;
+                //ダメージを与える
+                if (player.ApplyDamage(1, 0.5f))
+                {
+                    //敵を吹っ飛ばすベクトルを算出
+                    DirectX::XMFLOAT3 vec;
+                    vec.x = outPosition.x - nodePosition.x;
+                    vec.z = outPosition.z - nodePosition.z;
+                    float length = sqrtf(vec.x * vec.x + vec.z * vec.z);
+                    vec.x /= length;
+                    vec.z /= length;
 
-                //XZ平面に吹っ飛ばす力をかける
-                float power = 10.0f;
-                vec.x *= power;
-                vec.z *= power;
-                //Y方向にも力をかける
-                vec.y = 5.0f;
+                    //XZ平面に吹っ飛ばす力をかける
+                    float power = 10.0f;
+                    vec.x *= power;
+                    vec.z *= power;
+                    //Y方向にも力をかける
+                    vec.y = 5.0f;
 
-                //吹っ飛ばす
-                player.AddImpulse(vec);
+                    //吹っ飛ばす
+                    player.AddImpulse(vec);
+                }
             }
         }
+       
     }
 }
 

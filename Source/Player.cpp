@@ -95,6 +95,10 @@ void Player::Update(float elapsedTime)
         UpdateReviveState(elapsedTime);
         UpdateTransform();
         break;
+    case State::Avoidance:
+        UpdateAvoidanceState(elapsedTime);
+        UpdateTransform();
+        break;
     }
 
 
@@ -108,7 +112,10 @@ void Player::Update(float elapsedTime)
     projectileManager.Update(elapsedTime);
 
     //プレイヤーと敵との衝突処理
-    CollisionPlayerVsEnemies();
+    if (!avoidanceCollisionFlag)
+    {
+        CollisionPlayerVsEnemies();
+    }
 
     //弾丸と敵の衝突処理
     CollisionProjectilesVsEnemies();
@@ -181,6 +188,9 @@ void Player::DrawDebugGUI()
         break;
     case Player::State::Revive:
         str = "Revive";
+        break;
+    case Player::State::Avoidance:
+        str = "Avoidance";
         break;
     default:
         break;
@@ -275,20 +285,16 @@ bool Player::InputJump()
     return false;
 }
 
-////ジャンプ入力処理
-//void Player::InputJump()
-//{
-//    GamePad& gamePad = Input::Instance().GetGamePad();
-//    if (gamePad.GetButtonDown() & GamePad::BTN_A)
-//    {
-//        if (jumpCount > 0)
-//        {
-//            Jump(jumpSpeed);
-//            jumpCount--;
-//
-//        }
-//    }
-//}
+bool Player::Inputavoidance()
+{
+    Mouse& mouse = Input::Instance().GetMouse();
+    if (mouse.GetButtonDown() & Mouse::BTN_RIGHT)
+    {
+        return true;
+    }
+
+    return false;
+}
 
 //弾丸と敵の衝突処理
 void Player::CollisionProjectilesVsEnemies()
@@ -426,6 +432,7 @@ bool Player::InputMove(float elapsedTime)
 
     //移動処理
     //Move(elapsedTime, moveVec.x, moveVec.z, moveSpeed);
+    
     Move(moveVec.x, moveVec.z, moveSpeed);
 
     //旋回処理
@@ -458,67 +465,33 @@ void Player::CollisionPlayerVsEnemies()
 
         //衝突処理
         DirectX::XMFLOAT3 outPosition;
-        //if (Collision::IntersectSphereVsSphere(
-        //    this->position,
-        //    this->radius,
-        //    enemy->GetPosition(),
-        //    enemy->GetRadius(),outPosition))
-        //{
-        //    //押し出し後の位置設定
-        //    enemy->SetPosition(outPosition);
+        ;
+        float position_x = position.x - enemy->GetPosition().x;
+        float position_z = position.z - enemy->GetPosition().z;
+        float range = (position_x * position_x) + (position_z * position_z);
 
-
-        //}
-;
-    float position_x = position.x - enemy->GetPosition().x;
-    float position_z = position.z - enemy->GetPosition().z;
-    float range = (position_x * position_x) + (position_z * position_z);
-
-    if (enemy->GetPosition().x - 1 <= GetPosition().x && enemy->GetPosition().x + 1 >= GetPosition().x)
-    {
-        if (enemy->GetPosition().y + 1 == GetPosition().y)
+        if (enemy->GetPosition().x - 1 <= GetPosition().x && enemy->GetPosition().x + 1 >= GetPosition().x)
         {
-            if (enemy->GetPosition().z - 1 <= GetPosition().z && enemy->GetPosition().z + 1 >= GetPosition().z)
+            if (enemy->GetPosition().y + 1 == GetPosition().y)
             {
-                Jump(jumpSpeed);
-                enemy->ApplyDamage(1, 0.5f);
+                if (enemy->GetPosition().z - 1 <= GetPosition().z && enemy->GetPosition().z + 1 >= GetPosition().z)
+                {
+                    Jump(jumpSpeed);
+                    enemy->ApplyDamage(1, 0.5f);
+                }
             }
         }
-    }
-
-
-    //if (!position.y > enemy->GetPosition().y && position.y <= enemy->GetPosition().y + enemy->GetHeight() && range < (radius + enemy->GetRadius()) * (radius + enemy->GetRadius()))
-    //{
-        if (Collision::IntersectCylinderVsCylinder(
-            position,
-            radius,
-            height,
-            enemy->GetPosition(),
-            enemy->GetRadius(),
-            enemy->GetHeight(),
-            outPosition))
-        {
-            enemy->SetPosition(outPosition);
-        }
-    //}
-
-
-
-    //DirectX::XMVECTOR P = DirectX::XMLoadFloat3(&position);
-    //DirectX::XMVECTOR E = DirectX::XMLoadFloat3(&enemy->GetPosition());
-    //DirectX::XMVECTOR V = DirectX::XMVectorSubtract(P, E);
-    //DirectX::XMVECTOR N = DirectX::XMVector3Normalize(V);
-    //DirectX::XMFLOAT3 normal;
-    //DirectX::XMStoreFloat3(&normal, N);
-
-        //////敵を踏みつけた時に小ジャンプする
-        //if (position.y>enemy->GetPosition().y&&position.y <= enemy->GetPosition().y + enemy->GetHeight() && range < (radius + enemy->GetRadius()) * (radius + enemy->GetRadius()))
-        //{
-        //    Jump(jumpSpeed * 0.5f);
-        //    enemy->ApplyDamage(1, 0.5f);
-        //}
-
-
+            if (Collision::IntersectCylinderVsCylinder(
+                position,
+                radius,
+                height,
+                enemy->GetPosition(),
+                enemy->GetRadius(),
+                enemy->GetHeight(),
+                outPosition))
+            {
+                enemy->SetPosition(outPosition);
+            }
     }
 }
 
@@ -615,7 +588,7 @@ void Player::InputProjectile()
 void Player::TransitionIdleState()
 {
     state = State::Idle;
-
+    avoidanceCollisionFlag = false;
     //待機アニメーション再生
     model->PlayAnimation(Anim_Idle, true);
 }
@@ -640,8 +613,12 @@ void Player::UpdateIdleState(float elapsedTime)
     {
         TransitionAttackState();
     }
-    //ジャンプ入力処理
-//    InputJump();
+
+    //回避入力処理
+    if (Inputavoidance())
+    {
+        TransitionAvoidanceState();
+    }
 
     //弾丸入力処理
     InputProjectile();
@@ -660,7 +637,7 @@ void Player::TransitionMoveState()
 //移動ステート更新処理
 void Player::UpdateMoveState(float elapsedTime)
 {
-   
+    avoidanceCollisionFlag = false;
     //移動入力処理
     if (!InputMove(elapsedTime))
     {
@@ -675,6 +652,11 @@ void Player::UpdateMoveState(float elapsedTime)
     if (InputAttack())
     {
         TransitionAttackState();
+    }
+    //回避入力処理
+    if (Inputavoidance())
+    {
+        TransitionAvoidanceState();
     }
     ////ジャンプ入力処理
     //InputJump();
@@ -819,6 +801,33 @@ void Player::UpdateReviveState(float elapsedTime)
     {
         TransitionIdleState();
     }
+}
+
+//回避ステートへ遷移
+void Player::TransitionAvoidanceState()
+{
+    state = State::Avoidance;
+    velocity.x *= 3.0f;
+    velocity.y *= 3.0f;
+    model->PlayAnimation(Anim_Jump_Flip, false);
+}
+
+//回避ステート更新処理
+void Player::UpdateAvoidanceState(float elapsedTime)
+{
+    InputMove(elapsedTime);
+   
+
+    if (!model->IsPlayAnimation())
+    {
+        /*velocity.x = 5.0f;
+        velocity.y = 5.0f;*/
+        avoidanceCollisionFlag = false;
+        TransitionMoveState();
+    }
+    //float animationTime = model->GetCurrentAnimationSeconds();
+    avoidanceCollisionFlag = true;
+
 }
 
 void Player::CollisionNodeVsEnemies(const char* nodeName, float nodeRadius)
