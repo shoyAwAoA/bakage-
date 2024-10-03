@@ -112,6 +112,37 @@ void EnemySlime::DrawDebugPrimitive()
 
     //攻撃範囲をデバッグ円柱描画
     debugRenderer->DrawCylinder(position, attackRange, 1.0f, DirectX::XMFLOAT4(1, 0, 0, 1));
+
+    if (ImGui::Begin("Enemy", nullptr, ImGuiTreeNodeFlags_None))
+    {
+        //トランスフォーム
+        if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            //位置
+            ImGui::InputFloat3("Position", &position.x);
+            //回転
+            DirectX::XMFLOAT3 a;
+            a.x = DirectX::XMConvertToDegrees(angle.x);
+            a.y = DirectX::XMConvertToDegrees(angle.y);
+            a.z = DirectX::XMConvertToDegrees(angle.z);
+            ImGui::InputFloat3("Angle", &a.x);
+            angle.x = DirectX::XMConvertToRadians(a.x);
+            angle.y = DirectX::XMConvertToRadians(a.y);
+            angle.z = DirectX::XMConvertToRadians(a.z);
+            //スケール
+            ImGui::InputFloat3("Scale", &scale.x);
+            ImGui::InputInt("Health", &health);
+       //     ImGui::Text(u8"State %s", str.c_str());
+
+        }
+
+        if (ImGui::CollapsingHeader("Velocity", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            ImGui::InputFloat3("Velocity", &velocity.x);
+        }
+    }
+    ImGui::End();
+
 }
 //縄張り設定
 void EnemySlime::SetTerritory(const DirectX::XMFLOAT3& origin, float range)

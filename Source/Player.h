@@ -45,6 +45,11 @@ public:
 
     bool SetAvoidanceCollisionFlag(const bool& avoidanceCollisionFlag) { this->avoidanceCollisionFlag; }
 
+    //蹴り入力処理
+    bool InputKick();
+
+
+
 private:
     //スティック入力値から移動ベクトルを取得
     DirectX::XMFLOAT3 GetMoveVec()const;
@@ -124,6 +129,11 @@ private:
     //回避ステート更新処理
     void UpdateAvoidanceState(float elapsedTime);
 
+    //蹴りステート
+    void TransitionKickState();
+
+    void UpdateKickState(float elapsedTime);
+
 protected:
     //着地したときに呼ばれる
     void OnLanding()override;
@@ -165,6 +175,7 @@ private:
         Death,
         Revive,
         Avoidance,
+        Kick,
     };
 
 private:
@@ -185,4 +196,6 @@ private:
     bool            kirikoUp = false;
     bool avoidanceCollisionFlag = false;
     float avoidanceRadius = 0.7f;
+    bool kickCollisionFlag = false;
+    float kickRadius = 1.0f;
 };

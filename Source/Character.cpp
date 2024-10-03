@@ -33,6 +33,18 @@ void Character::UpdateTransform()
 
 bool Character::ApplyDamage(int damage, float invincibleTime)
 {
+    //if (invincibleTime > 0.0f)
+    //{
+    //    if (invincibleTimer > 0.0f)
+    //    {
+    //        return false;
+    //    }
+    //    else
+    //    {
+    //        invincibleTimer = invincibleTime;
+    //    }
+    //}
+
     //ダメージが0の場合は健康状態を変更する必要がない
     if (damage == 0)return false;
 
@@ -42,11 +54,16 @@ bool Character::ApplyDamage(int damage, float invincibleTime)
     // 無敵時間中はダメージを与えない
     if (invincibleTimer > 0.0f) return false;
 
+
+
     //ダメージが０の場合は健康状態を変更する必要がない
     if (damage <= 0)return false;
 
     //死亡している場合は健康状態を変更しない
     if (health <= 0)return false;
+
+    //無敵時間を戻す
+    invincibleTimer = invincibleTime;
 
     //ダメージ処理
     health-=damage;

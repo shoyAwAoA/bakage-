@@ -99,6 +99,10 @@ void Player::Update(float elapsedTime)
         UpdateAvoidanceState(elapsedTime);
         UpdateTransform();
         break;
+    case State::Kick:
+        UpdateKickState(elapsedTime);
+        UpdateTransform();
+        break;
     }
 
 
@@ -192,6 +196,9 @@ void Player::DrawDebugGUI()
     case Player::State::Avoidance:
         str = "Avoidance";
         break;
+    case Player::State::Kick:
+        str = "Kick";
+        break;
     default:
         break;
     }
@@ -252,6 +259,17 @@ void Player::DrawDebugPrimitive()
     if (attackCollisionFlag)
     {
         Model::Node* leftHandBone = model->FindNode("mixamorig:LeftHand");
+        debugRenderer->DrawSphere(DirectX::XMFLOAT3(
+            leftHandBone->worldTransform._41,
+            leftHandBone->worldTransform._42,
+            leftHandBone->worldTransform._43),
+            leftHandRadius,
+            DirectX::XMFLOAT4(1, 0, 0, 1)
+        );
+    }
+    if (kickCollisionFlag)
+    {
+        Model::Node* leftHandBone = model->FindNode("mixamorig:LeftToe_End");
         debugRenderer->DrawSphere(DirectX::XMFLOAT3(
             leftHandBone->worldTransform._41,
             leftHandBone->worldTransform._42,
@@ -373,6 +391,16 @@ void Player::CollisionProjectilesVsEnemies()
 }
 
 
+//蹴り入力処理
+bool Player::InputKick()
+{
+    GamePad& gamePad = Input::Instance().GetGamePad();
+    if (gamePad.GetButtonDown() & GamePad::BTN_E)
+    {
+        return true;
+    }
+    return false;
+}
 
 DirectX::XMFLOAT3 Player::GetMoveVec() const
 {
@@ -602,6 +630,12 @@ void Player::UpdateIdleState(float elapsedTime)
         TransitionMoveState();
     };
 
+    //蹴り入力処理
+    if (InputKick())
+    {
+        TransitionKickState();
+    }
+
     //ジャンプ入力処理
     if (InputJump())
     {
@@ -657,6 +691,11 @@ void Player::UpdateMoveState(float elapsedTime)
     if (Inputavoidance())
     {
         TransitionAvoidanceState();
+    }
+    //蹴り入力処理
+    if (InputKick())
+    {
+        TransitionKickState();
     }
     ////ジャンプ入力処理
     //InputJump();
@@ -827,7 +866,34 @@ void Player::UpdateAvoidanceState(float elapsedTime)
     }
     //float animationTime = model->GetCurrentAnimationSeconds();
     avoidanceCollisionFlag = true;
+}
 
+//蹴りステートへ遷移
+void Player::TransitionKickState()
+{
+    state = State::Kick;
+
+    model->PlayAnimation(Anim_Revive, false);
+}
+
+//蹴りステート更新処理
+void Player::UpdateKickState(float elapsedTime)
+{
+    if (!model->IsPlayAnimation())
+    {
+        TransitionIdleState();
+    }
+
+    float animationTime = model->GetCurrentAnimationSeconds();
+    kickCollisionFlag = animationTime >= 0.2f && animationTime <= 0.4f;
+    if (kickCollisionFlag)
+    {
+        //蹴りノードとエネミーの衝突処理
+        CollisionNodeVsEnemies("mixamorig:LeftToe_End", kickRadius);
+        //CollisionNodeVsEnemies("mixamorig:LeftHand", kickRadius);
+
+    }
+    
 }
 
 void Player::CollisionNodeVsEnemies(const char* nodeName, float nodeRadius)
@@ -861,8 +927,9 @@ void Player::CollisionNodeVsEnemies(const char* nodeName, float nodeRadius)
         {
 
             //ダメージを与える
-            if (enemy->ApplyDamage(1, 0.5f))
+            if (enemy->ApplyDamage(1, 1.5f))
             {
+                
                 //吹っ飛ばす
                 const float power = 5.0f;
                 DirectX::XMFLOAT3 e = enemy->GetPosition();
