@@ -35,6 +35,10 @@ public:
 
     bool SetKirikoUp(const bool& kirikoUp) { this->kirikoUp; }
 
+    const bool& GetspecialAttack()const { return specialAttack; }
+
+    bool SetspecialAttack(const bool& specialAttack)const { this->specialAttack; }
+
     //void InputJump();
     bool InputJump();
 
@@ -48,7 +52,7 @@ public:
     //蹴り入力処理
     bool InputKick();
 
-
+    bool HitCheck();
 
 private:
     //スティック入力値から移動ベクトルを取得
@@ -198,7 +202,7 @@ private:
     int jumpLimit = 2;
     Effect* hitEffect = nullptr;
     State              state = State::Idle;
-    float  leftHandRadius = 0.7f;
+    float  leftHandRadius = 1.7f;
     bool attackCollisionFlag = false;
     bool specialAttack = false; //必殺技
     float           specialTime = 200.0f;
@@ -212,5 +216,5 @@ private:
     float specialAttackRadius = 1.0f;
 
     float HealthPreservation = 0;
-    bool Special_Hit_Check = false;
+    bool SpecialHitCheck = false;
 };

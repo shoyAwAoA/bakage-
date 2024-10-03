@@ -10,6 +10,9 @@
 #include"CameraController.h"
 
 
+//グローバル許可
+bool Special = false;
+
 
 static Player* instance = nullptr;
 
@@ -109,7 +112,7 @@ void Player::Update(float elapsedTime)
         break;
     }
 
-
+    HitCheck();
     //速力処理更新
     UpdateVelocity(elapsedTime);
 
@@ -232,6 +235,8 @@ void Player::DrawDebugGUI()
             ImGui::Text(u8"State %s", str.c_str());
 
             ImGui::InputInt("Helth", &health);
+
+            ImGui::Checkbox("Special", &Special);
             
         }
 
@@ -343,6 +348,7 @@ bool Player::InputSpecialAttack()
     {
         if (specialTime >= specialTimeMax)
         {
+           // Special = true;
             specialAttack = true;
         }
     }
@@ -434,6 +440,16 @@ bool Player::InputKick()
     {
         return true;
     }
+    return false;
+}
+
+bool Player::HitCheck()
+{
+    if (Special)
+    {
+        return true;
+    }
+
     return false;
 }
 
@@ -694,6 +710,7 @@ void Player::UpdateIdleState(float elapsedTime)
     {
         TransitionSpecialAttackState();
     }
+
 
     //弾丸入力処理
 //    InputSpecialAttack();
@@ -958,20 +975,7 @@ void Player::TransitionSpecialAttackState()
 void Player::UpdateSpecialAttackState(float elapsedTime)
 {
 
-
-    if (!model->IsPlayAnimation())
-    {
-        if (!Special_Hit_Check)
-        {
-            health--;
-            TransitionDeathState();
-
-        }
-        else if (Special_Hit_Check)
-        {
-            TransitionIdleState();
-        }
-    }
+  
 
     float animationTime = model->GetCurrentAnimationSeconds();
     specialAttackCollisionFlag = animationTime >= 0.2f && animationTime <= 0.4f;
@@ -979,6 +983,19 @@ void Player::UpdateSpecialAttackState(float elapsedTime)
     {
         //ノードの名前を打つ
         CollisionNodeVsEnemies("mixamorig:LeftHand", leftHandRadius);
+    }
+
+    if (!model->IsPlayAnimation())
+    {
+        if (Special)
+        {
+            TransitionIdleState();
+        }
+        else if (!Special)
+        {
+            health--;
+            TransitionDeathState();
+        }
     }
 }
 
@@ -1011,13 +1028,14 @@ void Player::CollisionNodeVsEnemies(const char* nodeName, float nodeRadius)
             enemy->GetHeight(),
             outPosition))
         {
-            if (specialAttack)
-            {
-                Special_Hit_Check = true;
-            }
+            
             //ダメージを与える
             if (enemy->ApplyDamage(1, 1.5f))
             {
+                if (state == State::SpecialAttack)
+                {
+                    Special = true;
+                }
                 
                 //吹っ飛ばす
                 const float power = 5.0f;
@@ -1040,6 +1058,7 @@ void Player::CollisionNodeVsEnemies(const char* nodeName, float nodeRadius)
             }
             //ヒットエフェクト再生
             {
+               
                 DirectX::XMFLOAT3 e = enemy->GetPosition();
                 e.y += enemy->GetHeight() * 0.5f;
                 hitEffect->Play(e);

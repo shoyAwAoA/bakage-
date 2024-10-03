@@ -3,6 +3,10 @@
 #include <Mathf.h>
 #include"Player.h"
 //#include"Stage.h"
+
+//グローバル
+extern bool Special;
+
 //行列更新処理
 void Character::UpdateTransform()
 {
@@ -33,17 +37,9 @@ void Character::UpdateTransform()
 
 bool Character::ApplyDamage(int damage, float invincibleTime)
 {
-    //if (invincibleTime > 0.0f)
-    //{
-    //    if (invincibleTimer > 0.0f)
-    //    {
-    //        return false;
-    //    }
-    //    else
-    //    {
-    //        invincibleTimer = invincibleTime;
-    //    }
-    //}
+    Player& player = Player::Instance();
+
+   
 
     //ダメージが0の場合は健康状態を変更する必要がない
     if (damage == 0)return false;
@@ -67,6 +63,11 @@ bool Character::ApplyDamage(int damage, float invincibleTime)
 
     //ダメージ処理
     health-=damage;
+
+     if (player.GetspecialAttack())
+    {
+        Special = true;
+    }
 
     //死亡通知
     if (health <= 0)
