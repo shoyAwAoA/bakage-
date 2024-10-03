@@ -35,7 +35,7 @@ Player::Player()
 
     //ヒットエフェクト読み込み
     hitEffect = new Effect("Data/Effect/Hit.efk");
-
+    health = 1;
 
     //待機ステートへ遷移
     TransitionIdleState();
@@ -55,7 +55,7 @@ Player::~Player()
 //更新処理
 void Player::Update(float elapsedTime)
 {
-
+   
     //ジャンプ入力処理
     //InputJump();
 
@@ -230,6 +230,8 @@ void Player::DrawDebugGUI()
             ImGui::InputFloat3("Scale", &scale.x);
 
             ImGui::Text(u8"State %s", str.c_str());
+
+            ImGui::InputInt("Helth", &health);
             
         }
 
@@ -285,6 +287,17 @@ void Player::DrawDebugPrimitive()
             DirectX::XMFLOAT4(1, 0, 0, 1)
         );
     }
+    if (specialAttackCollisionFlag)
+    {
+        Model::Node* leftHandBone = model->FindNode("mixamorig:LeftHand");
+        debugRenderer->DrawSphere(DirectX::XMFLOAT3(
+            leftHandBone->worldTransform._41,
+            leftHandBone->worldTransform._42,
+            leftHandBone->worldTransform._43),
+            leftHandRadius,
+            DirectX::XMFLOAT4(1, 0, 0, 1)
+        );
+    }
 
 }
 
@@ -313,7 +326,7 @@ bool Player::InputJump()
 bool Player::Inputavoidance()
 {
     Mouse& mouse = Input::Instance().GetMouse();
-    if (mouse.GetButtonDown() & Mouse::BTN_RIGHT)
+    if (mouse.GetButtonDown() & Mouse::BTN_RIGHT&&!specialAttack)
     {
         return true;
     }
@@ -326,7 +339,7 @@ bool Player::InputSpecialAttack()
     GamePad& gamePad = Input::Instance().GetGamePad();
 
     //直進弾丸発射
-    if (gamePad.GetButtonDown() & GamePad::BTN_Q)
+    if (gamePad.GetButtonDown() & GamePad::BTN_Q&&state!=State::Attack&&state!=State::Avoidance&&state!=State::Kick)
     {
         if (specialTime >= specialTimeMax)
         {
@@ -417,7 +430,7 @@ void Player::CollisionProjectilesVsEnemies()
 bool Player::InputKick()
 {
     GamePad& gamePad = Input::Instance().GetGamePad();
-    if (gamePad.GetButtonDown() & GamePad::BTN_E)
+    if (gamePad.GetButtonDown() & GamePad::BTN_E&&!specialAttack)
     {
         return true;
     }
@@ -495,7 +508,7 @@ bool Player::InputMove(float elapsedTime)
 bool Player::InputAttack()
 {
      Mouse& mouse = Input::Instance().GetMouse();
-        if (mouse.GetButtonDown() & Mouse::BTN_LEFT )
+        if (mouse.GetButtonDown() & Mouse::BTN_LEFT&&!specialAttack )
     {
         return true;
     }
@@ -677,10 +690,6 @@ void Player::UpdateIdleState(float elapsedTime)
     }
 
     //必殺技入力処理
-   /* if (InputSpecialAttack())
-    {
-        TransitionAttackState();
-    }*/
     if (specialTime <= 0 && specialAttack)
     {
         TransitionSpecialAttackState();
@@ -952,7 +961,16 @@ void Player::UpdateSpecialAttackState(float elapsedTime)
 
     if (!model->IsPlayAnimation())
     {
-        TransitionIdleState();
+        if (!Special_Hit_Check)
+        {
+            health--;
+            TransitionDeathState();
+
+        }
+        else if (Special_Hit_Check)
+        {
+            TransitionIdleState();
+        }
     }
 
     float animationTime = model->GetCurrentAnimationSeconds();
@@ -960,7 +978,7 @@ void Player::UpdateSpecialAttackState(float elapsedTime)
     if (specialAttackCollisionFlag)
     {
         //ノードの名前を打つ
-        //CollisionNodeVsEnemies("", specialAttackRadius)
+        CollisionNodeVsEnemies("mixamorig:LeftHand", leftHandRadius);
     }
 }
 
@@ -993,7 +1011,10 @@ void Player::CollisionNodeVsEnemies(const char* nodeName, float nodeRadius)
             enemy->GetHeight(),
             outPosition))
         {
-
+            if (specialAttack)
+            {
+                Special_Hit_Check = true;
+            }
             //ダメージを与える
             if (enemy->ApplyDamage(1, 1.5f))
             {

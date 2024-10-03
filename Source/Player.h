@@ -210,4 +210,7 @@ private:
     float kickRadius = 1.0f;
     bool specialAttackCollisionFlag = false;
     float specialAttackRadius = 1.0f;
+
+    float HealthPreservation = 0;
+    bool Special_Hit_Check = false;
 };
