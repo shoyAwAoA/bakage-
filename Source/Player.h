@@ -54,7 +54,8 @@ private:
     //スティック入力値から移動ベクトルを取得
     DirectX::XMFLOAT3 GetMoveVec()const;
 
-
+    //必殺技入力処理
+    bool InputSpecialAttack();
 
     //移動入力処理
     //void InputMove(float elapsedTime);
@@ -73,7 +74,7 @@ private:
     void CollisionProjectilesVsEnemies();
 
     //弾丸入力処理
-    void InputProjectile();
+    void InputSpecial();
 
     //待機ステートへ遷移
     void TransitionIdleState();
@@ -132,7 +133,14 @@ private:
     //蹴りステート
     void TransitionKickState();
 
+    //蹴りの更新処理
     void UpdateKickState(float elapsedTime);
+
+    //必殺技ステート
+    void TransitionSpecialAttackState();
+
+    void UpdateSpecialAttackState(float elapsedTime);
+
 
 protected:
     //着地したときに呼ばれる
@@ -161,6 +169,7 @@ private:
         Anim_Running,
         Anim_Walking,
         Anim_Avoidance,
+        Anim_SpecialAttack,
     };
 
     //ステート
@@ -176,6 +185,7 @@ private:
         Revive,
         Avoidance,
         Kick,
+        SpecialAttack,
     };
 
 private:
@@ -198,4 +208,6 @@ private:
     float avoidanceRadius = 0.7f;
     bool kickCollisionFlag = false;
     float kickRadius = 1.0f;
+    bool specialAttackCollisionFlag = false;
+    float specialAttackRadius = 1.0f;
 };

@@ -60,7 +60,7 @@ void Player::Update(float elapsedTime)
     //InputJump();
 
     //弾丸入力処理
-    //InputProjectile();
+    //InputSpecialAttack();
     switch (state)
     {
     case State::Idle:
@@ -103,6 +103,10 @@ void Player::Update(float elapsedTime)
         UpdateKickState(elapsedTime);
         UpdateTransform();
         break;
+    case State::SpecialAttack:
+        UpdateSpecialAttackState(elapsedTime);
+        UpdateTransform();
+        break;
     }
 
 
@@ -130,7 +134,7 @@ void Player::Update(float elapsedTime)
 
     //モデル行列更新
     model->UpdateTransform(transform);
-    InputProjectile();
+    InputSpecial();
 
     if (specialAttack)
     {
@@ -198,6 +202,9 @@ void Player::DrawDebugGUI()
         break;
     case Player::State::Kick:
         str = "Kick";
+        break;
+    case Player::State::SpecialAttack:
+        str = "SpecialAttack";
         break;
     default:
         break;
@@ -311,6 +318,21 @@ bool Player::Inputavoidance()
         return true;
     }
 
+    return false;
+}
+
+bool Player::InputSpecialAttack()
+{
+    GamePad& gamePad = Input::Instance().GetGamePad();
+
+    //直進弾丸発射
+    if (gamePad.GetButtonDown() & GamePad::BTN_Q)
+    {
+        if (specialTime >= specialTimeMax)
+        {
+            specialAttack = true;
+        }
+    }
     return false;
 }
 
@@ -524,21 +546,21 @@ void Player::CollisionPlayerVsEnemies()
 }
 
 //弾丸入力処理
-void Player::InputProjectile()
+void Player::InputSpecial()
 {
     GamePad& gamePad = Input::Instance().GetGamePad();
 
-    //直進弾丸発射
-    if (gamePad.GetButtonDown() & GamePad::BTN_Q)
-    {
-        if (specialTime >= specialTimeMax)
-        {
-            specialAttack = true;
-        }
-        else 
-        {
-        }
-    }
+    ////直進弾丸発射
+    //if (gamePad.GetButtonDown() & GamePad::BTN_Q)
+    //{
+    //    if (specialTime >= specialTimeMax)
+    //    {
+    //        specialAttack = true;
+    //    }
+    //    else 
+    //    {
+    //    }
+    //}
         //前方向
         DirectX::XMFLOAT3 dir;
         //dir.x = sinf(angle.y) * cosf(angle.x);
@@ -654,8 +676,18 @@ void Player::UpdateIdleState(float elapsedTime)
         TransitionAvoidanceState();
     }
 
+    //必殺技入力処理
+   /* if (InputSpecialAttack())
+    {
+        TransitionAttackState();
+    }*/
+    if (specialTime <= 0 && specialAttack)
+    {
+        TransitionSpecialAttackState();
+    }
+
     //弾丸入力処理
-    InputProjectile();
+//    InputSpecialAttack();
 }
 
 //待機ステート更新処理
@@ -697,11 +729,19 @@ void Player::UpdateMoveState(float elapsedTime)
     {
         TransitionKickState();
     }
+   /* if (InputSpecialAttack())
+    {
+        TransitionSpecialAttackState();
+    }*/
+    if (specialTime <= 0 && specialAttack)
+    {
+        TransitionSpecialAttackState();
+    }
     ////ジャンプ入力処理
     //InputJump();
 
     //弾丸入力処理
-    InputProjectile();
+    InputSpecialAttack();
 
 
 }
@@ -729,7 +769,7 @@ void Player::UpdateJumpState(float elapsedTime)
     {
         model->PlayAnimation(Anim_Falling, false);
     }
-    InputProjectile();
+    InputSpecialAttack();
 }
 
 //着地ステートへ遷移
@@ -894,6 +934,34 @@ void Player::UpdateKickState(float elapsedTime)
 
     }
     
+}
+
+//必殺技ステートへ遷移
+void Player::TransitionSpecialAttackState()
+{
+    state = State::SpecialAttack;
+
+//    model->PlayAnimation(Anim_SpecialAttack, false);
+    model->PlayAnimation(Anim_Attack, false);
+}
+
+//必殺技ステートの更新処理
+void Player::UpdateSpecialAttackState(float elapsedTime)
+{
+
+
+    if (!model->IsPlayAnimation())
+    {
+        TransitionIdleState();
+    }
+
+    float animationTime = model->GetCurrentAnimationSeconds();
+    specialAttackCollisionFlag = animationTime >= 0.2f && animationTime <= 0.4f;
+    if (specialAttackCollisionFlag)
+    {
+        //ノードの名前を打つ
+        //CollisionNodeVsEnemies("", specialAttackRadius)
+    }
 }
 
 void Player::CollisionNodeVsEnemies(const char* nodeName, float nodeRadius)
