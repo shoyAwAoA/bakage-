@@ -113,6 +113,15 @@ void SceneGame2::Finalize()
 		delete speak;
 		speak = nullptr;
 	}
+	if (spr != nullptr)
+	{
+		delete spr;
+		spr = nullptr;
+	}
+	if (dieSpeak != nullptr)
+	{
+		dieSpeak = nullptr;
+	}
 
 
 	//エネミー終了化

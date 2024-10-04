@@ -4,7 +4,9 @@
 #include"Player.h"
 #include"Collision.h"
 #include"SceneGame2.h"
-
+#include"SceneManager.h"
+#include"SceneLoading.h"
+#include"SceneSelect.h"
 //グローバル
 extern bool hipopo_Speak_flag;
 extern bool hipopo_DieSpeak_flag;//倒された時のセリフ
@@ -308,7 +310,6 @@ void EnemyHipopozamasu::UpdateWanderState(float elapsedTime)
         //見つかったら追跡ステートへ遷移
         TransitionPursuitState();
     }
-
 }
 //待機ステートへ遷移
 void EnemyHipopozamasu::TransitionIdleState()
@@ -524,5 +525,6 @@ void EnemyHipopozamasu::UpdateDeathState(float elapsedTime)
     {
         Destroy();
         hipopo_DieSpeak_flag = false;
+        SceneManager::Instance().ChangeScene(new SceneLoading(new SceneSelect));
     }
 }

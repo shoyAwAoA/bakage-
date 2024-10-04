@@ -129,6 +129,7 @@
     <ClInclude Include="Source\EnemyHipopozamasu.h" />
     <ClInclude Include="Source\EnemyManager.h" />
     <ClInclude Include="Source\EnemyKiriko.h" />
+    <ClInclude Include="Source\EnemySilverback.h" />
     <ClInclude Include="Source\Framework.h" />
     <ClInclude Include="Source\Graphics\DebugRenderer.h" />
     <ClInclude Include="Source\Graphics\Graphics.h" />
@@ -186,6 +187,7 @@
     <ClCompile Include="Source\EnemyHipopozamasu.cpp" />
     <ClCompile Include="Source\EnemyManager.cpp" />
     <ClCompile Include="Source\EnemyKiriko.cpp" />
+    <ClCompile Include="Source\EnemySilverback.cpp" />
     <ClCompile Include="Source\Framework.cpp" />
     <ClCompile Include="Source\Graphics\DebugRenderer.cpp" />
     <ClCompile Include="Source\Graphics\Graphics.cpp" />
