@@ -12,7 +12,7 @@
 
 //グローバル変数
 bool speak_flag = false;
-
+bool dieSpeak_flag = false;
 
 
 // 初期化
@@ -34,7 +34,8 @@ void SceneGame::Initialize()
 	//ゲージスプライト
 	guage = new Sprite();
 	hissatu = new Sprite("Data/Sprite/riza.png");
-	speak = new Sprite("Data/Sprite/riza.png");
+	speak = new Sprite("Data/Sprite/riza.png");//最初のセリフ
+	dieSpeak = new Sprite("Data/Sprite/suku3.png");//倒された時のキリコのセリフ
 
 	//カメラ初期設定
 	Graphics& graphics = Graphics::Instance();
@@ -286,8 +287,6 @@ void SceneGame::RenderEnemyGauge(
 	{
 		Enemy* enemy = enemyManager.GetEnemy(i);
 
-		
-
 		DirectX::XMFLOAT3 worldPosition = enemy->GetPosition();
 		worldPosition.y += enemy->GetHeight();
 
@@ -313,6 +312,10 @@ void SceneGame::RenderEnemyGauge(
 		const float speakWidth = 50.0f;
 		const float speakHeight = 20.0f;
 
+		const float dieSpeakWidth = 140.0f;
+		const float dieSpeakHeight = 80.0f;
+		const float dieSpeakPositionX = screenPosition.x;
+		const float dieSpeakPositionY = screenPosition.y - 80.0f;
 		if (speak_flag)
 		{
 			speak->Render(dc,
@@ -327,27 +330,19 @@ void SceneGame::RenderEnemyGauge(
 				1.0f, 1.0f, 1.0f, 1.0f
 			);
 		}
-		else
+		else if(dieSpeak_flag)
 		{
-
+			dieSpeak->Render(dc,
+				dieSpeakPositionX,
+				dieSpeakPositionY,
+				dieSpeakWidth,
+			 dieSpeakHeight,
+				0, 0,
+				static_cast<float>(dieSpeak->GetTextureWidth()),
+				static_cast<float>(dieSpeak->GetTextureHeight()),
+				0.0f,
+				1.0f, 1.0f, 1.0f, 1.0f
+			);
 		}
-	
 	}
-
-	
-	
-
-	////エネミー配置処理
-	//Mouse& mouse = Input::Instance().GetMouse();
-	//if (mouse.GetButtonDown() & Mouse::BTN_LEFT)
-	//{
-	//	//マウスカーソル座標を取得
-	//	DirectX::XMFLOAT3 screenPosition;
-	//	screenPosition.x = static_cast<float>(mouse.GetPositionX());
-	//	screenPosition.y = static_cast<float>(mouse.GetPositionY());
-
-	//
-
-	//}
-
 }

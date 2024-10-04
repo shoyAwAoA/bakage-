@@ -7,6 +7,7 @@
 
 //グローバル
 extern bool speak_flag;
+extern bool dieSpeak_flag;//倒された時のセリフ
 extern bool Special;
 
 static EnemyKiriko* instance = nullptr;
@@ -29,6 +30,7 @@ EnemyKiriko::EnemyKiriko()
     radius = 0.5f;
     height = 1.0f;
 
+    health = 2;
     //徘徊ステートへ遷移
     TransitionWanderState();
 }
@@ -389,8 +391,10 @@ void EnemyKiriko::UpdatePursuitState(float elapsedTime)
 
     //目標地点へ移動
     MoveToTarget(elapsedTime, 1.0f);
-
-    speak_flag = true;
+    if (health>0)
+    {
+        speak_flag = true;
+    }
 
     //タイマー処理
     stateTimer -= elapsedTime;
@@ -513,9 +517,12 @@ void EnemyKiriko::TransitionDeathState()
 //死亡ステート更新処理
 void EnemyKiriko::UpdateDeathState(float elapsedTime)
 {
+    speak_flag = false;
+    dieSpeak_flag = true;
     //ダメージアニメーションが終わったら自分を破棄
     if (!model->IsPlayAnimation())
     {
         Destroy();
+        dieSpeak_flag = false;
     }
 }

@@ -43,10 +43,10 @@ private:
 public:
 
 	Sprite* guage = nullptr;
-	Sprite* speak = nullptr;
+	Sprite* speak = nullptr;//Å‰‚Ì
+	Sprite* dieSpeak = nullptr;//€‚Ê‚Æ‚«‚ÌƒZƒŠƒt
 
 private:
-	//Stage* stage = nullptr;
 	Player* player = nullptr;
 	CameraController* cameraController = nullptr;
 	Sprite* hissatu=nullptr;
