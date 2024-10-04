@@ -1,23 +1,21 @@
 ﻿#include"Graphics/Graphics.h"
 #include"Input/Input.h"
-#include "SceneTitle.h"
+#include "SceneSelect.h"
 #include"SceneGame.h"
 #include"SceneGame2.h"
 #include"SceneGame3.h"
 #include"SceneManager.h"
 #include"SceneLoading.h"
-#include"SceneSelect.h"
 
 //初期化
-void SceneTitle::Initialize()
+void SceneSelect::Initialize()
 {
-    
-    //スプライト初期化
-    sprite = new Sprite("Data/Sprite/Title.png");
+    //スプライトの初期化
+    sprite = new Sprite("Data/Sprite/score.png");
 }
 
 //終了化
-void SceneTitle::Finalize()
+void SceneSelect::Finalize()
 {
     //スプライト終了化
     if (sprite != nullptr)
@@ -28,7 +26,7 @@ void SceneTitle::Finalize()
 }
 
 //更新処理
-void SceneTitle::Update(float elapsedTime)
+void SceneSelect::Update(float elapsedTime)
 {
     GamePad& gamePad = Input::Instance().GetGamePad();
 
@@ -37,19 +35,30 @@ void SceneTitle::Update(float elapsedTime)
     mousePositionX = mouse.GetPositionX();
     mousePositionY = mouse.GetPositionY();
 
-    //何かボタンを押したらローディングシーンをはさんでセレクへ切り替え
+    //何かボタンを押したらローディングシーンをはさんでゲームシーンへ切り替え
     if (mouse.GetButtonDown() & Mouse::BTN_LEFT)
     {
-        if (0 <= mousePositionX && 1280 > mousePositionX)
+        //キリコ
+        if (0 <= mousePositionX && 426 > mousePositionX)
         {
-            SceneManager::Instance().ChangeScene(new SceneLoading(new SceneSelect));
+            SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame));
+        }
+        //ヒポポタマス
+        else if (426 <= mousePositionX && 852 > mousePositionX)
+        {
+            SceneManager::Instance().ChangeScene(new SceneGame2);
+        }
+        //シルバーバック先輩
+        else
+        {
+            SceneManager::Instance().ChangeScene(new SceneGame3);
         }
     }
 
 }
 
 //描画処理
-void SceneTitle::Render()
+void SceneSelect::Render()
 {
     Graphics& graphics = Graphics::Instance();
     ID3D11DeviceContext* dc = graphics.GetDeviceContext();

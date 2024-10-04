@@ -195,6 +195,9 @@
     <ClInclude Include="Source\keyboarb.h">
       <Filter>Source\Input</Filter>
     </ClInclude>
+    <ClInclude Include="Source\SceneSelect.h">
+      <Filter>Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui\imgui.cpp">
@@ -336,6 +339,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\SceneGame3.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SceneSelect.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

@@ -9,6 +9,9 @@
 #include"ProjectileHoming.h"
 #include"CameraController.h"
 #include"Audio/Audio.h"
+#include"SceneLoading.h"
+#include"SceneSelect.h"
+#include"SceneManager.h"
 
 //グローバル許可
 bool Special = false;
@@ -777,12 +780,7 @@ void Player::UpdateDeathState(float elapsedTime)
 {
     if (!model->IsPlayAnimation())
     {
-        //ボタンを押したら復活ステートへ遷移
-        GamePad& gamePad = Input::Instance().GetGamePad();
-        if (gamePad.GetButtonDown() & GamePad::BTN_A)
-        {
-            TransitionReviveState();
-        }
+        SceneManager::Instance().ChangeScene(new SceneLoading(new SceneSelect));
     }
 }
 //復活ステートへ遷移
