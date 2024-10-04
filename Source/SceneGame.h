@@ -45,11 +45,11 @@ public:
 	Sprite* guage = nullptr;
 	Sprite* speak = nullptr;//Å‰‚Ì
 	Sprite* dieSpeak = nullptr;//€‚Ê‚Æ‚«‚ÌƒZƒŠƒt
+	Sprite* hissatu=nullptr;
 
 private:
 	Player* player = nullptr;
 	CameraController* cameraController = nullptr;
-	Sprite* hissatu=nullptr;
 	
 	float spriteMoveX = 1280;
 	float miaSpeed = 1.0f;

@@ -126,6 +126,7 @@
     <ClInclude Include="Source\Effect.h" />
     <ClInclude Include="Source\EffectManager.h" />
     <ClInclude Include="Source\Enemy.h" />
+    <ClInclude Include="Source\EnemyHipopozamasu.h" />
     <ClInclude Include="Source\EnemyManager.h" />
     <ClInclude Include="Source\EnemyKiriko.h" />
     <ClInclude Include="Source\Framework.h" />
@@ -182,6 +183,7 @@
     <ClCompile Include="Source\Effect.cpp" />
     <ClCompile Include="Source\EffectManager.cpp" />
     <ClCompile Include="Source\Enemy.cpp" />
+    <ClCompile Include="Source\EnemyHipopozamasu.cpp" />
     <ClCompile Include="Source\EnemyManager.cpp" />
     <ClCompile Include="Source\EnemyKiriko.cpp" />
     <ClCompile Include="Source\Framework.cpp" />

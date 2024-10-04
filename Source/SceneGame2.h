@@ -28,6 +28,11 @@ public:
 	//void Render();
 	void Render()override;
 
+	void RenderEnemyGauge(
+		ID3D11DeviceContext* dc,
+		const DirectX::XMFLOAT4X4& view,
+		const DirectX::XMFLOAT4X4& projection
+	);
 
 private:
 	//Stage* stage = nullptr;
@@ -35,4 +40,11 @@ private:
 	CameraController* cameraController = nullptr;
 	Sprite* spr = nullptr;
 
+	Sprite* guage=nullptr;
+	Sprite* speak=nullptr;//Å‰‚Ì
+	Sprite* dieSpeak=nullptr;//€‚Ê‚Æ‚«‚ÌƒZƒŠƒt
+	Sprite* hissatu=nullptr;
+
+	float spriteMoveX = 1280;
+	float miaSpeed = 1.0f;
 };
