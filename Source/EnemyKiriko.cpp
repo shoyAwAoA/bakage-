@@ -11,7 +11,6 @@ extern bool Special;
 
 static EnemyKiriko* instance = nullptr;
 
-
 EnemyKiriko& EnemyKiriko::Instance()
 {
     // TODO: return ステートメントをここに挿入します

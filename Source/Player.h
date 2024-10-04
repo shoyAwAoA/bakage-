@@ -6,6 +6,8 @@
 #include"ProjectileManager.h"
 #include"Effect.h"
 #include"Graphics/Sprite.h"
+#include"Audio/AudioSource.h"
+
 class Player :public Character
 {
 public:
@@ -38,9 +40,6 @@ public:
     const bool& GetspecialAttack()const { return specialAttack; }
 
     bool SetspecialAttack(const bool& specialAttack)const { this->specialAttack; }
-
-    //void InputJump();
-    bool InputJump();
 
     //回避入力処理
     bool Inputavoidance();
@@ -91,13 +90,6 @@ private:
 
     //移動ステート更新処理
     void UpdateMoveState(float elapsedTime);
-
-    //ジャンプステートへ遷移
-    void TransitionJumpState();
-
-    //ジャンプステート更新処理
-    void UpdateJumpState(float elapsedTime);
-
     //着地ステートへ遷移
     void TransitionLandState();
 
@@ -197,9 +189,6 @@ private:
     ProjectileManager projectileManager;
     float moveSpeed = 5.0f;
     float turnSpeed = DirectX::XMConvertToRadians(720);
-    float jumpSpeed = 20.0f;
-    int jumpCount = 0;
-    int jumpLimit = 2;
     Effect* hitEffect = nullptr;
     State              state = State::Idle;
     float  leftHandRadius = 1.7f;
@@ -217,4 +206,7 @@ private:
 
     float HealthPreservation = 0;
     bool SpecialHitCheck = false;
+
+    //音
+    std::unique_ptr<AudioSource> punch_Sound;//パンチ
 };

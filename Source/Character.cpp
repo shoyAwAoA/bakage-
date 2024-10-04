@@ -114,6 +114,7 @@ void Character::Move(float vx, float vz, float speed)
         moveVecZ = vz;
     //最大速度設定
         maxMoveSpeed = speed;
+        maxMoveVelocity = velocity;
 }
 
 void Character::Turn(float elapsedTime, float vx, float vz, float speed)
@@ -176,11 +177,12 @@ void Character::UpdateVelocity(float elapsedTime)
     if (player.GetAvoidanceCollisionFlag())
     {
         player.maxMoveSpeed = 10.0f;
+       // player.maxMoveVelocity = { 10.0f,0,10.0f };
     }
     else if (player.GetAvoidanceCollisionFlag())
     {
         player.maxMoveSpeed = 5.0f;
-        
+        //player.maxMoveVelocity = { 5.0f,0,5.0f };
     }
 
     //垂直速力更新処理

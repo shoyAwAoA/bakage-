@@ -8,14 +8,12 @@
 #include"ProjectileStraight.h"
 #include"ProjectileHoming.h"
 #include"CameraController.h"
-
+#include"Audio/Audio.h"
 
 //グローバル許可
 bool Special = false;
 
-
 static Player* instance = nullptr;
-
 
 Player& Player::Instance()
 {
@@ -23,17 +21,17 @@ Player& Player::Instance()
     return *instance;
 }
 
-
 //コンストラクタ
 Player::Player()
 {
-
     //インスタンスポインタ設定
     instance = this;
+    Audio& audioManager = Audio::Instance();
 
-    //model = new Model("Data/Model/Mr.Incredible/Mr.Incredible.mdl");
+    //punch_Sound=audioManager.LoadAudioSource("Data/Audio/idou.wav");
+    
     model = new Model("Data/Model/Jammo/Jammo.mdl");
-    //model->PlayAnimation(0);
+    
     scale.x = scale.y = scale.z = 0.01f;
 
     //ヒットエフェクト読み込み
@@ -49,21 +47,18 @@ Player::~Player()
     {
         delete model;
         model = nullptr;
-
     }
-
     
     delete hitEffect;
 }
 //更新処理
 void Player::Update(float elapsedTime)
 {
-   
-    //ジャンプ入力処理
-    //InputJump();
-
+    if (velocity.x > 15.0f)  { velocity.x = 15.f; }
+    if (velocity.z > 15.0f)  { velocity.z = 15.f; }
+    if (velocity.x < -15.0f) { velocity.x = -15.f; }
+    if (velocity.z < -15.0f) { velocity.z = -15.f; }
     //弾丸入力処理
-    //InputSpecialAttack();
     switch (state)
     {
     case State::Idle:
@@ -72,10 +67,6 @@ void Player::Update(float elapsedTime)
         break;
     case State::Move:
         UpdateMoveState(elapsedTime);
-        UpdateTransform();
-        break;
-    case State::Jump:
-        UpdateJumpState(elapsedTime);
         UpdateTransform();
         break;
     case State::Land:
@@ -137,7 +128,6 @@ void Player::Update(float elapsedTime)
     //プレイヤーと敵との衝突処理
 
     //弾丸と敵の衝突処理
-
    
     //モデルアニメーション更新処理
     model->UpdateAnimetion(elapsedTime);
@@ -187,9 +177,6 @@ void Player::DrawDebugGUI()
         break;
     case Player::State::Move:
         str = "Move";
-        break;
-    case Player::State::Jump:
-        str = "Jump";
         break;
     case Player::State::Land:
         str = "Land";
@@ -243,9 +230,7 @@ void Player::DrawDebugGUI()
             ImGui::InputInt("Helth", &health);
 
             ImGui::Checkbox("Special", &Special);
-            
         }
-
         if (ImGui::CollapsingHeader("Velocity", ImGuiTreeNodeFlags_DefaultOpen))
         {
             ImGui::InputFloat3("Velocity", &velocity.x);
@@ -312,27 +297,6 @@ void Player::DrawDebugPrimitive()
 
 }
 
-
-
-bool Player::InputJump()
-{
-    GamePad& gamePad = Input::Instance().GetGamePad();
-    if (gamePad.GetButtonDown() & GamePad::BTN_A)
-    {
-            //ジャンプ回数制限
-            if (jumpCount < jumpLimit)
-            {
-                ++jumpCount;
-                //ジャンプ
-                Jump(jumpSpeed);
-
-                //ジャンプ入力した
-                return true;
-            }
-    }
-
-    return false;
-}
 
 bool Player::Inputavoidance()
 {
@@ -553,7 +517,6 @@ void Player::CollisionPlayerVsEnemies()
             {
                 if (enemy->GetPosition().z - 1 <= GetPosition().z && enemy->GetPosition().z + 1 >= GetPosition().z)
                 {
-                    Jump(jumpSpeed);
                     enemy->ApplyDamage(1, 0.5f);
                 }
             }
@@ -578,16 +541,7 @@ void Player::InputSpecial()
     GamePad& gamePad = Input::Instance().GetGamePad();
 
     ////直進弾丸発射
-    //if (gamePad.GetButtonDown() & GamePad::BTN_Q)
-    //{
-    //    if (specialTime >= specialTimeMax)
-    //    {
-    //        specialAttack = true;
-    //    }
-    //    else 
-    //    {
-    //    }
-    //}
+ 
         //前方向
         DirectX::XMFLOAT3 dir;
         //dir.x = sinf(angle.y) * cosf(angle.x);
@@ -617,9 +571,6 @@ void Player::InputSpecial()
         dir.x = sinf(angle.y);
         dir.y = 0;
         dir.z = cosf(angle.y);
-        //dir.x = sinf(angle.y) * cosf(angle.x);
-        //dir.y = sinf(angle.x);
-        //dir.z = cosf(angle.y) * cosf(angle.x);
 
         //発射位置(プレイヤーの腰あたり)
         DirectX::XMFLOAT3 pos;
@@ -684,13 +635,6 @@ void Player::UpdateIdleState(float elapsedTime)
     {
         TransitionKickState();
     }
-
-    //ジャンプ入力処理
-    if (InputJump())
-    {
-        TransitionJumpState();
-    }
-
     //攻撃入力処理
     if (InputAttack())
     {
@@ -731,11 +675,7 @@ void Player::UpdateMoveState(float elapsedTime)
     {
         TransitionIdleState();
     }
-    //ジャンプ入力処理
-    if (InputJump())
-    {
-        TransitionJumpState();
-    }
+    
     //攻撃入力処理
     if (InputAttack())
     {
@@ -757,32 +697,6 @@ void Player::UpdateMoveState(float elapsedTime)
         TransitionSpecialAttackState();
     }
     //弾丸入力処理
-    InputSpecialAttack();
-}
-
-//ジャンプステートへ遷移
-void Player::TransitionJumpState()
-{
-    state = State::Jump;
-
-    //ジャンプアニメーション再生
-    model->PlayAnimation(Anim_Jump, false);
-}
-
-void Player::UpdateJumpState(float elapsedTime)
-{
-    //移動入力処理
-    InputMove(elapsedTime);
-
-    if (InputJump())
-    {
-        model->PlayAnimation(Anim_Jump_Flip, false);
-    }
-    //アニメーション終了
-    if (!model->IsPlayAnimation())
-    {
-        model->PlayAnimation(Anim_Falling, false);
-    }
     InputSpecialAttack();
 }
 
@@ -1044,7 +958,7 @@ void Player::CollisionNodeVsEnemies(const char* nodeName, float nodeRadius)
 
 void Player::OnLanding()
 {
-    jumpCount = 0;
+    
     
     //ダメージ、死亡ステート時は着地した時にステート遷移しないようにする
     if (state != State::Damage && state != State::Death)

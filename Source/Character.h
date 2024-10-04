@@ -114,6 +114,7 @@ protected:
     float friction = 0.5f;
     float acceleration = 1.0f;
     float maxMoveSpeed = 5.0f;
+    DirectX::XMFLOAT3  maxMoveVelocity = { 8.0f,0,8.0f };
     float moveVecX = 0.0f;
     float moveVecZ = 0.0f;
     float airControl = 0.3f;

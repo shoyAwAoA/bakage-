@@ -22,6 +22,8 @@ public:
     //•`‰æˆ—
     void Render()override;
 
+
+
 private:
     Sprite* sprite = nullptr;
     float mousePositionX = 0.0f;

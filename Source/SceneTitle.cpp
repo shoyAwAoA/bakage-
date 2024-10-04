@@ -55,6 +55,7 @@ void SceneTitle::Update(float elapsedTime)
             SceneManager::Instance().ChangeScene(new SceneGame3);
         }
     }
+
 }
 
 //描画処理
