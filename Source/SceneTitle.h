@@ -2,6 +2,7 @@
 
 #include"Graphics/Sprite.h"
 #include"Scene.h"
+//#include""
 
 //タイトルシーン
 class SceneTitle :public Scene
@@ -22,6 +23,9 @@ public:
     //描画処理
     void Render()override;
 
+    public:
+       /* std::unique_ptr<sprite> title_sprite;*/
+       /* Microsoft::WRL::ComPtr<Sprite> */
 
 
 private:
