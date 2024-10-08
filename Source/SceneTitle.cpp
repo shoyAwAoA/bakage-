@@ -7,11 +7,15 @@
 #include"SceneManager.h"
 #include"SceneLoading.h"
 #include"SceneSelect.h"
+using namespace std;
+
 
 //初期化
 void SceneTitle::Initialize()
 {
-    
+    //Direct3Dの初期化
+
+
     //スプライト初期化
     sprite = new Sprite("Data/Sprite/Title.png");
 }
@@ -76,3 +80,16 @@ void SceneTitle::Render()
             1, 1, 1, 1);
     }
 }
+
+//void DisplayJapaneseText()
+//{
+//    string japaneseText = "日本語のテキスト";
+//    int xPosition = 10;
+//    int yPosition = 30;
+//
+//    using (Font font = new Font("Arial Unicode MS", 12))
+//        using (Brush brush = new SolidBrush(Color.Black))
+//    {
+//        e.Graphics.DrawString(japaneseText, font, brush, new PointF(xPosition, yPosition));
+//    };
+//}

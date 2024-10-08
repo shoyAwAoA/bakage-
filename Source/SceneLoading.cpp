@@ -8,6 +8,7 @@ void SceneLoading::Initialize()
 {
     //スプライト初期化
     sprite = new Sprite("Data/Sprite/LoadingIcon.png");
+    sprite = new Sprite("Data/Sprite/nisi.png");
 
     //スレッド開始
     thread = new std::thread(LoadingThread, this);

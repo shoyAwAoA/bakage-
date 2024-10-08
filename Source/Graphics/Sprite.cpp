@@ -351,6 +351,7 @@ void Sprite::Render(ID3D11DeviceContext *immediate_context,
 		immediate_context->PSSetSamplers(0, 1, samplerState.GetAddressOf());
 
 		// •`‰æ
+
 		immediate_context->Draw(4, 0);
 	}
 }
