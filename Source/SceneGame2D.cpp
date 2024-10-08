@@ -26,6 +26,8 @@ void SceneGame2D::Initialize()
     sprite = new Sprite("Data/Sprite/score.png");
     sprite2 = new Sprite("Data/Sprite/kiriko/matome.png");
     state = Quote_State::Quote_0;
+    kati = 0;
+    make = 0;
 }
 
 //終了化
@@ -159,13 +161,13 @@ void SceneGame2D::Render()
         0, 0, textureWidth, textureHeight,
         0, 1, 1, 1, 1);
 
-    // レンダリングの共通処理を関数化
-    auto RenderSprite2 = [&](float fontSizeX, float scale, float posYMultiplier, float offsetY = 0.0f)
+    // レンダリングの共通処理を関数化（X, Y 座標を追加）
+    auto RenderSprite2 = [&](float x, float y, float fontSizeX, float scale, float posYMultiplier, float offsetY = 0.0f)
     {
         sprite2->Render(dc,
-            0, 380,  // 固定位置
+            x, y,  // X座標とY座標を指定可能に
             screenWidth * fontSizeX, screenHeight * 10.0f,  // 横幅と縦幅のスケーリング
-            0, 144.92928571f * posYMultiplier + offsetY,  // Y座標
+            0, 144.92928571f * posYMultiplier + offsetY,  // Y座標スケーリングとオフセット
             textureWidth * scale, textureHeight * scale,  // テクスチャサイズ
             0, 1, 1, 1, 1);  // 色
     };
@@ -173,27 +175,27 @@ void SceneGame2D::Render()
     // 状態に応じた描画処理
     switch (state)
     {
-    case Quote_State::Quote_0: RenderSprite2(2.5f, 5.0f, 0); break; //1  西孔雀羽織学園
-    case Quote_State::Quote_1: RenderSprite2(9.0f, 17.0f,1); break; // 4行目
-    case Quote_State::Quote_2: RenderSprite2(7.5f, 13.0f,5); break; // 3行目
-    case Quote_State::Quote_3: RenderSprite2(2.5f, 5.0f, 8); break; // 1行目
-    case Quote_State::Quote_4: RenderSprite2(2.5f, 5.0f, 9); break; // 1行目
-    case Quote_State::Quote_5: RenderSprite2(5.0f, 9.0f, 10); break; // 2行目
-    case Quote_State::Quote_6: RenderSprite2(2.5f, 5.0f, 12); break; // 1行目
-    case Quote_State::Quote_7: RenderSprite2(5.0f, 9.0f, 13); break; // 2行目
-    case Quote_State::Quote_8: RenderSprite2(7.5f, 13.0f, 15); break; // 3行目
-    case Quote_State::Quote_9: RenderSprite2(7.5f, 13.0f, 18); break; // 3行目
-    case Quote_State::Quote_10: RenderSprite2(7.5f, 13.0f, 21); break; // 3行目
-    case Quote_State::Quote_11: RenderSprite2(2.5f, 5.0f, 24); break; // 1行目
-    case Quote_State::Quote_12: RenderSprite2(2.5f, 5.0f, 25); break; // 1行目
-    case Quote_State::Quote_13: RenderSprite2(2.5f, 5.0f, 26); break; // 1行目
-    case Quote_State::Quote_14: RenderSprite2(11.5f, 21.0f,27); break; // 5行目
-    case Quote_State::Quote_15: RenderSprite2(2.5f, 5.0f, 32); break; // 1行目
-    case Quote_State::Quote_16: RenderSprite2(2.5f, 5.0f, 33); break; // 1行目
-    case Quote_State::Quote_17: RenderSprite2(2.5f, 5.0f, 34); break; // 1行目
-    case Quote_State::Quote_18: RenderSprite2(2.5f, 5.0f, 35); break; // 1行目
-    case Quote_State::Quote_19: RenderSprite2(7.5f, 13.0f, 38); break; // 3行目
-    case Quote_State::Quote_20: RenderSprite2(2.5f, 5.0f, 40); break; // 1行目
-    case Quote_State::Quote_21: RenderSprite2(2.5f, 5.0f, 41); break; // 1行目
+    case Quote_State::Quote_0: RenderSprite2 (0, 380, 2.5f, 5.0f, 0); break;  // 指定位置での描画
+    case Quote_State::Quote_1: RenderSprite2 (0, 380, 9.0f, 17.0f, 1); break; // 指定位置での描画
+    case Quote_State::Quote_2: RenderSprite2 (0, 380, 7.5f, 13.0f, 5); break;  // 指定位置
+    case Quote_State::Quote_3: RenderSprite2 (0, 380, 2.5f, 5.0f, 8); break;  // 指定位置
+    case Quote_State::Quote_4: RenderSprite2 (0, 380, 2.5f, 5.0f, 9); break;  // 指定位置
+    case Quote_State::Quote_5: RenderSprite2 (0, 380, 5.0f, 9.0f, 10); break;  // 指定位置
+    case Quote_State::Quote_6: RenderSprite2 (0, 380, 2.5f, 5.0f, 12); break;  // 指定位置
+    case Quote_State::Quote_7: RenderSprite2 (0, 380, 5.0f, 9.0f, 13); break;  // 指定位置
+    case Quote_State::Quote_8: RenderSprite2 (0, 380, 7.5f, 13.0f, 15); break;  // 指定位置
+    case Quote_State::Quote_9: RenderSprite2 (0, 380, 7.5f, 13.0f, 18); break;  // 指定位置
+    case Quote_State::Quote_10: RenderSprite2(0, 380, 7.5f, 13.0f, 21); break;  // 指定位置
+    case Quote_State::Quote_11: RenderSprite2(0, 380, 2.5f, 5.0f, 24); break;  // 指定位置
+    case Quote_State::Quote_12: RenderSprite2(0, 380, 2.5f, 5.0f, 25); break;  // 指定位置
+    case Quote_State::Quote_13: RenderSprite2(0, 380, 2.5f, 5.0f, 26); break;  // 指定位置
+    case Quote_State::Quote_14: RenderSprite2(0, 380, 11.5f, 21.0f,27.3f); break;  // 指定位置
+    case Quote_State::Quote_15: RenderSprite2(0, 380, 2.5f, 5.0f, 32); break;  // 指定位置
+    case Quote_State::Quote_16: RenderSprite2(0, 380, 2.5f, 5.0f, 33.1f); break;  // 指定位置
+    case Quote_State::Quote_17: RenderSprite2(0, 380, 2.5f, 5.0f, 34); break;  // 指定位置
+    case Quote_State::Quote_18: RenderSprite2(0, 380, 2.5f, 5.0f, 36); break;  // 指定位置
+    case Quote_State::Quote_19: RenderSprite2(0, 380, 7.5f, 13.0f, 37); break;  // 指定位置
+    case Quote_State::Quote_20: RenderSprite2(0, 380, 2.5f, 5.0f, 40); break;  // 指定位置
+    case Quote_State::Quote_21: RenderSprite2(0, 380, 2.5f, 5.0f, 41); break;  // 指定位置
     }
 }
