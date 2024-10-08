@@ -6,6 +6,7 @@
 #include"SceneGame3.h"
 #include"SceneManager.h"
 #include"SceneLoading.h"
+#include"SceneGame2D.h"
 
 //初期化
 void SceneSelect::Initialize()
@@ -41,7 +42,7 @@ void SceneSelect::Update(float elapsedTime)
         //キリコ
         if (0 <= mousePositionX && 426 > mousePositionX)
         {
-            SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame));
+            SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame2D));
         }
         //ヒポポタマス
         else if (426 <= mousePositionX && 852 > mousePositionX)

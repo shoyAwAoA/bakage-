@@ -12,9 +12,12 @@
 #include"SceneLoading.h"
 #include"SceneSelect.h"
 #include"SceneManager.h"
+#include"SceneGame2D.h"
 
 //グローバル許可
 bool Special = false;
+int make = 0;//敗北
+int kati = 0;//勝ち
 
 static Player* instance = nullptr;
 
@@ -29,6 +32,8 @@ Player::Player()
 {
     //インスタンスポインタ設定
     instance = this;
+    make = 0;
+    kati = 0;
     Audio& audioManager = Audio::Instance();
 
     //punch_Sound=audioManager.LoadAudioSource("Data/Audio/idou.wav");
@@ -230,7 +235,7 @@ void Player::DrawDebugGUI()
 
             ImGui::Text(u8"State %s", str.c_str());
 
-            ImGui::InputInt("Helth", &health);
+            ImGui::InputInt("体力", &health);
 
             ImGui::Checkbox("Special", &Special);
         }
@@ -778,9 +783,14 @@ void Player::TransitionDeathState()
 //死亡ステート更新処理
 void Player::UpdateDeathState(float elapsedTime)
 {
+       
     if (!model->IsPlayAnimation())
     {
-        SceneManager::Instance().ChangeScene(new SceneLoading(new SceneSelect));
+        if (make != 18)
+        {
+            make = 18;
+            SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame2D));
+        }
     }
 }
 //復活ステートへ遷移

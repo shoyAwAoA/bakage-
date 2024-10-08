@@ -7,11 +7,13 @@
 #include"SceneManager.h"
 #include"SceneLoading.h"
 #include"SceneSelect.h"
+#include"SceneGame2D.h"
 
 //グローバル
 extern bool speak_flag;
 extern bool dieSpeak_flag;//倒された時のセリフ
 extern bool Special;
+extern int kati;//プレイヤー勝利
 
 static EnemyKiriko* instance = nullptr;
 
@@ -527,6 +529,10 @@ void EnemyKiriko::UpdateDeathState(float elapsedTime)
     {
         Destroy();
         dieSpeak_flag = false;
-        SceneManager::Instance().ChangeScene(new SceneLoading(new SceneSelect));
+        if (kati != 19)
+        {
+            kati = 19;
+        SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame2D));
+        }
     }
 }
