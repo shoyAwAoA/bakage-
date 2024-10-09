@@ -14,6 +14,7 @@ extern bool speak_flag;
 extern bool dieSpeak_flag;//倒された時のセリフ
 extern bool Special;
 extern int kati;//プレイヤー勝利
+extern int stage;
 
 static EnemyKiriko* instance = nullptr;
 
@@ -34,7 +35,6 @@ EnemyKiriko::EnemyKiriko()
     //幅、高さ設定
     radius = 0.5f;
     height = 1.0f;
-
     health = 2;
     //徘徊ステートへ遷移
     TransitionWanderState();
@@ -529,10 +529,8 @@ void EnemyKiriko::UpdateDeathState(float elapsedTime)
     {
         Destroy();
         dieSpeak_flag = false;
-        if (kati != 19)
-        {
+      
             kati = 19;
-        SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame2D));
-        }
+            SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame2D));
     }
 }

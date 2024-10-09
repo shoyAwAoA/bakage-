@@ -7,12 +7,16 @@
 #include"SceneManager.h"
 #include"SceneLoading.h"
 #include"SceneGame2D.h"
+#include"SceneGame2_2D.h"
+
+int stage;
 
 //初期化
 void SceneSelect::Initialize()
 {
     //スプライトの初期化
     sprite = new Sprite("Data/Sprite/score.png");
+    stage = 0;
 }
 
 //終了化
@@ -42,12 +46,14 @@ void SceneSelect::Update(float elapsedTime)
         //キリコ
         if (0 <= mousePositionX && 426 > mousePositionX)
         {
+            stage = 1;
             SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame2D));
         }
         //ヒポポタマス
         else if (426 <= mousePositionX && 852 > mousePositionX)
         {
-            SceneManager::Instance().ChangeScene(new SceneGame2);
+            stage = 2;
+            SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame2_2D));
         }
         //シルバーバック先輩
         else

@@ -7,10 +7,14 @@
 #include"SceneManager.h"
 #include"SceneLoading.h"
 #include"SceneSelect.h"
+#include"SceneGame2_2D.h"
 //グローバル
 extern bool hipopo_Speak_flag;
 extern bool hipopo_DieSpeak_flag;//倒された時のセリフ
 extern bool Special;
+extern int make;
+extern int kati;
+extern int stage;
 
 static EnemyHipopozamasu* instance = nullptr;
 
@@ -23,7 +27,7 @@ EnemyHipopozamasu& EnemyHipopozamasu::Instance()
 //コンストラクタ
 EnemyHipopozamasu::EnemyHipopozamasu()
 {
-    model = new Model("Data/Model/Cube/Cube.mdl");
+    model = new Model("Data/Model/Slime/Slime.mdl");
 
     //モデルが大きいのでスケーリング
     scale.x = scale.y = scale.z = 0.01f;
@@ -31,7 +35,9 @@ EnemyHipopozamasu::EnemyHipopozamasu()
     //幅、高さ設定
     radius = 0.5f;
     height = 1.0f;
-
+    make = 0;
+    kati = 0;
+   
     health = 2;
     //徘徊ステートへ遷移
     TransitionWanderState();
@@ -525,6 +531,9 @@ void EnemyHipopozamasu::UpdateDeathState(float elapsedTime)
     {
         Destroy();
         hipopo_DieSpeak_flag = false;
-        SceneManager::Instance().ChangeScene(new SceneLoading(new SceneSelect));
+       
+            kati = 26;
+            SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame2_2D));
+            
     }
 }

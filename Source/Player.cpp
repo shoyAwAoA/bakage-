@@ -13,6 +13,9 @@
 #include"SceneSelect.h"
 #include"SceneManager.h"
 #include"SceneGame2D.h"
+#include"SceneGame2_2D.h"
+
+extern int stage;
 
 //グローバル許可
 bool Special = false;
@@ -34,6 +37,7 @@ Player::Player()
     instance = this;
     make = 0;
     kati = 0;
+   
     Audio& audioManager = Audio::Instance();
 
     //punch_Sound=audioManager.LoadAudioSource("Data/Audio/idou.wav");
@@ -786,10 +790,13 @@ void Player::UpdateDeathState(float elapsedTime)
        
     if (!model->IsPlayAnimation())
     {
-        if (make != 18)
-        {
+        if (make != 18 && stage == 1) { 
             make = 18;
             SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame2D));
+        }
+        if (make != 25 && stage == 2) { 
+            make = 25;
+            SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame2_2D));
         }
     }
 }

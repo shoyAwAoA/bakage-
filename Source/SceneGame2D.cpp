@@ -10,7 +10,7 @@
 //エクスターン
 extern int make;
 extern int kati;
-
+extern int stage;
 static SceneGame2D* instance = nullptr;
 
 SceneGame2D& SceneGame2D::Instance()
@@ -26,8 +26,6 @@ void SceneGame2D::Initialize()
     sprite = new Sprite("Data/Sprite/score.png");
     sprite2 = new Sprite("Data/Sprite/kiriko/matome.png");
     state = Quote_State::Quote_0;
-    kati = 0;
-    make = 0;
 }
 
 //終了化
@@ -123,6 +121,7 @@ void SceneGame2D::Update(float elapsedTime)
 
     case Quote_State::Quote_17: // ゲーム再スタート
         if (HandleMouseClick(0, 720, state)) {
+            stage = 1;
             SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame));
         }
         break;
@@ -130,6 +129,7 @@ void SceneGame2D::Update(float elapsedTime)
     case Quote_State::Quote_19: // 勝利
         if (HandleMouseClick(0, 720, Quote_State::Quote_20)) {
             kati = 0;
+            stage = 0;
         }
         break;
     }
