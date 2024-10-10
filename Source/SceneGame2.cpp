@@ -163,93 +163,66 @@ void SceneGame2::Update(float elapsedTime)
 
 }
 
-// 描画処理
-void SceneGame2::Render()
-{
-	Graphics& graphics = Graphics::Instance();
-	ID3D11DeviceContext* dc = graphics.GetDeviceContext();
-	ID3D11RenderTargetView* rtv = graphics.GetRenderTargetView();
-	ID3D11DepthStencilView* dsv = graphics.GetDepthStencilView();
+void SceneGame2::Render() {
+    Graphics& graphics = Graphics::Instance();
+    ID3D11DeviceContext* dc = graphics.GetDeviceContext();
+    ID3D11RenderTargetView* rtv = graphics.GetRenderTargetView();
+    ID3D11DepthStencilView* dsv = graphics.GetDepthStencilView();
 
-	// 画面クリア＆レンダーターゲット設定
-	FLOAT color[] = { 0.0f, 0.0f, 0.5f, 1.0f };	// RGBA(0.0～1.0)
-	dc->ClearRenderTargetView(rtv, color);
-	dc->ClearDepthStencilView(dsv, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-	dc->OMSetRenderTargets(1, &rtv, dsv);
+    // 画面クリア＆レンダーターゲット設定
+    const FLOAT clearColor[] = { 0.0f, 0.0f, 0.5f, 1.0f }; // RGBA(0.0～1.0)
+    dc->ClearRenderTargetView(rtv, clearColor);
+    dc->ClearDepthStencilView(dsv, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+    dc->OMSetRenderTargets(1, &rtv, dsv);
 
-	// 描画処理
-	RenderContext rc;
-	rc.lightDirection = { 0.0f, -1.0f, 0.0f, 0.0f };	// ライト方向（下方向）
+    // 描画コンテキストの準備
+    RenderContext rc;
+    rc.lightDirection = { 0.0f, -1.0f, 0.0f, 0.0f }; // ライト方向
+    Camera& camera = Camera::Instance();
+    rc.view = camera.GetView();
+    rc.projection = camera.GetProjection();
 
-	//カメラパラメータ設定
-	Camera& camera = Camera::Instance();
-	rc.view = camera.GetView();
-	rc.projection = camera.GetProjection();
+    // 3Dモデル描画
+    {
+        Shader* shader = graphics.GetShader();
+        shader->Begin(dc, rc);
+        StageManager::Instance().Render(dc, shader);
 
-	// 3Dモデル描画
-	{
-		Shader* shader = graphics.GetShader();
-		shader->Begin(dc, rc);
-		//ステージ描画
-		//stage->Render(dc, shader);
-		StageManager::Instance().Render(dc, shader);
+        // プレイヤー描画条件
+        if (!player->GetKirikoUp() || cameraController->GetKirikoCameraCompreat()) {
+            player->Render(dc, shader);
+        }
 
-		if (!player->GetKirikoUp() || cameraController->GetKirikoCameraCompreat())
-		{
-			player->Render(dc, shader);
-		}
+        // エネミー描画
+        EnemyManager::Instance().Render(dc, shader);
+        shader->End(dc);
+    }
 
-		//エネミー描画
-		EnemyManager::Instance().Render(dc, shader);
-		shader->End(dc);
-	}
+    // 3Dデバッグ描画
+    {
+        player->DrawDebugPrimitive();
+        EnemyManager::Instance().DrawDebugPrimitive();
+        graphics.GetLineRenderer()->Render(dc, rc.view, rc.projection);
+        graphics.GetDebugRenderer()->Render(dc, rc.view, rc.projection);
+    }
 
-	// 3Dデバッグ描画
-	{
-		//プレイヤーデバッグプリミティブ描画
-		player->DrawDebugPrimitive();
+    // 3Dエフェクト描画
+    EffectManager::Instance().Render(rc.view, rc.projection);
 
-		//エネミーデバッグプリミティブ描画
+    // 2Dスプライト描画
+    {
+        RenderEnemyGauge(dc, rc.view, rc.projection);
+        if (player->GetSpecialAttack()) {
+            float textureWidth = static_cast<float>(hissatu->GetTextureWidth());
+            float textureHeight = static_cast<float>(hissatu->GetTextureHeight());
+            hissatu->Render(dc, spriteMoveX, 0, 200, 100, 0, 0, textureWidth, textureHeight, 0, 1, 1, 1, 1);
+        }
+    }
 
-		EnemyManager::Instance().DrawDebugPrimitive();
-
-		// ラインレンダラ描画実行
-		graphics.GetLineRenderer()->Render(dc, rc.view, rc.projection);
-
-		// デバッグレンダラ描画実行
-		graphics.GetDebugRenderer()->Render(dc, rc.view, rc.projection);
-	}
-
-	//3Dエフェクト描画
-	{
-		EffectManager::Instance().Render(rc.view, rc.projection);
-	}
-
-	// 2Dスプライト描画
-	{
-		float screenWidth = static_cast<float>(graphics.GetScreenWidth());
-		float screenHeight = static_cast<float>(graphics.GetScreenHeight());
-		float textureWidth = static_cast<float>(hissatu->GetTextureWidth());
-		float textureHeight = static_cast<float>(hissatu->GetTextureHeight());
-		RenderEnemyGauge(dc, rc.view, rc.projection);
-
-		if (player->GetSpecialAttack())
-		{
-			hissatu->Render(dc, spriteMoveX, 0, 200, 100, 0, 0, textureWidth, textureHeight, 0, 1, 1, 1, 1);
-		}
-		else
-		{
-
-		}
-	}
-
-	// 2DデバッグGUI描画
-	{
-		//プレイヤーデバッグ描画
-		player->DrawDebugGUI();
-
-	}
+    // 2DデバッグGUI描画
+    player->DrawDebugGUI();
 }
+
 
 //エネミーHPゲージ描画
 void SceneGame2::RenderEnemyGauge(

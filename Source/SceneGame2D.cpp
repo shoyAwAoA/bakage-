@@ -5,6 +5,14 @@
 #include"SceneManager.h"
 #include"SceneLoading.h"
 #include"SceneGame2D.h"
+
+//#include <SpriteFont.h>
+//#include <SpriteBatch.h>
+#include <wrl/client.h> // Microsoft::WRL::ComPtr
+#include <d3d11.h>
+#include <string>
+#include <locale>
+#include <codecvt>  // UTF-8/UTF-16変換用
 //初期化
 
 //エクスターン
@@ -21,10 +29,9 @@ SceneGame2D& SceneGame2D::Instance()
 
 void SceneGame2D::Initialize()
 {
-    
     //スプライトの初期化
     sprite = new Sprite("Data/Sprite/score.png");
-    sprite2 = new Sprite("Data/Sprite/kiriko/matome.png");
+    sprite2 = new Sprite("Data/Sprite/kiriko/matome1.png");
     state = Quote_State::Quote_0;
 }
 

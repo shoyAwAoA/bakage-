@@ -6,7 +6,7 @@
 class CameraController
 {
 public:
-    CameraController() {}
+    CameraController()  {}
     ~CameraController() {}
 
     //インスタンス取得
@@ -38,5 +38,6 @@ private:
     bool                cameraReset = false;
     bool                cameraReset2 = false;
     bool                kirikoCameraCompreat = false;
+   
 
 };

@@ -152,12 +152,12 @@ protected:
 private:
     enum Animation
     {
-        Anim_Attack,
+        Anim_Idle,
+        Anim_Move,
         Anim_Death,
-        Anim_Falling,
+        Anim_Attack,
         Anim_GetHit1,
         Anim_GetHit2,
-        Anim_Idle,
         Anim_Jump,
         Anim_Jump_Flip,
         Anim_Landing,
@@ -206,7 +206,10 @@ private:
 
     float HealthPreservation = 0;
     bool SpecialHitCheck = false;
-
+    int         avoidanceTime = 60;
+    int         avoidanceFlag = true;
+    DirectX::XMFLOAT3 AvoidanceMove;
+    DirectX::XMFLOAT3 moveVec;
     //‰¹
     std::unique_ptr<AudioSource> punch_Sound;//ƒpƒ“ƒ`
 };
