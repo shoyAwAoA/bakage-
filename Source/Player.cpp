@@ -45,7 +45,7 @@ Player::Player()
     kati = 0;
     avoidanceFlag = true;
     avoidanceTime =180;
-   
+    AvoidanceMove = {};
     Audio& audioManager = Audio::Instance();
 
     //punch_Sound=audioManager.LoadAudioSource("Data/Audio/idou.wav");
@@ -452,12 +452,19 @@ DirectX::XMFLOAT3 Player::GetMoveVec() const
 bool Player::InputMove(float elapsedTime)
 {
     //進行ベクトル所得
-    DirectX::XMFLOAT3 moveVec = GetMoveVec();
+    if (state == State::Avoidance)
+    {
+        Move(AvoidanceMove.x,AvoidanceMove.z,moveSpeed);
+    }
+    else
+    {
+        moveVec = GetMoveVec();
+        Turn(elapsedTime,moveVec.x,moveVec.z,turnSpeed);
+        Move(moveVec.x, moveVec.z, moveSpeed);
+    }
 
     //移動処理
     //Move(elapsedTime, moveVec.x, moveVec.z, moveSpeed);
-    
-
 
     //進行ベクトルがゼロベクトルではない場合は入力された
     return moveVec.x != 0 || moveVec.y != 0 || moveVec.z != 0;
@@ -472,6 +479,7 @@ bool Player::InputAttack()
     }
     return false;
 }
+
 
 //プレイヤーとエネミーとの衝突処理
 void Player::CollisionPlayerVsEnemies()
@@ -790,6 +798,17 @@ void Player::UpdateReviveState(float elapsedTime)
     {
         TransitionIdleState();
     }
+}
+
+bool Player::Inputavoidance()
+{
+    Mouse& mouse = Input::Instance().GetMouse();
+    if (mouse.GetButtonDown() & Mouse::BTN_RIGHT && !specialAttack && avoidanceFlag)
+    {
+        AvoidanceMove = GetMoveVec();
+        return true;
+    }
+    return false;
 }
 
 //回避ステートへ遷移
