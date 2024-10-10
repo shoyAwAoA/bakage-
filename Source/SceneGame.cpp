@@ -145,10 +145,10 @@ void SceneGame::Update(float elapsedTime)
 	cameraController->SetTarget(target);
 	cameraController->Update(elapsedTime);
 	
-	if (!player->GetKirikoUp()|| cameraController->GetKirikoCameraCompreat())
-	{
+	//if (!player->GetKirikoUp()|| cameraController->GetKirikoCameraCompreat())
+	//{
 		player->Update(elapsedTime);
-	}
+	//}
 
 
 }
@@ -185,7 +185,7 @@ void SceneGame::Render()
 		//stage->Render(dc, shader);
 		StageManager::Instance().Render(dc, shader);
 		
-		if (!player->GetKirikoUp() || cameraController->GetKirikoCameraCompreat())
+		//if (!player->GetKirikoUp() || cameraController->GetKirikoCameraCompreat())
 		{
 			player->Render(dc, shader);
 		}

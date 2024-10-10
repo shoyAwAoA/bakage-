@@ -731,7 +731,7 @@ void Player::UpdateAttackState(float elapsedTime)
     if (attackCollisionFlag)
     {
         //左手ノードとエネミーの衝突処理
-        CollisionNodeVsEnemies("mixamorig:LeftHand", leftHandRadius);
+        CollisionNodeVsEnemies("joint21aaaaaaaaaaaaaaaaaaaaa", leftHandRadius);
     }
 }
 //ダメージステートへ遷移
