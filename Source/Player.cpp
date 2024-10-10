@@ -110,8 +110,10 @@ void Player::Update(float elapsedTime) {
     if (specialAttackCollisionFlag) {
         CollisionNodeVsEnemies("mixamorig:LeftHand", leftHandRadius);
     }
-
     InputSpecial();
+
+//    HitCheck();
+    //速力処理更新
     UpdateVelocity(elapsedTime);
     UpdateInvincibleTimer(elapsedTime);
     projectileManager.Update(elapsedTime);
@@ -121,8 +123,11 @@ void Player::Update(float elapsedTime) {
         CollisionPlayerVsEnemies();
     }
     CollisionProjectilesVsEnemies();
+    //プレイヤーと敵との衝突処理
 
-    // モデルのアニメーションと変換の更新
+    //弾丸と敵の衝突処理
+   
+    //モデルアニメーション更新処理
     model->UpdateAnimetion(elapsedTime);
     model->UpdateTransform(transform);
 
@@ -447,17 +452,11 @@ DirectX::XMFLOAT3 Player::GetMoveVec() const
 bool Player::InputMove(float elapsedTime)
 {
     //進行ベクトル所得
-
     DirectX::XMFLOAT3 moveVec = GetMoveVec();
-    //旋回処理
-    if (state != State::Avoidance)
-    {
-        Turn(elapsedTime, moveVec.x, moveVec.z, turnSpeed);
-    }
+
     //移動処理
     //Move(elapsedTime, moveVec.x, moveVec.z, moveSpeed);
     
-    Move(moveVec.x, moveVec.z, moveSpeed);
 
 
     //進行ベクトルがゼロベクトルではない場合は入力された
@@ -650,6 +649,8 @@ void Player::TransitionMoveState()
 //移動ステート更新処理
 void Player::UpdateMoveState(float elapsedTime)
 {
+    moveVec = GetMoveVec();
+    Move(moveVec.x, moveVec.z, moveSpeed);
     avoidanceCollisionFlag = false;
     //移動入力処理
     if (!InputMove(elapsedTime))
@@ -791,17 +792,6 @@ void Player::UpdateReviveState(float elapsedTime)
     }
 }
 
-bool Player::Inputavoidance()
-{
-    Mouse& mouse = Input::Instance().GetMouse();
-    if (mouse.GetButtonDown() & Mouse::BTN_RIGHT && !specialAttack && avoidanceFlag)
-    {
-        return true;
-    }
-
-    return false;
-}
-
 //回避ステートへ遷移
 void Player::TransitionAvoidanceState()
 {
@@ -821,6 +811,7 @@ void Player::UpdateAvoidanceState(float elapsedTime)
     {
         avoidanceCollisionFlag = false;
         TransitionMoveState();
+        AvoidanceMove = {};
     }
     avoidanceCollisionFlag = true;
 }

@@ -208,7 +208,8 @@ private:
     bool SpecialHitCheck = false;
     int         avoidanceTime = 60;
     int         avoidanceFlag = true;
-
+    DirectX::XMFLOAT3 AvoidanceMove;
+    DirectX::XMFLOAT3 moveVec;
     //‰¹
     std::unique_ptr<AudioSource> punch_Sound;//ƒpƒ“ƒ`
 };
