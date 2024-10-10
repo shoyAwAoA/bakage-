@@ -5,8 +5,10 @@
 
 static CameraController* instance = nullptr;
 
+
 CameraController& CameraController::Instance()
 {
+    
     return *instance;
 }
 
@@ -46,6 +48,16 @@ void CameraController::Update(float elapsedTime)
     if (angle.y > DirectX::XM_PI)
     {
         angle.y -= DirectX::XM_2PI;
+    }
+
+
+    if (angle.x > DirectX::XMConvertToRadians(45))
+    {
+        angle.x = DirectX::XMConvertToRadians(45);
+    }
+    if (angle.x < DirectX::XMConvertToRadians(-45))
+    {
+        angle.x = DirectX::XMConvertToRadians(-45);
     }
 
     //カメラ回転値を回転行列に変換

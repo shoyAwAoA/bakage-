@@ -15,7 +15,13 @@
 #include"SceneGame2D.h"
 #include"SceneGame2_2D.h"
 
+
 extern int stage;
+
+template<typename T>
+T clamp(T value, T min, T max) {
+    return (value < min) ? min : (value > max) ? max : value;
+}
 
 //グローバル許可
 bool Special = false;
@@ -37,14 +43,16 @@ Player::Player()
     instance = this;
     make = 0;
     kati = 0;
+    avoidanceFlag = true;
+    avoidanceTime =180;
    
     Audio& audioManager = Audio::Instance();
 
     //punch_Sound=audioManager.LoadAudioSource("Data/Audio/idou.wav");
     
-    model = new Model("Data/Model/Jammo/Jammo.mdl");
+    model = new Model("Data/Model/panda/panda.mdl");
     
-    scale.x = scale.y = scale.z = 0.01f;
+    scale.x = scale.y = scale.z = 0.2f;
 
     //ヒットエフェクト読み込み
     hitEffect = new Effect("Data/Effect/Hit.efk");
@@ -64,104 +72,71 @@ Player::~Player()
     delete hitEffect;
 }
 //更新処理
-void Player::Update(float elapsedTime)
-{
-    if (velocity.x > 15.0f)  { velocity.x = 15.f; }
-    if (velocity.z > 15.0f)  { velocity.z = 15.f; }
-    if (velocity.x < -15.0f) { velocity.x = -15.f; }
-    if (velocity.z < -15.0f) { velocity.z = -15.f; }
-    //弾丸入力処理
-    switch (state)
+void Player::Update(float elapsedTime) {
+    // 速力を制限
+    velocity.x = clamp(velocity.x, -15.0f, 15.0f);
+    velocity.z = clamp(velocity.z, -15.0f, 15.0f);
+
+
     {
-    case State::Idle:
-        UpdateIdleState(elapsedTime);
-        UpdateTransform();
-        break;
-    case State::Move:
-        UpdateMoveState(elapsedTime);
-        UpdateTransform();
-        break;
-    case State::Land:
-        UpdateLandState(elapsedTime);
-        UpdateTransform();
-        break;
-    case State::Attack:
-        UpdateAttackState(elapsedTime);
-        UpdateTransform();
-        break;
-    case State::Damage:
-        UpdateDamageState(elapsedTime);
-        UpdateTransform();
-        break;
-    case State::Death:
-        UpdateDeathState(elapsedTime);
-        UpdateTransform();
-        break;
-    case State::Revive:
-        UpdateReviveState(elapsedTime);
-        UpdateTransform();
-        break;
-    case State::Avoidance:
-        UpdateAvoidanceState(elapsedTime);
-        UpdateTransform();
-        break;
-    case State::Kick:
-        UpdateKickState(elapsedTime);
-        UpdateTransform();
-        break;
-    case State::SpecialAttack:
-        UpdateSpecialAttackState(elapsedTime);
-        UpdateTransform();
-        break;
+        if (!avoidanceFlag)
+        {
+            avoidanceTime--;
+            if (avoidanceTime < 0)
+            {
+                avoidanceFlag = true;
+                avoidanceTime = 180;
+            }
+        }
+    }
+    // プレイヤーの状態を更新
+    switch (state) {
+    case State::Idle:          UpdateIdleState(elapsedTime); break;
+    case State::Move:          UpdateMoveState(elapsedTime); break;
+    case State::Land:          UpdateLandState(elapsedTime); break;
+    case State::Attack:        UpdateAttackState(elapsedTime); break;
+    case State::Damage:        UpdateDamageState(elapsedTime); break;
+    case State::Death:         UpdateDeathState(elapsedTime); break;
+    case State::Revive:        UpdateReviveState(elapsedTime); break;
+    case State::Avoidance:     UpdateAvoidanceState(elapsedTime); break;
+    case State::Kick:          UpdateKickState(elapsedTime); break;
+    case State::SpecialAttack: UpdateSpecialAttackState(elapsedTime); break;
     }
 
-    if (specialAttackCollisionFlag)
-    {
-        //ノードの名前を打つ
+    // 変換処理の更新
+    UpdateTransform();
+
+    // 特殊攻撃の衝突処理
+    if (specialAttackCollisionFlag) {
         CollisionNodeVsEnemies("mixamorig:LeftHand", leftHandRadius);
     }
+
     InputSpecial();
-
-//    HitCheck();
-    //速力処理更新
     UpdateVelocity(elapsedTime);
-
-    //無敵時間更新
     UpdateInvincibleTimer(elapsedTime);
-
-    //弾丸更新処理
     projectileManager.Update(elapsedTime);
 
-    if (!avoidanceCollisionFlag)
-    {
+    // 衝突処理
+    if (!avoidanceCollisionFlag) {
         CollisionPlayerVsEnemies();
     }
     CollisionProjectilesVsEnemies();
-    //プレイヤーと敵との衝突処理
 
-    //弾丸と敵の衝突処理
-   
-    //モデルアニメーション更新処理
+    // モデルのアニメーションと変換の更新
     model->UpdateAnimetion(elapsedTime);
-
-    //モデル行列更新
     model->UpdateTransform(transform);
 
-    if (specialAttack)
-    {
+    // 特殊攻撃のタイミング管理
+    if (specialAttack) {
         specialTime--;
     }
 
+    // カメラとのインタラクション管理
     CameraController& cameraController = CameraController::Instance();
-    if (cameraController.GetKirikoCameraCompreat() == false)
-    {
-        if (position.x >= 5 && position.x <= 10 && position.z >= 5 && position.z <= 10)
-        {
-            kirikoUp = true;
-        }
+    if (!cameraController.GetKirikoCameraCompreat()) {
+        kirikoUp = (position.x >= 5 && position.x <= 10 && position.z >= 5 && position.z <= 10);
     }
-    else if (cameraController.GetKirikoCameraCompreat()==true)
-    {
+    else {
         kirikoUp = false;
     }
 }
@@ -310,16 +285,7 @@ void Player::DrawDebugPrimitive()
 }
 
 
-bool Player::Inputavoidance()
-{
-    Mouse& mouse = Input::Instance().GetMouse();
-    if (mouse.GetButtonDown() & Mouse::BTN_RIGHT&&!specialAttack)
-    {
-        return true;
-    }
 
-    return false;
-}
 
 bool Player::InputSpecialAttack()
 {
@@ -481,15 +447,18 @@ DirectX::XMFLOAT3 Player::GetMoveVec() const
 bool Player::InputMove(float elapsedTime)
 {
     //進行ベクトル所得
-    DirectX::XMFLOAT3 moveVec = GetMoveVec();
 
+    DirectX::XMFLOAT3 moveVec = GetMoveVec();
+    //旋回処理
+    if (state != State::Avoidance)
+    {
+        Turn(elapsedTime, moveVec.x, moveVec.z, turnSpeed);
+    }
     //移動処理
     //Move(elapsedTime, moveVec.x, moveVec.z, moveSpeed);
     
     Move(moveVec.x, moveVec.z, moveSpeed);
 
-    //旋回処理
-    Turn(elapsedTime, moveVec.x, moveVec.z, turnSpeed);
 
     //進行ベクトルがゼロベクトルではない場合は入力された
     return moveVec.x != 0 || moveVec.y != 0 || moveVec.z != 0;
@@ -675,7 +644,7 @@ void Player::TransitionMoveState()
     state = State::Move;
 
     //走りアニメーション再生
-    model->PlayAnimation(Anim_Running, true);
+    model->PlayAnimation(Anim_Move, true);
 }
 
 //移動ステート更新処理
@@ -822,20 +791,32 @@ void Player::UpdateReviveState(float elapsedTime)
     }
 }
 
+bool Player::Inputavoidance()
+{
+    Mouse& mouse = Input::Instance().GetMouse();
+    if (mouse.GetButtonDown() & Mouse::BTN_RIGHT && !specialAttack && avoidanceFlag)
+    {
+        return true;
+    }
+
+    return false;
+}
+
 //回避ステートへ遷移
 void Player::TransitionAvoidanceState()
 {
     state = State::Avoidance;
     velocity.x *= 3.0f;
     velocity.y *= 3.0f;
-    model->PlayAnimation(Anim_Jump_Flip, false);
+    model->PlayAnimation(Anim_Move, false);
 }
 
 //回避ステート更新処理
 void Player::UpdateAvoidanceState(float elapsedTime)
 {
+    
+    avoidanceFlag = false;
     InputMove(elapsedTime);
-
     if (!model->IsPlayAnimation())
     {
         avoidanceCollisionFlag = false;
