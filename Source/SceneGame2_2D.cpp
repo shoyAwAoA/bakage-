@@ -135,21 +135,21 @@ void SceneGame2_2D::Update(float elapsedTime)
     // Quote_State::Quote_12またはQuote_State::Quote_22になった場合、クリックでQuote_State::Quote_28に遷移
     case Quote_State::Quote_11: // ゲームオーバー
     case Quote_State::Quote_20: // ゲームオーバー
-        if (HandleMouseClick(0, 720, state)) {
+       // if (HandleMouseClick(0, 720, state)) {
             a2_flag = true;
-        }
+        
         if (a2_flag)
         {
-            a2 -= elapsedTime * 0.5f;  // フェードアウト速度調整
+            a2 += elapsedTime * 0.35f;  // フェードアウト速度調整
             if (a2 < 0.0f) a2 = 0.0f;  // 最小透明度の制限
             {
-                if (a2 == 0)
+                if (a2 >= 1)
                 {
                     // SceneManager::Instance().ChangeScene(new SceneLoading(new SceneSelect));
                     state = Quote_State::Quote_27;
                 }
             }
-        }
+       }
         break;
 
     case Quote_State::Quote_27: // 最終状態
