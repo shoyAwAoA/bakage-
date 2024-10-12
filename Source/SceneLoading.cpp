@@ -7,14 +7,11 @@
 void SceneLoading::Initialize()
 {
     //スプライト初期化
-    sprite = new Sprite("Data/Sprite/LoadingIcon.png");
-    sprite = new Sprite("Data/Sprite/nisi.png");
+   // sprite = new Sprite("Data/Sprite/LoadingIcon.png");
+    sprite = new Sprite("Data/Sprite/loading/taitle.png");
 
     //スレッド開始
     thread = new std::thread(LoadingThread, this);
-
-
-
 }
 
 //終了化
@@ -40,8 +37,19 @@ void SceneLoading::Finalize()
 //更新処理
 void SceneLoading::Update(float elapsedTime)
 {
-    constexpr float speed = 180;
-    angle += speed * elapsedTime;
+    constexpr float speed = 100;
+    angle0 += speed * elapsedTime;
+    angle1 -= speed * elapsedTime;
+    angle2 += speed * elapsedTime;
+    angle3 -= speed * elapsedTime;
+    angle4 += speed * elapsedTime;
+    angle5 -= speed * elapsedTime;
+    angle6 += speed * elapsedTime;
+    angle7 -= speed * elapsedTime;
+    angle8 += speed * elapsedTime;
+    
+
+    
 
     //次のシーンの準備が完了したらシーンを切り替える
     if (nextScene->IsReady())
@@ -76,11 +84,15 @@ void SceneLoading::Render()
         float positionX = screenWidth - textureWidth;
         float positionY = screenHeight - textureHeight;
 
-        sprite->Render(dc,
-            positionX, positionY, textureWidth, textureHeight,
-            0,0,textureWidth,textureHeight,
-            angle,
-            1, 1, 1, 1);
+        sprite->Render(dc, 0,300, 142.2222f, 200, 0, 0, 122.222222f, 200, angle0, r, g, b, a);
+        sprite->Render(dc, 142.2222f*1,300, 142.2222f, 200, 122.222222f, 0, 122.222222f, 200, angle1, r, g, b, a);
+        sprite->Render(dc, 142.2222f*2,300, 142.2222f, 200, 122.222222f*2, 0, 122.222222f, 200, angle2, r, g, b, a);
+        sprite->Render(dc, 142.2222f*3,300, 142.2222f, 200, 122.222222f*3, 0, 122.222222f, 200, angle3, r, g, b, a);
+        sprite->Render(dc, 142.2222f*4,300, 142.2222f, 200, 122.222222f*4, 0, 122.222222f, 200, angle4, r, g, b, a);
+        sprite->Render(dc, 142.2222f*5,300, 142.2222f, 200, 122.222222f*5, 0, 122.222222f, 200, angle5, r, g, b, a);
+        sprite->Render(dc, 142.2222f*6,300, 142.2222f, 200, 122.222222f*6, 0, 122.222222f, 200, angle6, r, g, b, a);
+        sprite->Render(dc, 142.2222f*7,300, 142.2222f, 200, 122.222222f*7, 0, 122.222222f, 200, angle7, r, g, b, a);
+        sprite->Render(dc, 142.2222f*8,300, 142.2222f, 200, 122.222222f*8, 0, 122.222222f, 200, angle8, r, g, b, a);
     }
 }
 

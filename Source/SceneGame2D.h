@@ -87,6 +87,8 @@ private:
     float dx = 0, dy = 0;
     float dw = 2700, dh = 300;
     float r=1, g=1, b=1, a=1;
+    float a2 = 1;
+    bool a2_flag = false;
     float angle = 0;
     float sh=215.35f;
     Sprite* sprite2 = nullptr;

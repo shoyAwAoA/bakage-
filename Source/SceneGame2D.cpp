@@ -92,13 +92,13 @@ void SceneGame2D::Update(float elapsedTime)
     case Quote_State::Quote_5:
     case Quote_State::Quote_6:
     case Quote_State::Quote_7:
-    
+
         if (HandleMouseClick(0, 720, state)) {
             IncrementState();  // 状態を次に進める
         }
         break;
 
-        case Quote_State::Quote_8: // 選択肢の状態
+    case Quote_State::Quote_8: // 選択肢の状態
         if (HandleMouseClick(600, 720, Quote_State::Quote_9) ||
             HandleMouseClick(480, 600, Quote_State::Quote_13))
         {
@@ -109,12 +109,12 @@ void SceneGame2D::Update(float elapsedTime)
     case Quote_State::Quote_10:
     case Quote_State::Quote_11:
     {if (HandleMouseClick(0, 720, state))
-        {
-            state = Quote_State::Quote_12;
-        }
+    {
+        state = Quote_State::Quote_12;
+    }
     }
     break;
-    case Quote_State::Quote_13: 
+    case Quote_State::Quote_13:
     case Quote_State::Quote_14:
     case Quote_State::Quote_15:
     case Quote_State::Quote_19:
@@ -133,8 +133,25 @@ void SceneGame2D::Update(float elapsedTime)
     case Quote_State::Quote_12://ゲームオーバー
     {
         if (HandleMouseClick(0, 720, state)) {
-         SceneManager::Instance().ChangeScene(new SceneLoading(new SceneSelect));
-           }
+            a2_flag = true;
+
+
+        }
+        if (a2_flag)
+        {
+            a2 -= elapsedTime * 0.5f;  // フェードアウト速度調整
+            if (a2 < 0.0f) a2 = 0.0f;  // 最小透明度の制限
+            {
+                if (a2 == 0)
+                {
+                    SceneManager::Instance().ChangeScene(new SceneLoading(new SceneSelect));
+
+                }
+            }
+
+        }
+
+
     }
     break;
     case Quote_State::Quote_21: // 最終状態
@@ -156,7 +173,7 @@ void SceneGame2D::Update(float elapsedTime)
         }
         break;
     }
-}
+};
 
 //描画処理
 void SceneGame2D::Render()
@@ -228,7 +245,7 @@ void SceneGame2D::Render()
         case Quote_State::Quote_9: sprite2->Render(dc, 100,400,800,200,0,2908.5f,3300,270,angle,r,g,b,a);break;//
         case Quote_State::Quote_10:sprite2->Render(dc, 100,400,800,100,0,3178.5,3300,140.5f,angle,r,g,b,a);break;//ドゴ
         case Quote_State::Quote_11:sprite2->Render(dc, 100,400,800,100,0,3332,3300,140.5f,angle,r,g,b,a);break;//土
-        case Quote_State::Quote_12:sprite2->Render(dc, 100,400,800,100,0,3453.0f,3300,140.5f,angle,r,g,b,a);break;//GAMEOVER
+        case Quote_State::Quote_12:sprite2->Render(dc, 400,250,1200,200,0,3453.0f,3300,140.5f,angle,r,g,b,a2);break;//GAMEOVER
         case Quote_State::Quote_13:sprite2->Render(dc, 100,400,800,300,0,3597.5f,3300,550,angle,r,g,b,a);break;//
         case Quote_State::Quote_14:sprite2->Render(dc, 100,400,800,100,0,4157.5f,3300,138,angle,r,g,b,a);break;//
         case Quote_State::Quote_15:sprite2->Render(dc, 100,400,800,200,0,4300.5f,3300,270,angle,r,g,b,a);break;//

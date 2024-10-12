@@ -34,8 +34,8 @@ void SceneGame::Initialize()
 	//ゲージスプライト
 	guage = new Sprite();
 	hissatu = new Sprite("Data/Sprite/riza.png");
-	speak = new Sprite("Data/Sprite/nisi.png");//最初のセリフ
-	dieSpeak = new Sprite("Data/Sprite/suku3.png");//倒された時のキリコのセリフ
+	//speak = new Sprite("Data/Sprite/nisi.png");//最初のセリフ
+	//dieSpeak = new Sprite("Data/Sprite/suku3.png");//倒された時のキリコのセリフ
 
 	//カメラ初期設定
 	Graphics& graphics = Graphics::Instance();
