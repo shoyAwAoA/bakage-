@@ -84,6 +84,11 @@ public:
 private:
     float mousePositionX = 0.0f;
     float mousePositionY = 0.0f;
+    float dx = 0, dy = 0;
+    float dw = 2700, dh = 300;
+    float r=1, g=1, b=1, a=1;
+    float angle = 0;
+    float sh=215.35f;
     Sprite* sprite2 = nullptr;
     Sprite* sprite = nullptr;
     Quote_State state;

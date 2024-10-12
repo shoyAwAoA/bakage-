@@ -67,7 +67,7 @@ void SceneTitle::Update(float elapsedTime)
         // フェードアウト完了後、次のシーンへ遷移
         if (alpha == 0.0f)
         {
-            SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame));
+            SceneManager::Instance().ChangeScene(new SceneLoading(new SceneSelect));
         }
     }
 }

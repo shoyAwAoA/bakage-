@@ -532,7 +532,7 @@ void EnemyHipopozamasu::UpdateDeathState(float elapsedTime)
         Destroy();
         hipopo_DieSpeak_flag = false;
        
-            kati = 26;
+            kati = 24;
             SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame2_2D));
             
     }

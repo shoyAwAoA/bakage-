@@ -53,8 +53,8 @@ void SceneGame2_2D::Update(float elapsedTime)
     mousePositionX = mouse.GetPositionX();
     mousePositionY = mouse.GetPositionY();
 
-    if (make == 25) state = Quote_State::Quote_25;
-    if (kati == 26) state = Quote_State::Quote_26;
+    if (make == 23) state = Quote_State::Quote_23;
+    if (kati == 24) state = Quote_State::Quote_24;
 
     // マウスクリックをX座標内で処理するヘルパー関数
     auto HandleMouseClick = [&](int minY, int maxY, Quote_State nextState) {
@@ -92,14 +92,14 @@ void SceneGame2_2D::Update(float elapsedTime)
         break;
 
     case Quote_State::Quote_8: // 選択肢の状態
-        if (HandleMouseClick(600, 720, Quote_State::Quote_13) ||
+        if (HandleMouseClick(600, 720, Quote_State::Quote_12) ||
             HandleMouseClick(480, 600, Quote_State::Quote_9))
         {
             break;
         }
-    case Quote_State::Quote_18:
-        if (HandleMouseClick(600, 720, Quote_State::Quote_23) ||
-            HandleMouseClick(480, 600, Quote_State::Quote_19))
+    case Quote_State::Quote_17:
+        if (HandleMouseClick(600, 720, Quote_State::Quote_21) ||
+            HandleMouseClick(480, 600, Quote_State::Quote_18))
         {
             break;
         }
@@ -107,54 +107,54 @@ void SceneGame2_2D::Update(float elapsedTime)
 
     case Quote_State::Quote_9:
     case Quote_State::Quote_10:
-    case Quote_State::Quote_11:
+    case Quote_State::Quote_12:
     case Quote_State::Quote_13:
     case Quote_State::Quote_14:
     case Quote_State::Quote_15:
     case Quote_State::Quote_16:
-    case Quote_State::Quote_17:
+    case Quote_State::Quote_18:
     case Quote_State::Quote_19:
-    case Quote_State::Quote_20:
     case Quote_State::Quote_21:
-    case Quote_State::Quote_23:
-    case Quote_State::Quote_27:
+    case Quote_State::Quote_25:
+    case Quote_State::Quote_26:
+    
         if (HandleMouseClick(0, 720, state)) {
             IncrementState();  // 状態を次に進める
         }
         break;
-    case Quote_State::Quote_25: // 敗北
+    case Quote_State::Quote_23: // 敗北
     {
         make = 0;
         if (HandleMouseClick(0, 720, state)) {
-            state = Quote_State::Quote_12;
+            state = Quote_State::Quote_11;
             // IncrementState();  // 状態を次に進める
         }
     }
     break;
 
     // Quote_State::Quote_12またはQuote_State::Quote_22になった場合、クリックでQuote_State::Quote_28に遷移
-    case Quote_State::Quote_12: // ゲームオーバー
-    case Quote_State::Quote_22: // ゲームオーバー
+    case Quote_State::Quote_11: // ゲームオーバー
+    case Quote_State::Quote_20: // ゲームオーバー
         if (HandleMouseClick(0, 720, Quote_State::Quote_28)) {
             state = Quote_State::Quote_28;
         }
         break;
 
-    case Quote_State::Quote_28: // 最終状態
+    case Quote_State::Quote_27: // 最終状態
         if (HandleMouseClick(0, 720, state)) {
             SceneManager::Instance().ChangeScene(new SceneLoading(new SceneSelect));
         }
         break;
 
-    case Quote_State::Quote_24: // ゲーム再スタート
+    case Quote_State::Quote_22: // ゲーム再スタート
         if (HandleMouseClick(0, 720, state)) {
             stage = 2;
             SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame2));
         }
         break;
 
-    case Quote_State::Quote_26: // 勝利
-        if (HandleMouseClick(0, 720, Quote_State::Quote_27)) {
+    case Quote_State::Quote_24: // 勝利
+        if (HandleMouseClick(0, 720, Quote_State::Quote_25)) {
             kati = 0;
             stage = 0;
         }
@@ -182,54 +182,54 @@ void SceneGame2_2D::Render()
     float textureHeight = static_cast<float>(sprite->GetTextureHeight());
 
     // タイトルスプライト描画
-    sprite->Render(dc,
+    /*sprite->Render(dc,
         0, 0, screenWidth, screenHeight,
         0, 0, textureWidth, textureHeight,
-        0, 1, 1, 1, 1);
+        0, 1, 1, 1, 1);*/
 
     // レンダリングの共通処理を関数化（X, Y 座標を追加）
-    auto RenderSprite2 = [&](float x, float y, float fontSizeX, float scale, float posYMultiplier, float offsetY = 0.0f)
-    {
-        sprite2->Render(dc,
-            x, y,  // X座標とY座標を指定可能に
-            screenWidth * fontSizeX, screenHeight * 10.0f,  // 横幅と縦幅のスケーリング
-            0, 144.92928571f * posYMultiplier + offsetY,  // Y座標スケーリングとオフセット
-            textureWidth * scale, textureHeight * scale,  // テクスチャサイズ
-            0, 1, 1, 1, 1);  // 色
-    };
+    //auto RenderSprite2 = [&](float x, float y, float fontSizeX, float scale, float posYMultiplier, float offsetY = 0.0f)
+    //{
+    //    sprite2->Render(dc,
+    //        x, y,  // X座標とY座標を指定可能に
+    //        screenWidth * fontSizeX, screenHeight * 10.0f,  // 横幅と縦幅のスケーリング
+    //        0, 144.92928571f * posYMultiplier + offsetY,  // Y座標スケーリングとオフセット
+    //        textureWidth * scale, textureHeight * scale,  // テクスチャサイズ
+    //        0, 1, 1, 1, 1);  // 色
+    //};
 
     // 状態に応じた描画処理
     switch (state)//1=2.5,2=5.0f.3=7.5f,4=9.0f 5,9,13,17
-    {
-    case Quote_State::Quote_0: RenderSprite2(0, 380, 5.0f, 9.0f, 0); break;  // 指定位置での描画
-    case Quote_State::Quote_1: RenderSprite2(0, 380, 2.5f, 5.0f, 2); break; // 指定位置での描画
-    case Quote_State::Quote_2: RenderSprite2(0, 380, 2.5f, 5.0f, 3); break;  // 指定位置
-    case Quote_State::Quote_3: RenderSprite2(0, 380, 7.5f, 13.0f, 4); break;  // 指定位置
-    case Quote_State::Quote_4: RenderSprite2(0, 380, 7.5f, 13.0f, 7); break;  // 指定位置
-    case Quote_State::Quote_5: RenderSprite2(0, 380, 5.0f, 9.0f, 10); break;  // 指定位置
-    case Quote_State::Quote_6: RenderSprite2(0, 380, 5.0f, 9.0f, 12); break;  // 指定位置
-    case Quote_State::Quote_7: RenderSprite2(0, 380, 7.5f, 13.0f, 14); break;  // 指定位置
-    case Quote_State::Quote_8: RenderSprite2(0, 380, 11.5f, 21.0f, 17); break;  // 指定位置
-    case Quote_State::Quote_9: RenderSprite2(0, 380, 2.5f, 5.0f, 22); break;  // 指定位置
-    case Quote_State::Quote_10: RenderSprite2(0, 380, 2.5f, 5.0f, 23); break;  // 指定位置
-    case Quote_State::Quote_11: RenderSprite2(0, 380, 2.5f, 5.0f, 24); break;  // 指定位置
-    case Quote_State::Quote_12: RenderSprite2(0, 380, 2.5f, 5.0f, 25); break;  // 指定位置
-    case Quote_State::Quote_13: RenderSprite2(0, 380, 9.0f, 17.0f, 26); break;  // 指定位置
-    case Quote_State::Quote_14: RenderSprite2(0, 380, 2.5f, 5.0f, 30); break;  // 指定位置
-    case Quote_State::Quote_15: RenderSprite2(0, 380, 5.0f, 9.0f, 31); break;  // 指定位置
-    case Quote_State::Quote_16: RenderSprite2(0, 380, 2.5f, 5.0f, 33); break;  // 指定位置
-    case Quote_State::Quote_17: RenderSprite2(0, 380, 2.5f, 5.0f, 34); break;  // 指定位置
-    case Quote_State::Quote_18: RenderSprite2(0, 380, 7.5f, 13.0f, 35); break;  // 指定位置
-    case Quote_State::Quote_19: RenderSprite2(0, 380, 2.5f, 5.0f, 38); break;  // 指定位置
-    case Quote_State::Quote_20: RenderSprite2(0, 380, 2.5f, 5.0f, 39); break;  // 指定位置
-    case Quote_State::Quote_21: RenderSprite2(0, 380, 2.5f, 5.0f, 40); break;  // 指定位置
-    case Quote_State::Quote_22: RenderSprite2(0, 380, 2.5f, 5.0f, 41); break;  // 指定位置
-    case Quote_State::Quote_23: RenderSprite2(0, 380, 11.5f, 21.0f, 42); break;  // 指定位置
-    case Quote_State::Quote_24: RenderSprite2(0, 380, 2.5, 5.0f, 47); break;  // 指定位置
-    case Quote_State::Quote_25: RenderSprite2(0, 380, 5.0f, 9.0f, 49); break;  // 指定位置
-    case Quote_State::Quote_26: RenderSprite2(0, 380, 9.0f, 17.0f, 51); break;  // 指定位置
-    case Quote_State::Quote_27: RenderSprite2(0, 380, 2.5f, 5.0f, 55); break;  // 指定位置
-    case Quote_State::Quote_28: RenderSprite2(0, 380, 2.5f, 5.0f, 57); break;  // 指定位置
+    {//1行　150 150,2行 300,300　3行　430,300    5行 700 400  
+    case Quote_State::Quote_0: sprite2->Render(dc,100, 300, 1400,300,0,0,2100,300, angle, r, g, b, a); break; //
+    case Quote_State::Quote_1: sprite2->Render(dc,100, 300, 800,150,0,300,2100,150, angle, r, g, b, a); break;  //
+    case Quote_State::Quote_2: sprite2->Render(dc,100, 300, 800,150,0,450,2100,150, angle, r, g, b, a); break;// 
+    case Quote_State::Quote_3: sprite2->Render(dc,100, 300, 800,300,0,600,2100,430, angle, r, g, b, a); break; // 
+    case Quote_State::Quote_4: sprite2->Render(dc,100, 300, 800,300,0,1030,2100,430, angle, r, g, b, a); break;  //
+    case Quote_State::Quote_5: sprite2->Render(dc,100, 300, 800,300,0,1460,2100,300, angle, r, g, b, a); break;  //
+    case Quote_State::Quote_6: sprite2->Render(dc,100, 300, 800,300,0,1760,2100,280, angle, r, g, b, a); break;  //
+    case Quote_State::Quote_7: sprite2->Render(dc,100, 300, 800,300,0,2040,2100,430, angle,r,g,b,a); break;  //
+    case Quote_State::Quote_8: sprite2->Render(dc,100, 300, 1200,400,0,2470,2100,700, angle,r,g,b,a); break;  //
+    case Quote_State::Quote_9: sprite2->Render(dc,100, 300, 1000,150,0,3350,2100,150, angle, r, g, b, a); break; // 
+    case Quote_State::Quote_10:sprite2->Render(dc, 100, 300,1000,150,0,3500,2100,150, angle, r, g, b, a); break; // 
+    case Quote_State::Quote_11:sprite2->Render(dc,400, 300, 1600,300,0,3650,2100,150, angle, r, g, b, a); break; //ゲームオーバー
+    case Quote_State::Quote_12:sprite2->Render(dc, 100, 300,800,300,0,3920,2100,430, angle, r, g, b, a); break;  //
+    case Quote_State::Quote_13:sprite2->Render(dc,100, 300, 800,150,0,4340,2100,150,angle,r,g,b,a ); break;  //
+    case Quote_State::Quote_14:sprite2->Render(dc,100, 300, 800,300,0,4490,2100,300,angle,r,g,b,a); break;  //
+    case Quote_State::Quote_15:sprite2->Render(dc,100, 300, 800,150,0,4800,2100,150,angle,r,g,b,a); break;  //
+    case Quote_State::Quote_16:sprite2->Render(dc,100, 300, 800,150,0,4950,2100,150,angle,r,g,b,a); break;  //
+    case Quote_State::Quote_17:sprite2->Render(dc,100, 300, 800,400,0,5100,2100,430,angle,r,g,b,a); break;  //
+    case Quote_State::Quote_18:sprite2->Render(dc,100, 300, 800,150,0,5670,2100,150,angle,r,g,b,a); break;  //
+    case Quote_State::Quote_19:sprite2->Render(dc,100, 300, 800,150,0,5820,2100,150,angle,r,g,b,a); break;  //
+    case Quote_State::Quote_20:sprite2->Render(dc,400, 300, 1600,150,0,5970,2100,150,angle,r,g,b,a); break; //ゲームオーバー 
+    case Quote_State::Quote_21:sprite2->Render(dc,100, 250, 800,500,0,6250,2100,600,angle,r,g,b,a); break;  //
+    case Quote_State::Quote_22:sprite2->Render(dc,100, 300, 800,150,0,6830,2100,150,angle,r,g,b,a); break;  //
+    case Quote_State::Quote_23:sprite2->Render(dc,100, 300, 800,300,0,7130,2100,280,angle,r,g,b,a ); break; //
+    case Quote_State::Quote_24:sprite2->Render(dc,100, 250, 800,500,0,7410,2100,600,angle,r,g,b,a ); break; //
+    case Quote_State::Quote_25:sprite2->Render(dc,100, 300, 800,150,0,8000,2100,140,angle,r,g,b,a ); break; //
+    case Quote_State::Quote_26:sprite2->Render(dc,100, 300, 800,150,0,8140,2100,150,angle,r,g,b,a ); break;// 
+    case Quote_State::Quote_27:sprite2->Render(dc,400, 300, 1600,150,0,8290,2100,150,angle,r,g,b,a); break;  //
+   
    // case Quote_State::Quote_29: RenderSprite2(0, 380, 2.5f, 5.0f, 59); break;  // 指定位置
     }
 }

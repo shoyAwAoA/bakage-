@@ -18,7 +18,7 @@ public:
 	{
 		DirectX::XMFLOAT3	position;
 		DirectX::XMFLOAT4	color;
-		DirectX::XMFLOAT2	texcoord;
+		DirectX::XMFLOAT2	textcoord;
 	};
 
 	// ï`âÊé¿çs
@@ -52,6 +52,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11SamplerState>			samplerState;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	shaderResourceView;
 
+	D3D11_TEXTURE2D_DESC texture2d_desc;
 	int textureWidth = 0;
 	int textureHeight = 0;
 };

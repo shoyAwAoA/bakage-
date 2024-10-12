@@ -530,7 +530,7 @@ void EnemyKiriko::UpdateDeathState(float elapsedTime)
         Destroy();
         dieSpeak_flag = false;
       
-            kati = 19;
+            kati = 18;
             SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame2D));
     }
 }

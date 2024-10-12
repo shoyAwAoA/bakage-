@@ -326,8 +326,8 @@ void Sprite::Render(ID3D11DeviceContext *immediate_context,
 			v[i].color.z = b;
 			v[i].color.w = a;
 
-			v[i].texcoord.x = texcoords[i].x / textureWidth;
-			v[i].texcoord.y = texcoords[i].y / textureHeight;
+			v[i].textcoord.x = texcoords[i].x / textureWidth;
+			v[i].textcoord.y = texcoords[i].y / textureHeight;
 		}
 
 		// 頂点バッファの内容の編集を終了する。

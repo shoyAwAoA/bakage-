@@ -50,8 +50,8 @@ Player::Player()
 
     //punch_Sound=audioManager.LoadAudioSource("Data/Audio/idou.wav");
     
-    model = new Model("Data/Model/panda/panda.mdl");
-    
+    //model = new Model("Data/Model/panda/panda.mdl");
+    model = new Model("Data/Model/Jammo/Jammo.mdl");
     scale.x = scale.y = scale.z = 0.2f;
 
     //ヒットエフェクト読み込み
@@ -335,7 +335,7 @@ void Player::CollisionProjectilesVsEnemies()
                 outPosition))
             {
                 //ダメージを与える
-                if (enemy->ApplyDamage(1, 0.5f))
+                if (enemy->ApplyDamage(2, 0.5f))
                 {
                     Special = true;
                     //吹き飛ばす
@@ -768,12 +768,12 @@ void Player::UpdateDeathState(float elapsedTime)
        
     if (!model->IsPlayAnimation())
     {
-        if (make != 18 && stage == 1) { 
-            make = 18;
+        if (make != 17 && stage == 1) { 
+            make = 17;
             SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame2D));
         }
-        if (make != 25 && stage == 2) { 
-            make = 25;
+        if (make != 23 && stage == 2) { 
+            make = 23;
             SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame2_2D));
         }
     }
@@ -856,8 +856,8 @@ void Player::UpdateKickState(float elapsedTime)
     if (kickCollisionFlag)
     {
         //蹴りノードとエネミーの衝突処理
-        CollisionNodeVsEnemies("mixamorig:LeftToe_End", kickRadius);
-        //CollisionNodeVsEnemies("mixamorig:LeftHand", kickRadius);
+        //CollisionNodeVsEnemies("mixamorig:LeftToe_End", kickRadius);
+        CollisionNodeVsEnemies("mixamorig:LeftHand", kickRadius);
     }
 }
 
