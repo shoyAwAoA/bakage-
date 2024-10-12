@@ -32,7 +32,7 @@ void SceneGame::Initialize()
 	player = new Player();
 
 	//ゲージスプライト
-	guage = new Sprite();
+	//guage = new Sprite();
 	hissatu = new Sprite("Data/Sprite/riza.png");
 	//speak = new Sprite("Data/Sprite/nisi.png");//最初のセリフ
 	//dieSpeak = new Sprite("Data/Sprite/suku3.png");//倒された時のキリコのセリフ
@@ -95,23 +95,23 @@ void SceneGame::Finalize()
 		player = nullptr;
 	}
 
-	//ゲージスプライト終了化
-	if (guage != nullptr)
-	{
-		delete guage;
-		guage = nullptr;
-	}
+	////ゲージスプライト終了化
+	//if (guage != nullptr)
+	//{
+	//	delete guage;
+	//	guage = nullptr;
+	//}
 
 	if (hissatu != nullptr)
 	{
 		delete hissatu;
 		hissatu = nullptr;
 	}
-	if (speak != nullptr)
-	{
-		delete speak;
-		speak = nullptr;
-	}
+	//if (speak != nullptr)
+	//{
+	//	delete speak;
+	//	speak = nullptr;
+	//}
 
 
 	//エネミー終了化
@@ -197,16 +197,16 @@ void SceneGame::Render()
 
 	// 2Dスプライト描画
 	{
-		float screenWidth = static_cast<float>(graphics.GetScreenWidth());
+	/*	float screenWidth = static_cast<float>(graphics.GetScreenWidth());
 		float screenHeight = static_cast<float>(graphics.GetScreenHeight());
 		float textureWidth = static_cast<float>(hissatu->GetTextureWidth());
-		float textureHeight = static_cast<float>(hissatu->GetTextureHeight());
+		float textureHeight = static_cast<float>(hissatu->GetTextureHeight());*/
 		//これが重要です
 		RenderEnemyGauge(dc, rc.view, rc.projection);
 
 		if (player->GetSpecialAttack())
 		{
-			hissatu->Render(dc, spriteMoveX, 0, 200, 100, 0, 0, textureWidth, textureHeight, 0, 1, 1, 1, 1);
+			hissatu->Render(dc, spriteMoveX, 0, 200, 100, 0, 0, 1280, 720, 0, 1, 1, 1, 1);
 		}
 
 	}
@@ -296,34 +296,34 @@ void SceneGame::RenderEnemyGauge(
 		const float dieSpeakHeight =240.0f;
 		const float dieSpeakPositionX = screenPosition.x;
 		const float dieSpeakPositionY = screenPosition.y +0.0f;
-		
-		if (speak_flag)
-		{
-			speak->Render(dc,
-				screenPosition.x-160,//発生位置
-				screenPosition.y-80,
-				speakWidth*8,//サイズ
-				speakHeight*8,
-				0, 0,
-				static_cast<float>(speak->GetTextureWidth()),
-				static_cast<float>(speak->GetTextureHeight()),
-				0.0f,
-				1.0f, 1.0f, 1.0f, 1.0f
-			);
-		}
-		else if(dieSpeak_flag)
-		{
-			dieSpeak->Render(dc,
-				dieSpeakPositionX,
-				dieSpeakPositionY,
-				dieSpeakWidth*2,
-			 dieSpeakHeight*2,
-				0, 0,
-				static_cast<float>(dieSpeak->GetTextureWidth()),
-				static_cast<float>(dieSpeak->GetTextureHeight()),
-				0.0f,
-				1.0f, 1.0f, 1.0f, 1.0f
-			);
-		}
+		//
+		//if (speak_flag)
+		//{
+		//	speak->Render(dc,
+		//		screenPosition.x-160,//発生位置
+		//		screenPosition.y-80,
+		//		speakWidth*8,//サイズ
+		//		speakHeight*8,
+		//		0, 0,
+		//		static_cast<float>(speak->GetTextureWidth()),
+		//		static_cast<float>(speak->GetTextureHeight()),
+		//		0.0f,
+		//		1.0f, 1.0f, 1.0f, 1.0f
+		//	);
+		//}
+		//else if(dieSpeak_flag)
+		//{
+		//	dieSpeak->Render(dc,
+		//		dieSpeakPositionX,
+		//		dieSpeakPositionY,
+		//		dieSpeakWidth*2,
+		//	 dieSpeakHeight*2,
+		//		0, 0,
+		//		static_cast<float>(dieSpeak->GetTextureWidth()),
+		//		static_cast<float>(dieSpeak->GetTextureHeight()),
+		//		0.0f,
+		//		1.0f, 1.0f, 1.0f, 1.0f
+		//	);
+		//}
 	}
 }

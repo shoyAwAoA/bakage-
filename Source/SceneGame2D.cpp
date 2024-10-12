@@ -132,30 +132,26 @@ void SceneGame2D::Update(float elapsedTime)
         break;
     case Quote_State::Quote_12://ゲームオーバー
     {
-        if (HandleMouseClick(0, 720, state)) {
             a2_flag = true;
-
-
-        }
-        if (a2_flag)
+    }
+    if (a2_flag)
+    {
+        a2 += elapsedTime * 0.35f;  // フェードアウト速度調整
+        if (a2 < 0.0f) a2 = 0.0f;  // 最小透明度の制限
         {
-            a2 -= elapsedTime * 0.5f;  // フェードアウト速度調整
-            if (a2 < 0.0f) a2 = 0.0f;  // 最小透明度の制限
+            if (a2 >= 1)
             {
-                if (a2 == 0)
-                {
-                    SceneManager::Instance().ChangeScene(new SceneLoading(new SceneSelect));
-
-                }
+                
+                state = Quote_State::Quote_21;
+               //SceneManager::Instance().ChangeScene(new SceneLoading(new SceneSelect));
             }
-
         }
-
-
     }
     break;
     case Quote_State::Quote_21: // 最終状態
         if (HandleMouseClick(0, 720, state)) {
+            a2_flag = false;
+                a2 = 0;
             SceneManager::Instance().ChangeScene(new SceneLoading(new SceneSelect));
         }
         break;
@@ -199,19 +195,8 @@ void SceneGame2D::Render()
     float textureWidth2 = static_cast<float>(sprite2->GetTextureWidth());
     float textureHeight = static_cast<float>(sprite->GetTextureHeight());
     float textureHeight2 = static_cast<float>(sprite2->GetTextureHeight());
-
-    // タイトルスプライト描画
-  /*  sprite->Render(dc,
-        0, 0, screenWidth, screenHeight,
-        0, 0, textureWidth, textureHeight,
-        0, 1, 1, 1, 1); */
- /*   sprite2->Render2(dc,
-        0, 0, screenWidth, screenHeight,
-        0, 0, textureWidth2, textureHeight2,
-        0, 1, 1, 1, 1);*/
     
     // レンダリングの共通処理を関数化（X, Y 座標を追加）
-
 
     if (ImGui::Begin("Player", nullptr, ImGuiTreeNodeFlags_None))
     {
@@ -223,10 +208,6 @@ void SceneGame2D::Render()
             ImGui::SliderFloat("dy", &dy, 0, 720);
             ImGui::SliderFloat("dw", &dw, 0, 6120);
             ImGui::SliderFloat("sh", &sh, 0, 500);
-           // ImGui::SliderFloat("sx", &sx, 0, 1280);
-          //  ImGui::SliderFloat("sy", &sy, 0, 720);
-          //  ImGui::SliderFloat("sw", &sw, 0, 1280);
-          //  ImGui::SliderFloat("sh", &sh, 0, 720);
         }
         ImGui::End();
 
@@ -254,7 +235,7 @@ void SceneGame2D::Render()
         case Quote_State::Quote_18:sprite2->Render(dc, 100,400,800,300,0,4993.5f,3300,560,angle,r,g,b,a);break;//
         case Quote_State::Quote_19:sprite2->Render(dc, 100,400,800,100,0,5558.5f,3300,138,angle,r,g,b,a);break;//
         case Quote_State::Quote_20:sprite2->Render(dc, 100,400,800,100,0,5701.5f,3300,138,angle,r,g,b,a);break;
-        case Quote_State::Quote_21:sprite2->Render(dc, 100,400,800,100,0,5844.5f,3300,138,angle,r,g,b,a); break;  // 指定位置
+        case Quote_State::Quote_21:sprite2->Render(dc, 400,250,1200,200,0,5844.5f,3300,138,angle,r,g,b,a); break;  // 指定位置
         }
     }
 }

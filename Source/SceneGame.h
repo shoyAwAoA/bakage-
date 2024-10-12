@@ -42,9 +42,9 @@ private:
 
 public:
 
-	Sprite* guage = nullptr;
-	Sprite* speak = nullptr;//最初の
-	Sprite* dieSpeak = nullptr;//死ぬときのセリフ
+	//Sprite* guage = nullptr;
+	//Sprite* speak = nullptr;//最初の
+	//Sprite* dieSpeak = nullptr;//死ぬときのセリフ
 	Sprite* hissatu=nullptr;
 
 private:
