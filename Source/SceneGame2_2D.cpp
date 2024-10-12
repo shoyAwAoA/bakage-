@@ -135,13 +135,27 @@ void SceneGame2_2D::Update(float elapsedTime)
     // Quote_State::Quote_12またはQuote_State::Quote_22になった場合、クリックでQuote_State::Quote_28に遷移
     case Quote_State::Quote_11: // ゲームオーバー
     case Quote_State::Quote_20: // ゲームオーバー
-        if (HandleMouseClick(0, 720, Quote_State::Quote_28)) {
-            state = Quote_State::Quote_28;
+        if (HandleMouseClick(0, 720, state)) {
+            a2_flag = true;
+        }
+        if (a2_flag)
+        {
+            a2 -= elapsedTime * 0.5f;  // フェードアウト速度調整
+            if (a2 < 0.0f) a2 = 0.0f;  // 最小透明度の制限
+            {
+                if (a2 == 0)
+                {
+                    // SceneManager::Instance().ChangeScene(new SceneLoading(new SceneSelect));
+                    state = Quote_State::Quote_27;
+                }
+            }
         }
         break;
 
     case Quote_State::Quote_27: // 最終状態
         if (HandleMouseClick(0, 720, state)) {
+            a2 = 1;
+            a2_flag = false;
             SceneManager::Instance().ChangeScene(new SceneLoading(new SceneSelect));
         }
         break;
@@ -212,7 +226,6 @@ void SceneGame2_2D::Render()
     case Quote_State::Quote_8: sprite2->Render(dc,100, 300, 1200,400,0,2470,2100,700, angle,r,g,b,a); break;  //
     case Quote_State::Quote_9: sprite2->Render(dc,100, 300, 1000,150,0,3350,2100,150, angle, r, g, b, a); break; // 
     case Quote_State::Quote_10:sprite2->Render(dc, 100, 300,1000,150,0,3500,2100,150, angle, r, g, b, a); break; // 
-    case Quote_State::Quote_11:sprite2->Render(dc,400, 300, 1600,300,0,3650,2100,150, angle, r, g, b, a); break; //ゲームオーバー
     case Quote_State::Quote_12:sprite2->Render(dc, 100, 300,800,300,0,3920,2100,430, angle, r, g, b, a); break;  //
     case Quote_State::Quote_13:sprite2->Render(dc,100, 300, 800,150,0,4340,2100,150,angle,r,g,b,a ); break;  //
     case Quote_State::Quote_14:sprite2->Render(dc,100, 300, 800,300,0,4490,2100,300,angle,r,g,b,a); break;  //
@@ -221,7 +234,8 @@ void SceneGame2_2D::Render()
     case Quote_State::Quote_17:sprite2->Render(dc,100, 300, 800,400,0,5100,2100,430,angle,r,g,b,a); break;  //
     case Quote_State::Quote_18:sprite2->Render(dc,100, 300, 800,150,0,5670,2100,150,angle,r,g,b,a); break;  //
     case Quote_State::Quote_19:sprite2->Render(dc,100, 300, 800,150,0,5820,2100,150,angle,r,g,b,a); break;  //
-    case Quote_State::Quote_20:sprite2->Render(dc,400, 300, 1600,150,0,5970,2100,150,angle,r,g,b,a); break; //ゲームオーバー 
+    case Quote_State::Quote_11:sprite2->Render(dc,400, 250, 1600,300,0,3650,2100,150, angle, r, g, b, a2); break; //ゲームオーバー
+    case Quote_State::Quote_20:sprite2->Render(dc,400, 250, 1600,300,0,5970,2100,150,angle,r,g,b,a2); break; //ゲームオーバー 
     case Quote_State::Quote_21:sprite2->Render(dc,100, 250, 800,500,0,6250,2100,600,angle,r,g,b,a); break;  //
     case Quote_State::Quote_22:sprite2->Render(dc,100, 300, 800,150,0,6830,2100,150,angle,r,g,b,a); break;  //
     case Quote_State::Quote_23:sprite2->Render(dc,100, 300, 800,300,0,7130,2100,280,angle,r,g,b,a ); break; //

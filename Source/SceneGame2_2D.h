@@ -102,6 +102,8 @@ private:
     float mousePositionY = 0.0f;
     float angle = 0;
     float r = 1, g = 1, b = 1, a = 1;
+    float a2 = 1;
+    bool a2_flag=false;
     Sprite* sprite2 = nullptr;
     Sprite* sprite = nullptr;
     Quote_State state;
