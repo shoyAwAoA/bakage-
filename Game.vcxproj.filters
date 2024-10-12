@@ -210,6 +210,9 @@
     <ClInclude Include="Source\SceneGame2_2D.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="Source\SceneTutorial.h">
+      <Filter>Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui\imgui.cpp">
@@ -366,6 +369,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\SceneGame2_2D.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SceneTutorial.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

@@ -7,6 +7,7 @@
 #include "SceneManager.h"
 #include "SceneLoading.h"
 #include "SceneSelect.h"
+#include "SceneTutorial.h"
 
 using namespace std;
 
@@ -18,6 +19,7 @@ void SceneTitle::Initialize()
 {
     // スプライト初期化
     sprite = new Sprite("Data/Sprite/Title.png");
+    nextScene = 0;
 }
 
 // 終了化
@@ -54,6 +56,12 @@ void SceneTitle::Update(float elapsedTime)
     {
         if (0 <= mousePositionX && 1280 > mousePositionX && alpha == 1.0f)
         {
+            nextScene = 2;
+            isFadingOut = true;
+        }
+        if (0 <= mousePositionX && 1280 > mousePositionX &&300>mousePositionY&& alpha == 1.0f)
+        {
+            nextScene = 1;
             isFadingOut = true;
         }
     }
@@ -65,7 +73,11 @@ void SceneTitle::Update(float elapsedTime)
         if (alpha < 0.0f) alpha = 0.0f;  // 最小透明度の制限
 
         // フェードアウト完了後、次のシーンへ遷移
-        if (alpha == 0.0f)
+        if (alpha == 0.0f&&nextScene==1)
+        {
+            SceneManager::Instance().ChangeScene(new SceneLoading(new SceneTutorial));
+        }
+        if (alpha == 0.0f&&nextScene==2)
         {
             SceneManager::Instance().ChangeScene(new SceneLoading(new SceneSelect));
         }

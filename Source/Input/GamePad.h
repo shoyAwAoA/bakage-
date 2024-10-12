@@ -10,10 +10,10 @@ public:
 	static const GamePadButton BTN_RIGHT			= (1 <<  1);
 	static const GamePadButton BTN_DOWN				= (1 <<  2);
 	static const GamePadButton BTN_LEFT				= (1 <<  3);
-	static const GamePadButton BTN_A				= (1 <<  4);
-	static const GamePadButton BTN_B				= (1 <<  5);
-	static const GamePadButton BTN_X				= (1 <<  6);
-	static const GamePadButton BTN_Y				= (1 <<  7);
+	static const GamePadButton BTN_Z				= (1 <<  4);
+	static const GamePadButton BTN_X				= (1 <<  5);
+	static const GamePadButton BTN_C				= (1 <<  6);
+	static const GamePadButton BTN_V				= (1 <<  7);
 	static const GamePadButton BTN_START			= (1 <<  8);
 	static const GamePadButton BTN_BACK				= (1 <<  9);
 	static const GamePadButton BTN_LEFT_THUMB		= (1 << 10);
@@ -24,6 +24,10 @@ public:
 	static const GamePadButton BTN_RIGHT_TRIGGER	= (1 << 15);
 	static const GamePadButton BTN_Q				= (1 << 16);
 	static const GamePadButton BTN_E			    = (1 << 17);
+	static const GamePadButton BTN_W			    = (1 << 18);
+	static const GamePadButton BTN_A			    = (1 << 19);
+	static const GamePadButton BTN_S			    = (1 << 20);
+	static const GamePadButton BTN_D			    = (1 << 21);
 
 public:
 	GamePad() {}

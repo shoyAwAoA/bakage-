@@ -17,7 +17,7 @@
 
 
 extern int stage;
-
+extern bool tutoFlag;
 template<typename T>
 T clamp(T value, T min, T max) {
     return (value < min) ? min : (value > max) ? max : value;
@@ -47,11 +47,11 @@ Player::Player()
     avoidanceTime =180;
     AvoidanceMove = {};
     Audio& audioManager = Audio::Instance();
-
+    
     //punch_Sound=audioManager.LoadAudioSource("Data/Audio/idou.wav");
     
-    //model = new Model("Data/Model/panda/panda.mdl");
-    model = new Model("Data/Model/Jammo/Jammo.mdl");
+    model = new Model("Data/Model/panda/panda.mdl");
+    //model = new Model("Data/Model/Jammo/Jammo.mdl");
     scale.x = scale.y = scale.z = 0.2f;
 
     //ヒットエフェクト読み込み
@@ -76,8 +76,7 @@ void Player::Update(float elapsedTime) {
     // 速力を制限
     velocity.x = clamp(velocity.x, -15.0f, 15.0f);
     velocity.z = clamp(velocity.z, -15.0f, 15.0f);
-
-
+    
     {
         if (!avoidanceFlag)
         {
@@ -253,39 +252,44 @@ void Player::DrawDebugPrimitive()
     //    leftHandBone->worldTransform._43),
     //    leftHandRadius,
     //    DirectX::XMFLOAT4(1, 0, 0, 1));
-    if (attackCollisionFlag)
+    if (!tutoFlag)
     {
-        Model::Node* leftHandBone = model->FindNode("mixamorig:LeftHand");
-        debugRenderer->DrawSphere(DirectX::XMFLOAT3(
-            leftHandBone->worldTransform._41,
-            leftHandBone->worldTransform._42,
-            leftHandBone->worldTransform._43),
-            leftHandRadius,
-            DirectX::XMFLOAT4(1, 0, 0, 1)
-        );
+        if (attackCollisionFlag)
+        {
+            Model::Node* leftHandBone = model->FindNode("mixamorig:LeftHand");
+            debugRenderer->DrawSphere(DirectX::XMFLOAT3(
+                leftHandBone->worldTransform._41,
+                leftHandBone->worldTransform._42,
+                leftHandBone->worldTransform._43),
+                leftHandRadius,
+                DirectX::XMFLOAT4(1, 0, 0, 1)
+            );
+        }
+        if (kickCollisionFlag)
+        {
+            Model::Node* leftHandBone = model->FindNode("mixamorig:LeftToe_End");
+            debugRenderer->DrawSphere(DirectX::XMFLOAT3(
+                leftHandBone->worldTransform._41,
+                leftHandBone->worldTransform._42,
+                leftHandBone->worldTransform._43),
+                leftHandRadius,
+                DirectX::XMFLOAT4(1, 0, 0, 1)
+            );
+        }
+        if (specialAttackCollisionFlag)
+        {
+
+            Model::Node* leftHandBone = model->FindNode("mixamorig:LeftHand");
+            debugRenderer->DrawSphere(DirectX::XMFLOAT3(
+                leftHandBone->worldTransform._41,
+                leftHandBone->worldTransform._42,
+                leftHandBone->worldTransform._43),
+                leftHandRadius,
+                DirectX::XMFLOAT4(1, 0, 0, 1)
+            );
+        }
     }
-    if (kickCollisionFlag)
-    {
-        Model::Node* leftHandBone = model->FindNode("mixamorig:LeftToe_End");
-        debugRenderer->DrawSphere(DirectX::XMFLOAT3(
-            leftHandBone->worldTransform._41,
-            leftHandBone->worldTransform._42,
-            leftHandBone->worldTransform._43),
-            leftHandRadius,
-            DirectX::XMFLOAT4(1, 0, 0, 1)
-        );
-    }
-    if (specialAttackCollisionFlag)
-    {
-        Model::Node* leftHandBone = model->FindNode("mixamorig:LeftHand");
-        debugRenderer->DrawSphere(DirectX::XMFLOAT3(
-            leftHandBone->worldTransform._41,
-            leftHandBone->worldTransform._42,
-            leftHandBone->worldTransform._43),
-            leftHandRadius,
-            DirectX::XMFLOAT4(1, 0, 0, 1)
-        );
-    }
+    
 
 }
 
@@ -552,7 +556,7 @@ void Player::InputSpecial()
                 specialAttack = false;
             }
 
-    if (gamePad.GetButtonDown() & GamePad::BTN_Y)
+    if (gamePad.GetButtonDown() & GamePad::BTN_Z)
     {
         //前方向
         DirectX::XMFLOAT3 dir;
@@ -731,7 +735,7 @@ void Player::UpdateAttackState(float elapsedTime)
     if (attackCollisionFlag)
     {
         //左手ノードとエネミーの衝突処理
-        CollisionNodeVsEnemies("joint21aaaaaaaaaaaaaaaaaaaaa", leftHandRadius);
+        CollisionNodeVsEnemies("joint21", leftHandRadius);
     }
 }
 //ダメージステートへ遷移
@@ -856,8 +860,8 @@ void Player::UpdateKickState(float elapsedTime)
     if (kickCollisionFlag)
     {
         //蹴りノードとエネミーの衝突処理
-        //CollisionNodeVsEnemies("mixamorig:LeftToe_End", kickRadius);
-        CollisionNodeVsEnemies("mixamorig:LeftHand", kickRadius);
+        CollisionNodeVsEnemies("mixamorig:LeftToe_End", kickRadius);
+        //CollisionNodeVsEnemies("mixamorig:LeftHand", kickRadius);
     }
 }
 
@@ -866,7 +870,7 @@ void Player::TransitionSpecialAttackState()
 {
     state = State::SpecialAttack;
 
-    model->PlayAnimation(Anim_Attack, false);
+  //  model->PlayAnimation(Anim_Attack, false);
 }
 
 //必殺技ステートの更新処理
@@ -877,16 +881,20 @@ void Player::UpdateSpecialAttackState(float elapsedTime)
     if (specialAttackCollisionFlag)
     {
         //ノードの名前を打つ
-        CollisionNodeVsEnemies("mixamorig:LeftHand", leftHandRadius);
+        //CollisionNodeVsEnemies("mixamorig:LeftHand", leftHandRadius);
     }
-
+  
     if (!model->IsPlayAnimation())
     {
         if (Special)
         {
             TransitionIdleState();
         }
-        else if(!Special)
+        else if (tutoFlag)
+        {
+            TransitionIdleState();
+        }
+        else if(!Special&&!tutoFlag)
         {
             health--;
             TransitionDeathState();
@@ -897,68 +905,72 @@ void Player::UpdateSpecialAttackState(float elapsedTime)
 
 void Player::CollisionNodeVsEnemies(const char* nodeName, float nodeRadius)
 {
-    //ノード取得
-    Model::Node* node = model->FindNode(nodeName);
-
-    //ノード位置取得
-    DirectX::XMFLOAT3 nodePosition;
-    nodePosition.x = node->worldTransform._41;
-    nodePosition.y = node->worldTransform._42;
-    nodePosition.z = node->worldTransform._43;
-
-    //指定のノードと全ての敵を総当たりで衝突処理
-    EnemyManager& enemyManager = EnemyManager::Instance();
-    int enemyCount = enemyManager.GetEnemyCount();
-
-    for (int i = 0; i < enemyCount; ++i)
+    if (!tutoFlag)
     {
-        Enemy* enemy = enemyManager.GetEnemy(i);
+        //ノード取得
+        Model::Node* node = model->FindNode(nodeName);
 
-        //衝突処理
-        DirectX::XMFLOAT3 outPosition;
-        if (Collision::IntersectSphereVsCylinder(
-            position,
-            nodeRadius,
-            enemy->GetPosition(),
-            enemy->GetRadius(),
-            enemy->GetHeight(),
-            outPosition))
+        //ノード位置取得
+        DirectX::XMFLOAT3 nodePosition;
+        nodePosition.x = node->worldTransform._41;
+        nodePosition.y = node->worldTransform._42;
+        nodePosition.z = node->worldTransform._43;
+
+        //指定のノードと全ての敵を総当たりで衝突処理
+        EnemyManager& enemyManager = EnemyManager::Instance();
+        int enemyCount = enemyManager.GetEnemyCount();
+
+        for (int i = 0; i < enemyCount; ++i)
         {
-            //ダメージを与える
-            if (enemy->ApplyDamage(1, 1.5f))
+            Enemy* enemy = enemyManager.GetEnemy(i);
+
+            //衝突処理
+            DirectX::XMFLOAT3 outPosition;
+            if (Collision::IntersectSphereVsCylinder(
+                position,
+                nodeRadius,
+                enemy->GetPosition(),
+                enemy->GetRadius(),
+                enemy->GetHeight(),
+                outPosition))
             {
-                if (state == State::SpecialAttack)
+                //ダメージを与える
+                if (enemy->ApplyDamage(1, 1.5f))
                 {
-                    Special = true;
+                    if (state == State::SpecialAttack)
+                    {
+                        Special = true;
+                    }
+
+                    //吹っ飛ばす
+                    const float power = 5.0f;
+                    DirectX::XMFLOAT3 e = enemy->GetPosition();
+                    float vx = e.x - nodePosition.x;
+                    float vz = e.z - nodePosition.z;
+
+                    float lengthXZ = sqrtf((vx * vx) + (vz * vz));
+
+                    vx /= lengthXZ;
+                    vz /= lengthXZ;
+
+                    DirectX::XMFLOAT3 impulse;
+
+                    impulse.x = vx * power;
+                    impulse.y = power * 0.5f;
+                    impulse.z = vz * power;
+
+                    enemy->AddImpulse(impulse);
                 }
-                
-                //吹っ飛ばす
-                const float power = 5.0f;
-                DirectX::XMFLOAT3 e = enemy->GetPosition();
-                float vx = e.x - nodePosition.x;
-                float vz = e.z - nodePosition.z;
-
-                float lengthXZ = sqrtf((vx * vx) + (vz * vz));
-
-                vx /= lengthXZ;
-                vz /= lengthXZ;
-
-                DirectX::XMFLOAT3 impulse;
-
-                impulse.x = vx * power;
-                impulse.y = power * 0.5f;
-                impulse.z = vz * power;
-
-                enemy->AddImpulse(impulse);
-            }
-            //ヒットエフェクト再生
-            {
-                DirectX::XMFLOAT3 e = enemy->GetPosition();
-                e.y += enemy->GetHeight() * 0.5f;
-                hitEffect->Play(e);
+                //ヒットエフェクト再生
+                {
+                    DirectX::XMFLOAT3 e = enemy->GetPosition();
+                    e.y += enemy->GetHeight() * 0.5f;
+                    hitEffect->Play(e);
+                }
             }
         }
     }
+  
 }
 
 
