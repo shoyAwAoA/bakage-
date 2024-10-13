@@ -88,10 +88,17 @@ private:
     float dw = 2700, dh = 300;
     float r=1, g=1, b=1, a=1;
     float a2 = 0;
+    float a3 = 1;
     bool a2_flag = false;
+    bool clickFlag = false;
+    int hidariTimer = 0;
     float angle = 0;
     float sh=215.35f;
     Sprite* sprite2 = nullptr;
     Sprite* sprite = nullptr;
+    Sprite* skip = nullptr;
+    Sprite* hidari=nullptr;
     Quote_State state;
+    bool plusFlag=false;
+    bool minasuFlag=false;
 };

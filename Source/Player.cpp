@@ -27,6 +27,8 @@ T clamp(T value, T min, T max) {
 bool Special = false;
 int make = 0;//敗北
 int kati = 0;//勝ち
+bool kirikoSkip = false;
+bool hipopoSkip = false;
 
 static Player* instance = nullptr;
 
@@ -50,8 +52,8 @@ Player::Player()
     
     //punch_Sound=audioManager.LoadAudioSource("Data/Audio/idou.wav");
     
-    model = new Model("Data/Model/panda/panda.mdl");
-    //model = new Model("Data/Model/Jammo/Jammo.mdl");
+    //model = new Model("Data/Model/panda/panda.mdl");
+    model = new Model("Data/Model/Jammo/Jammo.mdl");
     scale.x = scale.y = scale.z = 0.2f;
 
     //ヒットエフェクト読み込み

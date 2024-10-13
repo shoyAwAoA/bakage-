@@ -11,6 +11,7 @@
 extern int make;
 extern int kati;
 extern int stage;
+extern bool hipopoSkip;
 static SceneGame2_2D* instance = nullptr;
 
 SceneGame2_2D& SceneGame2_2D::Instance()
@@ -25,7 +26,13 @@ void SceneGame2_2D::Initialize()
     //スプライトの初期化
     sprite = new Sprite("Data/Sprite/score.png");
     sprite2 = new Sprite("Data/Sprite/hipopo/matome.png");
+    skip = new Sprite("Data/Sprite/skip.png");
+   hidari = new Sprite("Data/Sprite/hidaku.png");
     state = Quote_State::Quote_0;
+    minasuFlag = false;
+    plusFlag = false;
+    clickFlag = false;
+    hidariTimer = 0;
 }
 
 //終了化
@@ -41,6 +48,16 @@ void SceneGame2_2D::Finalize()
     {
         delete sprite2;
         sprite2 = nullptr;
+    }
+    if (skip != nullptr)
+    {
+        delete skip;
+        skip = nullptr;
+    }
+    if (hidari != nullptr)
+    {
+        delete hidari;
+        hidari = nullptr;
     }
 }
 
@@ -75,6 +92,37 @@ void SceneGame2_2D::Update(float elapsedTime)
         }
     };
 
+    //マウスクリック
+    auto HandleMouseClickSkip = [&](int minX, int maxX, int minY, int maxY, Quote_State nextState) {
+        if ((mouse.GetButtonDown() & Mouse::BTN_LEFT) &&
+            mousePositionX >= minX && mousePositionX < maxX &&
+            mousePositionY >= minY && mousePositionY < maxY)
+        {
+            state = nextState;
+            return true;
+        }
+        return false;
+    };
+
+    {
+        if (hipopoSkip)
+        {
+            if(HandleMouseClickSkip(900, 1280, 0, 200, state))
+            {
+               state = Quote_State::Quote_22;
+            }
+        }
+    }
+
+    if (hidariTimer >= 500)
+    {
+        clickFlag = true;
+    }
+    else
+    {
+        clickFlag = false;
+    }
+
     switch (state)
     {
     case Quote_State::Quote_0:
@@ -88,6 +136,7 @@ void SceneGame2_2D::Update(float elapsedTime)
         //  case Quote_State::Quote_8:
         if (HandleMouseClick(0, 720, state)) {
             IncrementState();  // 状態を次に進める
+            hidariTimer=0;
         }
         break;
 
@@ -95,12 +144,14 @@ void SceneGame2_2D::Update(float elapsedTime)
         if (HandleMouseClick(600, 720, Quote_State::Quote_12) ||
             HandleMouseClick(480, 600, Quote_State::Quote_9))
         {
+            hidariTimer = 0;
             break;
         }
     case Quote_State::Quote_17:
         if (HandleMouseClick(600, 720, Quote_State::Quote_21) ||
             HandleMouseClick(480, 600, Quote_State::Quote_18))
         {
+            hidariTimer = 0;
             break;
         }
         break;
@@ -120,13 +171,16 @@ void SceneGame2_2D::Update(float elapsedTime)
     
         if (HandleMouseClick(0, 720, state)) {
             IncrementState();  // 状態を次に進める
+            hidariTimer = 0;
         }
         break;
     case Quote_State::Quote_23: // 敗北
     {
         make = 0;
+            hipopoSkip = true;
         if (HandleMouseClick(0, 720, state)) {
             state = Quote_State::Quote_11;
+            hidariTimer = 0;
             // IncrementState();  // 状態を次に進める
         }
     }
@@ -137,7 +191,6 @@ void SceneGame2_2D::Update(float elapsedTime)
     case Quote_State::Quote_20: // ゲームオーバー
        // if (HandleMouseClick(0, 720, state)) {
             a2_flag = true;
-        
         if (a2_flag)
         {
             a2 += elapsedTime * 0.35f;  // フェードアウト速度調整
@@ -157,6 +210,7 @@ void SceneGame2_2D::Update(float elapsedTime)
             a2 = 1;
             a2_flag = false;
             SceneManager::Instance().ChangeScene(new SceneLoading(new SceneSelect));
+            hidariTimer = 0;
         }
         break;
 
@@ -164,6 +218,7 @@ void SceneGame2_2D::Update(float elapsedTime)
         if (HandleMouseClick(0, 720, state)) {
             stage = 2;
             SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame2));
+            hidariTimer = 0;
         }
         break;
 
@@ -171,9 +226,40 @@ void SceneGame2_2D::Update(float elapsedTime)
         if (HandleMouseClick(0, 720, Quote_State::Quote_25)) {
             kati = 0;
             stage = 0;
+            hipopoSkip = false;
+            hidariTimer = 0;
         }
         break;
     }
+
+    if (clickFlag)
+    {
+        if (a3 >= 1.0f)
+        {
+            plusFlag = false;
+            minasuFlag = true;
+        }
+        else if (a3 <= 0.0f)
+        {
+            minasuFlag = false;
+            plusFlag = true;
+        }
+        if (minasuFlag)
+        {
+            a3 -= elapsedTime * 0.75f;
+        }
+        if (plusFlag)
+        {
+            a3 += elapsedTime * 0.75f;
+        }
+    }
+    if (!clickFlag)
+    {
+        a3 = 1;
+        plusFlag = false;
+        minasuFlag = false;
+    }
+    hidariTimer +=1;
 }
 //描画処理
 void SceneGame2_2D::Render()
@@ -190,27 +276,24 @@ void SceneGame2_2D::Render()
     dc->OMSetRenderTargets(1, &rtv, dsv);
 
     // 2Dスプライト描画
-    float screenWidth = static_cast<float>(graphics.GetScreenWidth());
+   /* float screenWidth = static_cast<float>(graphics.GetScreenWidth());
     float screenHeight = static_cast<float>(graphics.GetScreenHeight());
     float textureWidth = static_cast<float>(sprite->GetTextureWidth());
-    float textureHeight = static_cast<float>(sprite->GetTextureHeight());
+    float textureHeight = static_cast<float>(sprite->GetTextureHeight());*/
 
-    // タイトルスプライト描画
-    /*sprite->Render(dc,
-        0, 0, screenWidth, screenHeight,
-        0, 0, textureWidth, textureHeight,
-        0, 1, 1, 1, 1);*/
+    //11,20、22以外
+    if (hipopoSkip&&state >= Quote_State::Quote_0 && state <= Quote_State::Quote_21 && state != Quote_State::Quote_11 && state != Quote_State::Quote_20)
+    {
+        skip->Render(dc, 1000, 50, 150, 150, 0, 0, 400, 200, angle, r, g, b, a);
+    }
 
-    // レンダリングの共通処理を関数化（X, Y 座標を追加）
-    //auto RenderSprite2 = [&](float x, float y, float fontSizeX, float scale, float posYMultiplier, float offsetY = 0.0f)
-    //{
-    //    sprite2->Render(dc,
-    //        x, y,  // X座標とY座標を指定可能に
-    //        screenWidth * fontSizeX, screenHeight * 10.0f,  // 横幅と縦幅のスケーリング
-    //        0, 144.92928571f * posYMultiplier + offsetY,  // Y座標スケーリングとオフセット
-    //        textureWidth * scale, textureHeight * scale,  // テクスチャサイズ
-    //        0, 1, 1, 1, 1);  // 色
-    //};
+    //クリック
+    {
+        if (clickFlag)
+        {
+            hidari->Render(dc, 1000, 600, 200, 130, 0, 0, 700, 250, angle, r, g, b, a3);
+        }
+    }
 
     // 状態に応じた描画処理
     switch (state)//1=2.5,2=5.0f.3=7.5f,4=9.0f 5,9,13,17
