@@ -103,8 +103,15 @@ private:
     float angle = 0;
     float r = 1, g = 1, b = 1, a = 1;
     float a2 = 0;
+    float a3 = 1.0f;
     bool a2_flag=false;
+    bool minasuFlag = false;
+    bool plusFlag = false;
+    bool clickFlag = false;
     Sprite* sprite2 = nullptr;
     Sprite* sprite = nullptr;
+    Sprite* skip = nullptr;
+    Sprite* hidari = nullptr;
+    int hidariTimer = 0;
     Quote_State state;
 };

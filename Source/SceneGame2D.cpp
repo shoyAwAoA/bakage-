@@ -19,6 +19,7 @@
 extern int make;
 extern int kati;
 extern int stage;
+extern bool kirikoSkip;
 static SceneGame2D* instance = nullptr;
 
 SceneGame2D& SceneGame2D::Instance()
@@ -32,7 +33,11 @@ void SceneGame2D::Initialize()
     //スプライトの初期化
     sprite = new Sprite("Data/Sprite/score.png");
     sprite2 = new Sprite("Data/Sprite/kiriko/kiriko.png");
+    skip = new Sprite("Data/Sprite/skip.png");
+    hidari = new Sprite("Data/Sprite/hidaku.png");
+    hidariTimer = 0;
     state = Quote_State::Quote_0;
+    clickFlag = false;
 }
 
 //終了化
@@ -49,11 +54,17 @@ void SceneGame2D::Finalize()
         delete sprite2;
         sprite2 = nullptr;
     }
+    if (skip != nullptr)
+    {
+        delete skip;
+        skip = nullptr;
+    }
 }
 
 //更新処理
 void SceneGame2D::Update(float elapsedTime)
 {
+   
     GamePad& gamePad = Input::Instance().GetGamePad();
     Mouse& mouse = Input::Instance().GetMouse();
 
@@ -70,6 +81,20 @@ void SceneGame2D::Update(float elapsedTime)
             mousePositionY >= minY && mousePositionY < maxY)
         {
             state = nextState;
+           
+            return true;
+        }
+        return false;
+    };
+
+    //マウスクリック
+    auto HandleMouseClickSkip = [&](int minX, int maxX, int minY, int maxY, Quote_State nextState) {
+        if ((mouse.GetButtonDown() & Mouse::BTN_LEFT) &&
+            mousePositionX >= minX && mousePositionX < maxX &&
+            mousePositionY >= minY && mousePositionY < maxY)
+        {
+            state = nextState;
+          
             return true;
         }
         return false;
@@ -79,8 +104,30 @@ void SceneGame2D::Update(float elapsedTime)
     auto IncrementState = [&]() {
         if (state < Quote_State::Quote_21) {  // 状態が最大値を超えないように制限
             state = static_cast<Quote_State>(static_cast<int>(state) + 1);
+          
         }
     };
+
+    //スキップ
+    {
+        if (kirikoSkip)
+        {
+            if (HandleMouseClickSkip(900, 1280, 0, 100, state))
+            {
+                state = Quote_State::Quote_16;
+            }
+        }
+    }
+
+    //左クリック
+    if (hidariTimer >= 500)
+    {
+        clickFlag = true;
+    }
+    else
+    {
+        clickFlag = false;
+    }
 
     switch (state)
     {
@@ -95,6 +142,7 @@ void SceneGame2D::Update(float elapsedTime)
 
         if (HandleMouseClick(0, 720, state)) {
             IncrementState();  // 状態を次に進める
+            hidariTimer = 0;
         }
         break;
 
@@ -102,6 +150,7 @@ void SceneGame2D::Update(float elapsedTime)
         if (HandleMouseClick(600, 720, Quote_State::Quote_9) ||
             HandleMouseClick(480, 600, Quote_State::Quote_13))
         {
+            hidariTimer = 0;
             break;
         }
         break;
@@ -111,6 +160,7 @@ void SceneGame2D::Update(float elapsedTime)
     {if (HandleMouseClick(0, 720, state))
     {
         state = Quote_State::Quote_12;
+        hidariTimer = 0;
     }
     }
     break;
@@ -120,6 +170,7 @@ void SceneGame2D::Update(float elapsedTime)
     case Quote_State::Quote_19:
     case Quote_State::Quote_20:
         if (HandleMouseClick(0, 720, state)) {
+           hidariTimer = 0;
             IncrementState();  // 状態を次に進める
         }
         break;
@@ -128,6 +179,8 @@ void SceneGame2D::Update(float elapsedTime)
         if (HandleMouseClick(0, 720, state)) {
             make = 0;
             state = Quote_State::Quote_12;
+            hidariTimer = 0;
+            kirikoSkip = true;
         }
         break;
     case Quote_State::Quote_12://ゲームオーバー
@@ -140,10 +193,8 @@ void SceneGame2D::Update(float elapsedTime)
         if (a2 < 0.0f) a2 = 0.0f;  // 最小透明度の制限
         {
             if (a2 >= 1)
-            {
-                
+            {   
                 state = Quote_State::Quote_21;
-               //SceneManager::Instance().ChangeScene(new SceneLoading(new SceneSelect));
             }
         }
     }
@@ -153,22 +204,55 @@ void SceneGame2D::Update(float elapsedTime)
             a2_flag = false;
                 a2 = 0;
             SceneManager::Instance().ChangeScene(new SceneLoading(new SceneSelect));
+           hidariTimer = 0;
         }
         break;
     case Quote_State::Quote_16: // ゲーム再スタート
         if (HandleMouseClick(0, 720, state)) {
             stage = 1;
             SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame));
+            hidariTimer = 0;
         }
         break;
 
     case Quote_State::Quote_18: // 勝利
         if (HandleMouseClick(0, 720, Quote_State::Quote_19)) {
             kati = 0;
+            kirikoSkip = false;
             stage = 0;
+            //hidariTimer = 0;
         }
         break;
     }
+
+    if (clickFlag)
+    {
+        if (a3 >= 1.0f)
+        {
+            plusFlag = false;
+            minasuFlag = true;
+        }
+        else if(a3<=0.0f)
+        {
+            minasuFlag = false;
+            plusFlag = true;
+        }
+        if (minasuFlag)
+        {
+            a3 -= elapsedTime * 0.75f;
+        }
+        if (plusFlag)
+        {
+            a3 += elapsedTime * 0.75f;
+        }
+    }
+    if (!clickFlag)
+    {
+        a3 = 1;
+        plusFlag = false;
+        minasuFlag = false;
+    }
+    hidariTimer += 1;
 };
 
 //描画処理
@@ -208,8 +292,29 @@ void SceneGame2D::Render()
             ImGui::SliderFloat("dy", &dy, 0, 720);
             ImGui::SliderFloat("dw", &dw, 0, 6120);
             ImGui::SliderFloat("sh", &sh, 0, 500);
+            ImGui::InputInt("clickTimer", &hidariTimer);
         }
         ImGui::End();
+
+        //スキップ
+     
+        {
+            if (state >= Quote_State::Quote_0 && state <= Quote_State::Quote_15 && state != Quote_State::Quote_12)
+            {
+                if (kirikoSkip)
+                {
+                    skip->Render(dc, 1000, 50, 150, 150, 0, 0, 400, 200, angle, r, g, b, a);
+                }
+            }
+        }
+
+        //クリック
+        {
+            if (clickFlag)
+            {
+                hidari->Render(dc, 1000, 600, 200, 130, 0, 0, 700, 250, angle, r, g, b, a3);
+            }
+        }
 
         // 状態に応じた描画処理
         switch (state)

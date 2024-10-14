@@ -27,6 +27,8 @@ T clamp(T value, T min, T max) {
 bool Special = false;
 int make = 0;//敗北
 int kati = 0;//勝ち
+bool kirikoSkip = false;
+bool hipopoSkip = false;
 
 static Player* instance = nullptr;
 
@@ -228,6 +230,31 @@ void Player::DrawDebugGUI()
         }
     }
     ImGui::End();
+
+    ImGui::SetNextWindowPos(ImVec2(300, 300), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(50, 50), ImGuiCond_FirstUseEver);
+
+    static char name[256] = { 0 };
+    if (ImGui::Begin("NameWindow", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBackground))
+    {
+        if (ImGui::InputText("", name, sizeof(name)))
+        {
+            OutputDebugStringA(name);
+        }
+    }
+    ImGui::End();
+
+    ImGui::SetNextWindowPos(ImVec2(600, 300), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_FirstUseEver);
+
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(1, 1, 1,0));
+    if (ImGui::Begin("TextWindow", nullptr, ImGuiWindowFlags_NoDecoration))
+    {
+        ImGui::Text(u8"名前:%s\nあいうえお", name); 
+     }
+    ImGui::PopStyleColor();
+    ImGui::End();
+
 }
 
 //デバッグプリミティブ描画
