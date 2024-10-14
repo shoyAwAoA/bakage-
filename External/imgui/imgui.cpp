@@ -6604,6 +6604,14 @@ void ImGui::SetNextWindowSize(const ImVec2& size, ImGuiCond cond)
     g.NextWindowData.SizeVal = size;
     g.NextWindowData.SizeCond = cond ? cond : ImGuiCond_Always;
 }
+void ImGui::SetNextBorderSize(const ImVec2& size, ImGuiCond cond)
+{
+    ImGuiContext& g = *GImGui;
+    IM_ASSERT(cond == 0 || ImIsPowerOfTwo(cond)); // Make sure the user doesn't attempt to combine multiple condition flags.
+    g.NextWindowData.Flags |= ImGuiColumnsFlags_NoResize;
+    g.NextWindowData.SizeVal = size;
+    g.NextWindowData.SizeCond = cond ? cond : ImGuiCond_Always;
+}
 
 void ImGui::SetNextWindowSizeConstraints(const ImVec2& size_min, const ImVec2& size_max, ImGuiSizeCallback custom_callback, void* custom_callback_user_data)
 {

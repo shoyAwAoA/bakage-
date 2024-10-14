@@ -8,7 +8,7 @@
 #include "SceneLoading.h"
 #include "SceneSelect.h"
 #include "SceneTutorial.h"
-
+#include "SceneTyping.h"
 using namespace std;
 
 float alpha = 1.0f;  // アルファ値の初期化（透明度）
@@ -75,7 +75,8 @@ void SceneTitle::Update(float elapsedTime)
         // フェードアウト完了後、次のシーンへ遷移
         if (alpha == 0.0f&&nextScene==1)
         {
-            SceneManager::Instance().ChangeScene(new SceneLoading(new SceneTutorial));
+            
+            SceneManager::Instance().ChangeScene(new SceneLoading(new SceneTyping));
         }
         if (alpha == 0.0f&&nextScene==2)
         {
