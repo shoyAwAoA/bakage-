@@ -231,30 +231,30 @@ void Player::DrawDebugGUI()
     }
     ImGui::End();
 
-    ImGui::SetNextWindowPos(ImVec2(300, 300), ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowSize(ImVec2(50, 50), ImGuiCond_FirstUseEver);
-    static char name[256] = { 0 };
-    if (ImGui::Begin("NameWindow", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBackground))
-    {
-        if (ImGui::InputText("", name, sizeof(name)))
-        {
-            
-            OutputDebugStringA(name);
-        }
-    }
-    ImGui::End();
+    //ImGui::SetNextWindowPos(ImVec2(300, 300), ImGuiCond_FirstUseEver);
+    //ImGui::SetNextWindowSize(ImVec2(50, 50), ImGuiCond_FirstUseEver);
+    //static char name[256] = { 0 };
+    //if (ImGui::Begin("NameWindow", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBackground))
+    //{
+    //    if (ImGui::InputText("", name, sizeof(name)))
+    //    {
+    //        
+    //        OutputDebugStringA(name);
+    //    }
+    //}
+    //ImGui::End();
 
-    ImGui::SetNextWindowPos(ImVec2(600, 300), ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_FirstUseEver);
+    //ImGui::SetNextWindowPos(ImVec2(600, 300), ImGuiCond_FirstUseEver);
+    //ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_FirstUseEver);
 
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(1, 1, 1,0));
-    if (ImGui::Begin("TextWindow", nullptr, ImGuiWindowFlags_NoDecoration))
-    {
-        ImGui::CalcTextSize(name, name, true, 10.0f);
-        ImGui::Text(u8"% s\n", name);
-     }
-    ImGui::PopStyleColor();
-    ImGui::End();
+    //ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(1, 1, 1,0));
+    //if (ImGui::Begin("TextWindow", nullptr, ImGuiWindowFlags_NoDecoration))
+    //{
+    //    ImGui::CalcTextSize(name, name, true, 10.0f);
+    //    ImGui::Text(u8"% s\n", name);
+    // }
+    //ImGui::PopStyleColor();
+    //ImGui::End();
  
     // 2番目のフォントを使用（[0]はデフォルトフォント）// "TextWindow"の開始 
 
