@@ -58,7 +58,8 @@ Player::Player()
     
     //punch_Sound=audioManager.LoadAudioSource("Data/Audio/idou.wav");
     
-    model = new Model("Data/Model/jiki/jiki2.mdl");
+    model = new Model("Data/Model/panda/panda.mdl");
+    //model = new Model("Data/Model/Jammo/Jammo.mdl");
     scale.x = scale.y = scale.z = 0.2f;
 
     //ヒットエフェクト読み込み
