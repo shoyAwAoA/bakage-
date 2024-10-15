@@ -276,10 +276,6 @@ void SceneGame2_2D::Render()
     dc->OMSetRenderTargets(1, &rtv, dsv);
 
     // 2Dスプライト描画
-   /* float screenWidth = static_cast<float>(graphics.GetScreenWidth());
-    float screenHeight = static_cast<float>(graphics.GetScreenHeight());
-    float textureWidth = static_cast<float>(sprite->GetTextureWidth());
-    float textureHeight = static_cast<float>(sprite->GetTextureHeight());*/
 
     //11,20、22以外
     if (hipopoSkip&&state >= Quote_State::Quote_0 && state <= Quote_State::Quote_21 && state != Quote_State::Quote_11 && state != Quote_State::Quote_20)

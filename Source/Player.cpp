@@ -65,7 +65,7 @@ Player::Player()
     hitEffect = new Effect("Data/Effect/Hit.efk");
     health = 1;
 
-    height = 3.0f;
+    height = 2.5f;
 
     //待機ステートへ遷移
     TransitionIdleState();
