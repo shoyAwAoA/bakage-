@@ -41,8 +41,33 @@ void SceneTyping::Render()
     ImGui::SetNextWindowSize(ImVec2(700, 240), ImGuiCond_None);
     /*  ImGui::SetNextWindowPos(ImVec2(300, 300), ImGuiCond_None);
     ImGui::SetNextWindowSize(ImVec2(600, 600), ImGuiCond_None);*/
+
+
+
     // ImGuiCond_FirstUseEver
-    static char name[256] = { 0 };
+    
+    
+    
+    ImGuiIO& io = ImGui::GetIO();
+    // ImGuiのIO構造体を取得
+    // スペースキーの入力を無視する
+    if (io.KeysDown[ImGuiKey_Space])
+        // ImGuiKey_Space はスペースキーに対応 
+    { io.KeysDown[ImGuiKey_Space] = false;
+    // スペースキーが押されても反応を無効化 
+    } 
+    // 通常のウィンドウ処理 
+    ImGui::SetNextWindowPos(
+        ImVec2(300, 300), ImGuiCond_FirstUseEver
+    );
+    ImGui::SetNextWindowSize(ImVec2(300, 300), ImGuiCond_FirstUseEver);
+    static char name[256] = { 0 }; 
+   /* if (ImGui::Begin("NameWindow", nullptr, ImGuiWindowFlags_NoDecoration))*/
+    /*{ if (ImGui::InputText("", name, sizeof(name)))
+    { OutputDebugStringA(name); } } ImGui::End();*/
+    
+    
+
     if (ImGui::Begin("NameWindow", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground))
     {
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 40));  // X:0, Y:10 (Yを大きくする)

@@ -2,6 +2,8 @@
 #include"Input/Input.h"
 #include "SceneLoading.h"
 #include"SceneManager.h"
+#include "SceneTyping.h"
+
 
 //‰Šú‰»
 void SceneLoading::Initialize()
@@ -37,6 +39,7 @@ void SceneLoading::Finalize()
 //XVˆ—
 void SceneLoading::Update(float elapsedTime)
 {
+   
     constexpr float speed = 100;
     angle0 += speed * elapsedTime;
     angle1 -= speed * elapsedTime;

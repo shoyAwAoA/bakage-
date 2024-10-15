@@ -76,7 +76,8 @@ void SceneTitle::Update(float elapsedTime)
         if (alpha == 0.0f&&nextScene==1)
         {
             
-            SceneManager::Instance().ChangeScene(new SceneLoading(new SceneTyping));
+            //SceneManager::Instance().ChangeScene(new SceneLoading(new SceneTyping));
+            SceneManager::Instance().ChangeScene(new SceneLoading(new SceneTutorial));
         }
         if (alpha == 0.0f&&nextScene==2)
         {

@@ -27,7 +27,7 @@ void SceneGame2_2D::Initialize()
     sprite = new Sprite("Data/Sprite/score.png");
     sprite2 = new Sprite("Data/Sprite/hipopo/matome.png");
     skip = new Sprite("Data/Sprite/skip.png");
-   hidari = new Sprite("Data/Sprite/hidaku.png");
+    hidari = new Sprite("Data/Sprite/hidaku.png");
     state = Quote_State::Quote_0;
     minasuFlag = false;
     plusFlag = false;

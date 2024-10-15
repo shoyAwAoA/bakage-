@@ -10,7 +10,10 @@ ImGuiRenderer::ImGuiRenderer(HWND hWnd, ID3D11Device* device)
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
-	ImFont* font = io.Fonts->AddFontFromFileTTF("Data\\Font\\ArialUni.ttf", 100.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
+	ImFont* font = io.Fonts->AddFontFromFileTTF("Data\\Font\\ArialUni.ttf", 14.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
+
+//	ImFont* font = io.Fonts->AddFontFromFileTTF("Data\\Font\\ArialUni.ttf", 100.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
+
 	//io.Fonts->AddFontDefault();
 	//io.Fonts->Build();
 

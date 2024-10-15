@@ -51,8 +51,6 @@ public:
     //蹴り入力処理
     bool InputKick();
 
-    bool HitCheck();
-
 private:
     //スティック入力値から移動ベクトルを取得
     DirectX::XMFLOAT3 GetMoveVec()const;
@@ -74,10 +72,8 @@ private:
     void CollisionNodeVsEnemies(const char* nodeName, float nodeRadius);
 
     //弾丸と敵の衝突判定
-    void CollisionProjectilesVsEnemies();
+   // void CollisionProjectilesVsEnemies();
 
-    //弾丸入力処理
-    void InputSpecial();
 
     //待機ステートへ遷移
     void TransitionIdleState();
@@ -90,35 +86,18 @@ private:
 
     //移動ステート更新処理
     void UpdateMoveState(float elapsedTime);
-    //着地ステートへ遷移
-    void TransitionLandState();
-
-    //着地ステート更新処理
-    void UpdateLandState(float elapsedTime);
-
+   
     //攻撃ステートへ遷移
     void TransitionAttackState();
 
     //攻撃ステート更新処理
-    void UpdateAttackState(float elapsedTime);
-
-    //ダメージステートへ遷移
-    void TransitionDamageState();
-
-    //ダメージステート更新処理
-    void UpdateDamageState(float elapsedTime);
+    void UpdateAttackState(float elapsedTime);  
 
     //死亡ステートへ遷移
     void TransitionDeathState();
 
     //死亡ステート更新処理
     void UpdateDeathState(float elapsedTime);
-
-    //復活ステートへ遷移
-    void TransitionReviveState();
-
-    //復活ステート更新処理
-    void UpdateReviveState(float elapsedTime);
 
     //回避ステートへ遷移
     void TransitionAvoidanceState();
@@ -139,12 +118,9 @@ private:
 
 
 protected:
-    //着地したときに呼ばれる
-    void OnLanding()override;
-
+   
     //ダメージを受けたときに呼ばれる
-    void OnDamaged()override;
-
+  
     //死亡した時に呼ばれる
     void OnDead()override;
 
@@ -154,18 +130,11 @@ private:
     {
         Anim_Idle,
         Anim_Move,
-        Anim_Death,
+        Anim_Kick,
         Anim_Attack,
-        Anim_GetHit1,
-        Anim_GetHit2,
-        Anim_Jump,
-        Anim_Jump_Flip,
-        Anim_Landing,
-        Anim_Revive,
-        Anim_Running,
-        Anim_Walking,
         Anim_Avoidance,
         Anim_SpecialAttack,
+        Anim_Death,
     };
 
     //ステート
@@ -173,15 +142,11 @@ private:
     {
         Idle,
         Move,
-        Jump,
-        Land,
-        Attack,
-        Damage,
-        Death,
-        Revive,
-        Avoidance,
         Kick,
+        Attack,
+        Avoidance,
         SpecialAttack,
+        Death,
     };
 
 private:
@@ -191,7 +156,7 @@ private:
     float turnSpeed = DirectX::XMConvertToRadians(720);
     Effect* hitEffect = nullptr;
     State              state = State::Idle;
-    float  leftHandRadius = 1.7f;
+    float  leftHandRadius = 0.5f;
     bool attackCollisionFlag = false;
     bool specialAttack = false; //必殺技
     float           specialTime = 200.0f;
@@ -200,12 +165,19 @@ private:
     bool avoidanceCollisionFlag = false;
     float avoidanceRadius = 0.7f;
     bool kickCollisionFlag = false;
-    float kickRadius = 1.0f;
+    float kickRadius = 3.0f;
+
     bool specialAttackCollisionFlag = false;
-    float specialAttackRadius = 1.0f;
+    bool specialAttack2CollisionFlag = false;
+    bool specialAttack3CollisionFlag = false;
+    bool specialAttack4CollisionFlag = false;
+    
+
+    float specialAttackRadius = 0.5f;
+    float specialAttackRadius2 = 0.5f;
 
     float HealthPreservation = 0;
-    bool SpecialHitCheck = false;
+   
     int         avoidanceTime = 60;
     int         avoidanceFlag = true;
     DirectX::XMFLOAT3 AvoidanceMove;

@@ -15,6 +15,7 @@ extern bool Special;
 extern int make;
 extern int kati;
 extern int stage;
+extern bool playerAvoidanceFlag;
 
 static EnemyHipopozamasu* instance = nullptr;
 
@@ -252,26 +253,29 @@ void EnemyHipopozamasu::CollisionNodeVsPlayer(const char* nodeName, float nodeRa
                 player.GetHeight(),
                 outPosition))
             {
-                //ダメージを与える
-                if (player.ApplyDamage(1, 0.5f))
+                if (playerAvoidanceFlag)
                 {
-                    //敵を吹っ飛ばすベクトルを算出
-                    DirectX::XMFLOAT3 vec;
-                    vec.x = outPosition.x - nodePosition.x;
-                    vec.z = outPosition.z - nodePosition.z;
-                    float length = sqrtf(vec.x * vec.x + vec.z * vec.z);
-                    vec.x /= length;
-                    vec.z /= length;
+                    //ダメージを与える
+                    if (player.ApplyDamage(1, 0.5f))
+                    {
+                        //敵を吹っ飛ばすベクトルを算出
+                        DirectX::XMFLOAT3 vec;
+                        vec.x = outPosition.x - nodePosition.x;
+                        vec.z = outPosition.z - nodePosition.z;
+                        float length = sqrtf(vec.x * vec.x + vec.z * vec.z);
+                        vec.x /= length;
+                        vec.z /= length;
 
-                    //XZ平面に吹っ飛ばす力をかける
-                    float power = 10.0f;
-                    vec.x *= power;
-                    vec.z *= power;
-                    //Y方向にも力をかける
-                    vec.y = 5.0f;
+                        //XZ平面に吹っ飛ばす力をかける
+                        float power = 10.0f;
+                        vec.x *= power;
+                        vec.z *= power;
+                        //Y方向にも力をかける
+                        vec.y = 5.0f;
 
-                    //吹っ飛ばす
-                    player.AddImpulse(vec);
+                        //吹っ飛ばす
+                        player.AddImpulse(vec);
+                    }
                 }
             }
         }
